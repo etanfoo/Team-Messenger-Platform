@@ -21,9 +21,9 @@ def test_invite():
             break
     assert found == True
 
-    # # input error test, when channel_id does not refer to a valid channel
-    # with pytest.raises(InputError):
-    #     channel_invite(authorised_user['token'], "invalid_channel", new_user['u_id'])
+    # input error test, when channel_id does not refer to a valid channel
+    with pytest.raises(InputError):
+        channel_invite(authorised_user['token'], "invalid_channel", new_user['u_id'])
 
     # # input error test, when u_id does not refer to a valid id
     # with pytest.raises(InputError):
