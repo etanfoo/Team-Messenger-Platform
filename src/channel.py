@@ -1,7 +1,4 @@
-from error import InputError, AccessError
-
 def channel_invite(token, channel_id, u_id):
-    raise InputError
     return {
     }
 
