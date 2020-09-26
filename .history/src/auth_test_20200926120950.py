@@ -17,10 +17,10 @@ from auth.py import *
 def test_register_email_limit():
     with pytest.raises(InputError):
         auth_register("atestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatest@gmail.com ", "Test@12345", "Dummy", "Test")
-
+#Email address username, domain can only contain letters (a-z), numbers (0-9) and periods (.) are allowed.
 
 #Email address first character of username must be an ascii letter (a-z) or number (0-9)
-def test_register_email_first_letter():
+def test_email_first_letter():
     with pytest.raises(InputError):
         auth_register(".atest@gmail.com ", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError):
@@ -44,10 +44,10 @@ def test_register_email_first_letter():
     with pytest.raises(InputError):
         auth_register("+atest@gmail.com ", "Test@12345", "Dummy", "Test")
 #Email address cannot have a leading space 
-def test_register_email_space_leading():
+def test_email_space_leading():
     with pytest.raises(InputError):
         auth_register("atest@gmail.com ", "Test@12345", "Dummy", "Test")
-def test_register_email_space_trailing():
+def test_email_space_trailing():
     with pytest.raises(InputError):
         auth_register("a test@gmail.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError):
@@ -57,7 +57,7 @@ def test_register_email_space_trailing():
     with pytest.raises(InputError):
         auth_register("atest@gmail.c om", "Test@12345", "Dummy", "Test")
 #Email address username can only contain letters (a-z), numbers (0-9) and periods (.) are allowed
-def test_register_email_username():
+def test_email_username():
     with pytest.raises(InputError):
         auth_register("a!test@gmail.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError):
@@ -82,7 +82,7 @@ def test_register_email_username():
         auth_register("at_es@gmail.com", "Test@12345", "Dummy", "Test")
 
 #Email address domain can only contain letters (a-z), numbers (0-9) and periods (.) are allowed
-def test_register_email_domain():
+def test_email_domain():
     with pytest.raises(InputError):
         auth_register("a!test@a!test.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError):
@@ -107,7 +107,7 @@ def test_register_email_domain():
         auth_register("test@at_es.com", "Test@12345", "Dummy", "Test")
 
 #Email address cannot contain consecutive periods (.)
-def test_register_email_period():
+def test_email_period():
     with pytest.raises(InputError):
         auth_register("dummy..test@gmail.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError):
@@ -155,8 +155,6 @@ def test_register_password_max():
 def test_register_password_min():
     with pytest.raises(InputError):
         auth_register("dummytest@gmail.com", "12345", "Dummy", "Test")
-    with pytest.raises(InputError):
-        auth_register("dummytest@gmail.com", "12o45", "Dummy", "Test")
 
 #Email is not empty 
 def test_register_email_empty():
@@ -191,51 +189,7 @@ def test_register_name_last_50():
 def test_register_name_first_symbol():
     with pytest.raises(InputError):
         auth_register("DummyTest@gmail.com", "Test@12345", "Dummy@", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dum!my", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dum#my", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dumm$y", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dum^my", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dum&my", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Du*mmy", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dum(my", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dumm)y", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dum-my", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dumm=y", "Test")
 
 def test_register_name_last_symbol():
     with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes!t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes@t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes#t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes$t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Test%")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes^t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes&t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes*t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes(t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes)t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes-t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Test=")
-
-    
+        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Test@")
