@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-When user calls channels_create, they are automatically part of the channel as an owner and member
-Making all channels public at the moment
-=======
 ---
 AUTH TEST
 ---
@@ -21,6 +17,21 @@ AUTH TEST
 - Email address cannot exceed 254 characters
 - None of the fields can be empty
 - First and Last name does not contain symbols
+- First and Last name cannot be empty
 - Password maximum size is 18
 - Password minimum size is 6
->>>>>>> test_auth_register
+
+---
+
+CHANNEL TEST
+
+---
+
+---
+
+CHANNELS TEST
+
+---
+
+When user calls channels_create, they are automatically part of the channel as an owner and member
+Making all channels public at the moment
