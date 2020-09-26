@@ -9,13 +9,13 @@ invalid_u_id = 99999999999
 invalid_channel_id = 5555555555
 
 def test_channel_invite():
-    authorised_user = auth_register("valid_email@gmail.com", "valid_password", "valid_first", "valid_last")
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
     auth_login("valid_email@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
     #####################################################################################
     # regular channel invite, u_id should appear in all_members but not in owner_members
-    new_user = auth_register("new_email@gmail.com", "new_password", "new_first", "new_last")
+    new_user = auth_register("newEmail@gmail.com", "new_password", "new_first", "new_last")
     channel_invite(authorised_user['token'], channel['channel_id'], new_user['u_id'])
     details = channel_details(authorised_user['token'], channel['channel_id'])
     found = False
@@ -60,7 +60,7 @@ def test_channel_invite():
 
 
 def test_channel_details():
-    authorised_user = auth_register("valid_email@gmail.com", "valid_password", "valid_first", "valid_last")
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
     auth_login("valid_email@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
@@ -86,7 +86,7 @@ def test_channel_details():
     assert found == True
 
     # inviting new user to channel
-    new_user = auth_register("new_email@gmail.com", "new_password", "new_first", "new_last")
+    new_user = auth_register("newEmail@gmail.com", "new_password", "new_first", "new_last")
     channel_invite(authorised_user['token'], channel['channel_id'], new_user['u_id'])
     details = channel_details(authorised_user['token'], channel['channel_id'])
     found = False
@@ -127,7 +127,7 @@ def test_channel_messages():
     # Some functions may not be testable at all, and other functions may not be testable 
     # until further implementation is done in future iterations."
     
-    authorised_user = auth_register("valid_email@gmail.com", "valid_password", "valid_first", "valid_last")
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
     auth_login("valid_email@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
@@ -141,11 +141,11 @@ def test_channel_messages():
 
     # Access error when user is not a emember of channel with channel_id
     with pytest.raises(AccessError):
-        new_user = auth_register("new_email@gmail.com", "new_password", "new_first", "new_last")
+        new_user = auth_register("newEmail@gmail.com", "new_password", "new_first", "new_last")
         messages = channel_messages(new_user['token'], channel['channel_id'], 0)
 
 def test_channel_leave():
-    authorised_user = auth_register("valid_email@gmail.com", "valid_password", "valid_first", "valid_last")
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
     auth_login("valid_email@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
@@ -153,7 +153,7 @@ def test_channel_leave():
     # testing regular channel_leave
     
     # invite new user to channel
-    new_user = auth_register("new_email@gmail.com", "new_password", "new_first", "new_last")
+    new_user = auth_register("newEmail@gmail.com", "new_password", "new_first", "new_last")
     channel_invite(authorised_user['token'], channel['channel_id'], new_user['u_id'])
 
     # new user leaving, should not be found as a part of all_members
