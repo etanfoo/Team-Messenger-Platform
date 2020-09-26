@@ -1,11 +1,11 @@
 import pytest
 from error import InputError, AccessError
 from auth.py import *
-#Test Login
 
-#Check for valid Email
-#Email entered does not belong to a user
-#Password is not correct
+#Test Login
+def test_login_email():
+    with pytest.raises(AccessError):
+        auth_login(alreadyused@gmail.com, alreadyused)
 
 #-------------------------------------------------------------------
 ########################
