@@ -54,7 +54,7 @@ def test_channel_invite():
 
     # access error test, when authorised user is not part of channel
     with pytest.raises(AccessError):
-        unautharised_user = auth_register("filler", "filler", "filler", "filler")
+        unautharised_user = auth_register("filler@gmail.com", "filler", "filler", "filler")
         channel_invite(unautharised_user['token'], channel['channel_id'], invalid_u_id)
 
 
@@ -117,7 +117,7 @@ def test_channel_details():
 
     # Access Error when authorised user is not part of channel
     with pytest.raises(AccessError):
-        unautharised_user = auth_register("filler", "filler", "filler", "filler")
+        unautharised_user = auth_register("filler@gmail.com", "filler", "filler", "filler")
         channel_details(unautharised_user['token'], channel['channel_id'])
 
 def test_channel_messages():
