@@ -46,9 +46,7 @@ def test_channels_list_multiple():
 
     assert channels_list['channels'] == ['new_channel', 'new_channel2', 'new_channel3', 'new_channel4', 'new_channel5']
     # To satisfy the spec. Asks for associated details
-    # assert channels_list['channels'] == ['new_channel: authorised_user', 'new_channel2: authorised_user', 'new_channel3: authorised_user', 
-    # 'new_channel4: authorised_user', 'new_channel5: authorised_user']
-    # New line because it is easier to read and style.
+    # assert channels_list['channels'] == ['new_channel: authorised_user', 'new_channel2: authorised_user', 'new_channel3: authorised_user', 'new_channel4: authorised_user', 'new_channel5: authorised_user']
 
 def test_channels_list_uninvited():
     # If authorised_user is not apart of any channel despite there being many channels.
@@ -129,7 +127,6 @@ def test_channels_listall_individual():
     # Ordering may be an issue. Put in alphabetical so its consistent 
     # assert channels_list['channels'] == ['solo_channel: authorised_user', 'channel_invited: authorised_user, new_user2', 'solo_channel2: new_user2']
 
-s
 def test_channels_create_fails():
     # Creating a valid account
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
