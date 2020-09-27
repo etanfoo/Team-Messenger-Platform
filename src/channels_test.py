@@ -10,62 +10,82 @@ Needs work
 '''
 
 def test_channels_list_empty():
-    # Creating a valid account and channel
+    # Creating a valid account
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
     auth_login("valid_email@gmail.com", "valid_password")
-    channel = channels_create(authorised_user['token'], "new_channel", True)
-
-    # !!! Not sure how to check for other channels !!!
     # Return empty, since no other channels
-    assert channels_list(authorised_user['token']) == {}
+    channels_list = channels_list(authorised_user['token'])
+    assert channels_list['channels'] == {}
 
 def test_channels_list_simple():
-    # Creating valid accounts and channels
-    # User1
+    # Creating valid account and channel for authorised_user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
     auth_login("valid_email@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
-    # User2
-    authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password2", "valid_first2", "valid_last2")
-    auth_login("valid_email2@gmail.com", "valid_password2")
-    channel_2 = channels_create(authorised_user2['token'], "new_channel2", True)
-
-    # User2 invites User1 to channel_2  
-    channel_invite(authorised_user['token'], channel_2, authorised_user['u_id'])
+    # Creating valid account and channel for new_user2
+    new_user2 = auth_register("validEmail_2@gmail.com", "valid_password_2", "valid_first_2", "valid_last_2")
+    channel_2 = channels_create(new_user2['token'], "new_channel2", True)
+    # new_user2 invites authorised_user to channel_2  
+    channel_invite(authorised_user['token'], channel_2['channel_id'], authorised_user['u_id'])
+    # Obtain the list of channels of authorised_user
+    channels_list = channels_list(authorised_user['token'])
     
-    # !!! Not sure how to check for other channels !!!
-    assert channels_list(authorised_user['token']) == {}
+    # !!! IDK what to do
+
+    assert channels_list['channels'] == {}
 
 def test_channels_listall_empty():
-    # Creating a valid account and channel
+    # Creating a valid account
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
     auth_login("valid_email@gmail.com", "valid_password")
-    channel = channels_create(authorised_user['token'], "new_channel", True)
-
     # Return empty, since no other channels
-    assert channels_listall(authorised_user['token']) == {}
+    channels_list = channels_list(authorised_user['token'])
+    assert channels_list['channels'] == {}
 
 def test_channels_listall_simple():
-    # Creating valid accounts and channels
-    # User 1
+    # Creating valid account and channel for authorised_user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
     auth_login("valid_email@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
-    # User 2
-    authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password2", "valid_first2", "valid_last2")
-    auth_login("valid_email2@gmail.com", "valid_password2")
-    channel_2 = channels_create(authorised_user2['token'], "new_channel2", True)
+    # Creating valid account and channel for new_user2
+    new_user2 = auth_register("validEmail_2@gmail.com", "valid_password_2", "valid_first_2", "valid_last_2")
+    channel_2 = channels_create(new_user2['token'], "new_channel2", True)
+    # new_user2 invites authorised_user to channel_2     
+    channel_invite(authorised_user['token'], channel_2['channel_id'], authorised_user['u_id'])
+    # Obtain the list of all channels
+    channels_list_all = channels_listall(authorised_user['token'])
+    # !!! If we create a global variable for channels 
+    whole_list = global_channels_list['channels']
+    # The gloabl list should be the same as channels_list
+    error = False
+    for dictionary in whole_list:
+        # List are incorrect
+        if channels_list_all['channels'] != dictionary:
+            error = True
+            break
 
-    # User2 invites User1 to channel_2    
-    channel_invite(authorised_user['token'], channel_2, authorised_user['u_id'])
-    # !!! Not sure how to check for other channels !!!
-    assert channels_listall(authorised_user['token']) == {}
+    assert error = False
 
-def test_channels_create():
-     with pytest.raises(InputError):   
+def test_channels_create_fails():
+    # Creating a valid account
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
+    auth_login("valid_email@gmail.com", "valid_password")
+
+    with pytest.raises(InputError):   
         # Expected to fail, channel name is over 20 characters long (no spaces)
         channels_create(authorised_user['token'], "ThisIsATestForALongChannelName", True)
 
     with pytest.raises(InputError):   
         # Expected to fail, channel name is over 20 characters long
-        channels_create(authorised_user['token'], "The Kanye East experience", False)
+        channels_create(authorised_user['token'], "The Kanye East experience", True)
+
+def test_channels_create_working():
+    # Creating a valid account
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
+    auth_login("valid_email@gmail.com", "valid_password")
+
+    channel = channels_create(authorised_user['token'], "Chicken Nuggets", True)
+    assert channel['channel_id'] == 1
+
+    channel_2 = channels_create(authorised_user['token'], "TSM Legends", True)
+    assert channel_2['channel_id'] == 2
