@@ -26,6 +26,8 @@ def test_channels_list_simple():
     channels_list = channels_list(authorised_user['token'])
 
     assert channels_list['channels'] == ['new_channel', 'new_channel2']
+    # To satisfy the spec. Asks for associated details
+    # assert channels_list['channels'] == ['new_channel: authorised_user', 'new_channel2: authorised_user']
 
 def test_channels_list_multiple():
     # Test when multiple channels are created. If the program has correct return when user is the creator of more that 1 channel.
@@ -43,6 +45,10 @@ def test_channels_list_multiple():
     channels_list = channels_list(authorised_user['token'])
 
     assert channels_list['channels'] == ['new_channel', 'new_channel2', 'new_channel3', 'new_channel4', 'new_channel5']
+    # To satisfy the spec. Asks for associated details
+    # assert channels_list['channels'] == ['new_channel: authorised_user', 'new_channel2: authorised_user', 'new_channel3: authorised_user', 
+    # 'new_channel4: authorised_user', 'new_channel5: authorised_user']
+    # New line because it is easier to read and style.
 
 def test_channels_list_uninvited():
     # If authorised_user is not apart of any channel despite there being many channels.
@@ -98,6 +104,10 @@ def test_channels_listall_simple():
     #         break
     # assert error = False
 
+    # To satisfy the spec. Asks for associated details
+    # Ordering may be an issue. Put in alphabetical so its consistent 
+    # assert channels_list['channels'] == ['new_channel: authorised_user', 'new_channel2: authorised_user, new_user2']
+
 def test_channels_listall_individual():
     # Test to check if all channels are returned despite being completely seperate and cases where users are apart of more than 1
     # Creating valid account and channels for first user.
@@ -115,8 +125,11 @@ def test_channels_listall_individual():
     channels_list_all = channels_listall(authorised_user['token'])
 
     assert channels_list['channels'] == ['solo_channel', 'channel_invited', 'solo_channel2']
+    # To satisfy the spec. Asks for associated details
+    # Ordering may be an issue. Put in alphabetical so its consistent 
+    # assert channels_list['channels'] == ['solo_channel: authorised_user', 'channel_invited: authorised_user, new_user2', 'solo_channel2: new_user2']
 
-
+s
 def test_channels_create_fails():
     # Creating a valid account
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
