@@ -25,9 +25,7 @@ def test_channels_list_simple():
     # Obtain the list of channels of authorised_user
     channels_list = channels_list(authorised_user['token'])
 
-    assert channels_list['channels'] == ['new_channel', 'new_channel2']
-    # To satisfy the spec. Asks for associated details
-    # assert channels_list['channels'] == ['new_channel: authorised_user', 'new_channel2: authorised_user']
+    assert channels_list['channels'] == ['new_channel: authorised_user', 'new_channel2: authorised_user']
 
 def test_channels_list_multiple():
     # Test when multiple channels are created. If the program has correct return when user is the creator of more that 1 channel.
@@ -43,10 +41,8 @@ def test_channels_list_multiple():
 
     # Obtain the list of channels of authorised_user
     channels_list = channels_list(authorised_user['token'])
-
-    assert channels_list['channels'] == ['new_channel', 'new_channel2', 'new_channel3', 'new_channel4', 'new_channel5']
-    # To satisfy the spec. Asks for associated details
-    # assert channels_list['channels'] == ['new_channel: authorised_user', 'new_channel2: authorised_user', 'new_channel3: authorised_user', 'new_channel4: authorised_user', 'new_channel5: authorised_user']
+    
+    assert channels_list['channels'] == ['new_channel: authorised_user', 'new_channel2: authorised_user', 'new_channel3: authorised_user', 'new_channel4: authorised_user', 'new_channel5: authorised_user']
 
 def test_channels_list_uninvited():
     # If authorised_user is not apart of any channel despite there being many channels.
@@ -91,7 +87,9 @@ def test_channels_listall_simple():
     # Obtain the list of all channels
     channels_list_all = channels_listall(authorised_user['token'])
 
-    assert channels_list['channels'] == ['new_channel', 'new_channel2']
+    # Ordering may be an issue. Put in alphabetical so its consistent 
+    assert channels_list['channels'] == ['new_channel: authorised_user', 'new_channel2: authorised_user, new_user2']
+
     # whole_list = global_channels_list['channels']
     # # The gloabl list should be the same as channels_list
     # error = False
@@ -101,10 +99,6 @@ def test_channels_listall_simple():
     #         error = True
     #         break
     # assert error = False
-
-    # To satisfy the spec. Asks for associated details
-    # Ordering may be an issue. Put in alphabetical so its consistent 
-    # assert channels_list['channels'] == ['new_channel: authorised_user', 'new_channel2: authorised_user, new_user2']
 
 def test_channels_listall_individual():
     # Test to check if all channels are returned despite being completely seperate and cases where users are apart of more than 1
@@ -122,10 +116,8 @@ def test_channels_listall_individual():
     # Get list of all channels
     channels_list_all = channels_listall(authorised_user['token'])
 
-    assert channels_list['channels'] == ['solo_channel', 'channel_invited', 'solo_channel2']
-    # To satisfy the spec. Asks for associated details
     # Ordering may be an issue. Put in alphabetical so its consistent 
-    # assert channels_list['channels'] == ['solo_channel: authorised_user', 'channel_invited: authorised_user, new_user2', 'solo_channel2: new_user2']
+    assert channels_list['channels'] == ['solo_channel: authorised_user', 'channel_invited: authorised_user, new_user2', 'solo_channel2: new_user2']
 
 def test_channels_create_fails():
     # Creating a valid account
@@ -165,17 +157,29 @@ def test_channels_create_empty():
         # Expected to fail, channel name is only a space
         channels_create(authorised_user['token'], ' ', True)
 
-def test_channels_create_special():
-    # Test for the creation of a channel with integers, special characters, and both in its name.
+def test_channels_create_integer():
+    # Test for the creation of a channel with integers.
     # Creating user.
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
     auth_login("valid_email@gmail.com", "valid_password")
     # Creating channel with purely numbers
     channel_num = channels_create(authorised_user['token'], "2020", True)
     assert channel_num['channel_id'] == 1
+
+def test_channels_create_special():
+    # Test for the creation of a channel with special characters.
+    # Creating user.
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
+    auth_login("valid_email@gmail.com", "valid_password")
     # Creating a channel with special characters.
     channel_special = channels_create(authorised_user['token'], "#*$@*!", True)
-    assert channel_num['channel_id'] == 1
+    assert channel_special['channel_id'] == 1
+
+def test_channels_create_mix():
+    # Test for the creation of a channel with a mix of special and integer characters.
+    # Creating user.
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
+    auth_login("valid_email@gmail.com", "valid_password")
     # Creating channel with mixed numbers and letters. Also special characters
     cannel_mix = channels_create(authorised_user['token'], "COVID-19", True)
     assert channel_mix['channel_id'] == 1
