@@ -176,9 +176,6 @@ def test_login_password_empty():
         auth_login("DummyTest@gmail.com", "")
 
 
-
-#Check email
-#-------------------------------------------------------------------
 ########################
 #Check for valid Email#
 #######################
