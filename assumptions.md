@@ -16,8 +16,6 @@ AUTH TEST
 - Email address cannot have a leading space
 - Email address cannot have a trailing space
 - Email address cannot exceed 254 characters
-- Password maximum size is 18
-- Password minimum size is 6
 - Password cannot be empty
 - Password entered has to be correct
 - None of the fields can be empty
