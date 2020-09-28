@@ -1,20 +1,20 @@
 data = {
     "users": [
         {
-        "user_id" : 0,
-        "email": "test@gmail.com",
-        "first_name": "Test",
-        "last_name": "Hu",
-        "status": "active",
-        "password": "test@12345"
+            "user_id" : 0,
+            "email": "test@gmail.com",
+            "first_name": "Test",
+            "last_name": "Hu",
+            "status": "active",
+            "password": "test@12345"
         },
         {
-        "id" : 1,
-        "email": "testDummy@gmail.com",
-        "first_name": "Test",
-        "last_name": "Hu",
-        "status": "inactive",
-        "password": "test@12345"
+            "id" : 1,
+            "email": "testDummy@gmail.com",
+            "first_name": "Test",
+            "last_name": "Hu",
+            "status": "inactive",
+            "password": "test@12345"
         },
     ],
      "Channel": [
