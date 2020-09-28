@@ -9,9 +9,9 @@ def test_channels_list_empty():
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
     auth_login("valid_email@gmail.com", "valid_password")
     # Return empty, since no other channels
-    channels_list = channels_list(authorised_user['token'])
-    assert channels_list['channels'] == []
-
+    channel_list_1 = channels_list(authorised_user['token'])
+    assert channel_list_1['channels'] == [] 
+ 
 def test_channels_list_simple():
     # Creating valid account and channel for authorised_user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
@@ -23,9 +23,9 @@ def test_channels_list_simple():
     # new_user2 invites authorised_user to channel_2  
     channel_invite(authorised_user['token'], channel_2['channel_id'], authorised_user['u_id'])
     # Obtain the list of channels of authorised_user
-    channels_list = channels_list(authorised_user['token'])
+    channels_list_1 = channels_list(authorised_user['token'])
 
-    assert channels_list['channels'] == ['new_channel: authorised_user', 'new_channel2: authorised_user']
+    assert channels_list_1['channels'] == ['new_channel: authorised_user', 'new_channel2: authorised_user']
 
 def test_channels_list_multiple():
     # Test when multiple channels are created. If the program has correct return when user is the creator of more that 1 channel.
@@ -40,9 +40,9 @@ def test_channels_list_multiple():
     channel_5 = channels_create(authorised_user['token'], "new_channel5", True)
 
     # Obtain the list of channels of authorised_user
-    channels_list = channels_list(authorised_user['token'])
+    channels_list_1 = channels_list(authorised_user['token'])
     
-    assert channels_list['channels'] == ['new_channel: authorised_user', 'new_channel2: authorised_user', 'new_channel3: authorised_user', 'new_channel4: authorised_user', 'new_channel5: authorised_user']
+    assert channels_list_1['channels'] == ['new_channel: authorised_user', 'new_channel2: authorised_user', 'new_channel3: authorised_user', 'new_channel4: authorised_user', 'new_channel5: authorised_user']
 
 def test_channels_list_uninvited():
     # If authorised_user is not apart of any channel despite there being many channels.
@@ -60,10 +60,10 @@ def test_channels_list_uninvited():
     channel_5 = channels_create(uninvited_user['token'], "new_channel5", True)
  
     # Obtain the list of channels of authorised_user
-    channels_list = channels_list(uninvited_user['token'])  
+    channels_list_1 = channels_list(uninvited_user['token'])  
  
     # Return an empty set since user is not apart of any channels.
-    assert channels_list['channels'] == []
+    assert channels_list_1['channels'] == []
 
 
 def test_channels_listall_empty():
