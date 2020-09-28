@@ -18,7 +18,12 @@ AUTH TEST
 - Email address cannot exceed 254 characters
 - Password cannot be empty
 - Password entered has to be correct
+- Multiple login connection is allowed
 - None of the fields can be empty
+
+# Test_auth_logout
+
+- User can only logout if the user is login
 
 # Test_auth_register
 

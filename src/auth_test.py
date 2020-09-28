@@ -1,7 +1,7 @@
 import pytest
 import re
 from error import InputError, AccessError
-from auth import auth_register, auth_login
+from auth import auth_register, auth_login, auth_logout
 
 ########################
 ######Test Login#######
@@ -454,3 +454,8 @@ def test_register_name_last_symbol():
         auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes-t")
     with pytest.raises(InputError) as e:
         auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Test=")
+
+
+def test_auth_logout():
+    with pytest.raises(AccessError) as e:
+        auth_logout("DummyTest@gmail.com", "Test@12345", "Dummy", "Test")
