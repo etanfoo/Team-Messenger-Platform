@@ -44,12 +44,10 @@ data = {
         }
     ],
     "Channels": [
-	{
-		"channel_id": 1,
-		"channel_id": 2,
-		"channel_id": 3,
-	}
-     ], 
+        {
+            "channel_id": 1,
+        }
+    ], 
     
 }
  
