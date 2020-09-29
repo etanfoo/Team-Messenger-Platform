@@ -17,10 +17,11 @@ data = {
             "password": "test@12345",
         },
     ],
-     "Channel": [
+     "Channels": [
         {
             "name": "channel_name",
             "channel_id": 1,
+            "is_public": True,
             "owner_members": [
                 {
                     "u_id": 1,
@@ -43,20 +44,5 @@ data = {
             "end": 50,
         },
     ],
-    "Channels": [
-        {
-            "public": [
-                {
-                    "channel_id": 0,
-                }, 
-            ],
-            "private": [
-                {
-                    "channel_id": 1,
-                },
-            ],
-        },
-    ], 
 }
  
-
