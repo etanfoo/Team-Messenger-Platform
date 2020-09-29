@@ -9,7 +9,7 @@ data = {
             "password": "test@12345",
         },
         {
-            "id" : 1,
+            "user_id" : 1,
             "email": "testDummy@gmail.com",
             "first_name": "Test",
             "last_name": "Hu",
