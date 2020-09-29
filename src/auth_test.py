@@ -84,8 +84,6 @@ def test_login_email_username():
     with pytest.raises(InputError) as e:
         auth_login("a.te-st@gmail.com", "Test@12345")
     with pytest.raises(InputError) as e:
-        auth_login("ate\st@gmail.com", "Test@12345")
-    with pytest.raises(InputError) as e:
         auth_login("ates]t@gmail.com", "Test@12345")
     with pytest.raises(InputError) as e:
         auth_login("ates$@gmail.com", "Test@12345")
@@ -109,8 +107,6 @@ def test_login_email_domain():
         auth_login("a!test@a!test.com", "Test@12345")
     with pytest.raises(InputError) as e:
         auth_login("test@a.te-st.com", "Test@12345")
-    with pytest.raises(InputError) as e:
-        auth_login("test@ate\st.com", "Test@12345")
     with pytest.raises(InputError) as e:
         auth_login("test@ates]t.com", "Test@12345")
     with pytest.raises(InputError) as e:
@@ -188,9 +184,10 @@ def test_login_password_empty():
 #######################
 #Check if email has already been used by another user
 def test_register_check_user():
-    auth_register('validemail@gmail.com', '123abc!@#', 'Hayden', 'Everest')
+    auth_register('validemailthx@gmail.com', '123abc!@#', 'Hayden', 'Everest')
     with pytest.raises(InputError) as e:
-        auth_register('validemail@gmail.com', '123abc!@#', 'Hayden', 'Everest')
+        auth_register('validemailthx@gmail.com', '123abc!@#', 'Hayden',
+                      'Everest')
 
 
 #Email address cannot exceed 254 characters
@@ -251,8 +248,6 @@ def test_register_email_username():
     with pytest.raises(InputError) as e:
         auth_register("a.te-st@gmail.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError) as e:
-        auth_register("ate\st@gmail.com", "Test@12345", "Dummy", "Test")
-    with pytest.raises(InputError) as e:
         auth_register("ates]t@gmail.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError) as e:
         auth_register("ates$@gmail.com", "Test@12345", "Dummy", "Test")
@@ -276,8 +271,6 @@ def test_register_email_domain():
         auth_register("a!test@a!test.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError) as e:
         auth_register("test@a.te-st.com", "Test@12345", "Dummy", "Test")
-    with pytest.raises(InputError) as e:
-        auth_register("test@ate\st.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError) as e:
         auth_register("test@ates]t.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError) as e:
@@ -454,8 +447,3 @@ def test_register_name_last_symbol():
         auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes-t")
     with pytest.raises(InputError) as e:
         auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Test=")
-
-
-def test_auth_logout():
-    with pytest.raises(AccessError) as e:
-        auth_logout("DummyTest@gmail.com", "Test@12345", "Dummy", "Test")

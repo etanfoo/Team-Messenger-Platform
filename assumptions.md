@@ -2,6 +2,10 @@
 AUTH TEST
 ---
 
+# Auth_Register
+
+- u_id will generate through UUID
+
 # Test_auth_login
 
 - Email address must exist
@@ -20,10 +24,6 @@ AUTH TEST
 - Password entered has to be correct
 - Multiple login connection is allowed
 - None of the fields can be empty
-
-# Test_auth_logout
-
-- User can only logout if the user is login
 
 # Test_auth_register
 
