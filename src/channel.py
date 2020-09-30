@@ -8,7 +8,7 @@ def channel_invite(token, channel_id, u_id):
 
     # looping to see if channel_id is listed, if not, input error
     found = False
-    for channel in data['Channel']:
+    for channel in data['channels']:
         if channel_id == channel['channel_id']:
             found = True
             break
@@ -45,7 +45,7 @@ def channel_details(token, channel_id):
 
     # looping to see if channel_id is listed, if not, input error
     found = False
-    for channel in data['Channel']:
+    for channel in data['channels']:
         if channel_id == channel['channel_id']:
             found = True
             break
@@ -87,7 +87,7 @@ def channel_messages(token, channel_id, start):
 
     # looping to see if channel_id is listed, if not, input error
     found = False
-    for channel in data['Channel']:
+    for channel in data['channels']:
         if channel_id == channel['channel_id']:
             found = True
             break
@@ -127,7 +127,7 @@ def channel_leave(token, channel_id):
 
     # looping to see if channel_id is listed, if not, input error
     found = False
-    for channel in data['Channel']:
+    for channel in data['channels']:
         if channel_id == channel['channel_id']:
             found = True
             break
@@ -168,7 +168,7 @@ def channel_join(token, channel_id):
     '''
     # looping to see if channel_id is listed, if not, InputError
     found = False
-    for channel in data['Channel']:
+    for channel in data['channels']:
         if channel_id == channel['channel_id']:
             found = True
             break
@@ -181,7 +181,7 @@ def channel_join(token, channel_id):
     '''
     pub = False
     # utilises a diff globalDict
-    for channel_type in data['Channels']:
+    for channel_type in data['channelss']:
         for c_id in channel_type['public']:
             if c_id['channel_id'] == channel_id:
                 pub = True
@@ -191,7 +191,7 @@ def channel_join(token, channel_id):
 
     # add user to the channel
     # loop through each property of all channel
-    channel = data['Channel']
+    channel = data['channels']
 
     for i in range(channel):
         # find the channel with same channel_id
@@ -211,7 +211,7 @@ def channel_addowner(token, channel_id, u_id):
     isAdmin = False
 
     # loop through each channel
-    for channel in data['Channel']:
+    for channel in data['channels']:
         # check channel_id exists
         if channel_id == channel['channel_id']:
             # loop through owners in that specific channel
@@ -242,7 +242,7 @@ def channel_removeowner(token, channel_id, u_id):
     isAdmin = False
 
     # loop through each channel
-    for channel in data['Channel']:
+    for channel in data['channels']:
         # check channel_id exists
         if channel_id == channel['channel_id']:
             # loop through owners in that specific channel

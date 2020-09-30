@@ -3,6 +3,7 @@ from channel import *
 from channels import *
 import pytest
 from error import InputError, AccessError
+from other import *
 
 # variables to represent invalid id's
 invalid_u_id = 99999999999
@@ -65,7 +66,8 @@ def test_channel_invite():
                                           "filler", "filler")
         channel_invite(unautharised_user['token'], channel['channel_id'],
                        invalid_u_id)
-
+    
+    clear()
 
 def test_channel_details():
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
@@ -131,6 +133,7 @@ def test_channel_details():
                                           "filler", "filler")
         channel_details(unautharised_user['token'], channel['channel_id'])
 
+    clear()
 
 def test_channel_messages():
     # Cant do regular tests as no messages can be sent, according to piazza's instructors answer:
@@ -160,6 +163,7 @@ def test_channel_messages():
         messages = channel_messages(new_user['token'], channel['channel_id'],
                                     0)
 
+    clear()
 
 def test_channel_leave():
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
@@ -210,6 +214,7 @@ def test_channel_leave():
                                       "random3_first", "random3_last")
         channel_leave(random_user_3['token'], "string_input")
 
+    clear()
 
 def test_channel_join():
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
