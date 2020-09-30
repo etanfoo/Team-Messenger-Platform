@@ -9,11 +9,7 @@ from auth import auth_register, auth_login, auth_logout
 
 
 #Check login
-def test_login_email():
-    auth_register('validemail@gmail.com', '123abc!@#', 'Hayden', 'Everest')
-    # Expect to work since we registered
-    auth_login('validemail@gmail.com', '123abc!@#')
-
+def test_login_email_nonexist():
     with pytest.raises(InputError) as e:
         auth_login('didntusethis@gmail.com', '123abcd!@#')
 
@@ -102,9 +98,9 @@ def test_login_email_username():
 
 
 #Email address domain can only contain letters (a-z), numbers (0-9) and periods (.) are allowed
-def test_login_email_domain():
+def test_login_email_domain1():
     with pytest.raises(InputError) as e:
-        auth_login("a!test@a!test.com", "Test@12345")
+        auth_login("atest@a!test.com", "Test@12345")
     with pytest.raises(InputError) as e:
         auth_login("test@a.te-st.com", "Test@12345")
     with pytest.raises(InputError) as e:
@@ -194,7 +190,7 @@ def test_register_check_user():
 def test_register_email_limit():
     with pytest.raises(InputError) as e:
         auth_register(
-            "atestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatest@gmail.com ",
+            "atestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatest@gmail.com",
             "Test@12345", "Dummy", "Test")
 
 
@@ -266,7 +262,7 @@ def test_register_email_username():
 
 
 #Email address domain can only contain letters (a-z), numbers (0-9) and periods (.) are allowed
-def test_register_email_domain():
+def test_register_email_domain1():
     with pytest.raises(InputError) as e:
         auth_register("a!test@a!test.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError) as e:
