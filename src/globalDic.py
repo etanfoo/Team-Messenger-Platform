@@ -43,18 +43,18 @@ data = {
             "end": 50,
         },
     ],
-    "Channels": [
-        {
-            "public": [
-                {
-                    "channel_id": 0,
-                }, 
-            ],
-            "private": [
-                {
-                    "channel_id": 1,
-                },
-            ],
-        },
-    ], 
+    "Channels":
+    {
+        "public": [
+            {
+                "channel_id": 0,
+            }, 
+        ],
+        "private": [
+            {
+                "channel_id": 1,
+            },
+        ],
+    }
+    
 }
