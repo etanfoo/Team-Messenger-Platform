@@ -1,7 +1,8 @@
-from globalDic import data
+from global_dic import data
 from auth import *
 from channels import *
 from error import InputError, AccessError
+
 
 def channel_invite(token, channel_id, u_id):
 
@@ -33,12 +34,12 @@ def channel_invite(token, channel_id, u_id):
             break
     if found == False:
         raise AccessError
-    
+
     # no errors raised, add the user to channels all members
     new_user = {'u_id': u_id}
     channel['all_members'].append(new_user)
-    return {
-    }
+    return {}
+
 
 def channel_details(token, channel_id):
 
@@ -81,6 +82,7 @@ def channel_details(token, channel_id):
     #     ],
     # }
 
+
 def channel_messages(token, channel_id, start):
 
     # looping to see if channel_id is listed, if not, input error
@@ -107,19 +109,19 @@ def channel_messages(token, channel_id, start):
     if found == False:
         raise AccessError
 
-
     return {
-        'messages': [
-            {
-                'message_id': 1,
-                'u_id': 1,
-                'message': 'Hello world',
-                'time_created': 1582426789,
-            }
-        ],
-        'start': 0,
-        'end': 50,
+        'messages': [{
+            'message_id': 1,
+            'u_id': 1,
+            'message': 'Hello world',
+            'time_created': 1582426789,
+        }],
+        'start':
+        0,
+        'end':
+        50,
     }
+
 
 def channel_leave(token, channel_id):
 
@@ -142,7 +144,7 @@ def channel_leave(token, channel_id):
             break
     if found == False:
         raise AccessError
-    
+
     # deleting member from channels all_members
     for member in channel['all_members']:
         if token == member['u_id']:
@@ -153,8 +155,7 @@ def channel_leave(token, channel_id):
         if token == member['u_id']:
             member.clear()
 
-    return {
-    }
+    return {}
 
 
 def channel_join(token, channel_id):
@@ -166,7 +167,7 @@ def channel_join(token, channel_id):
     adds them to that channel
     '''
     # looping to see if channel_id is listed, if not, InputError
-    found = False    
+    found = False
     for channel in data['Channel']:
         if channel_id == channel['channel_id']:
             found = True
@@ -187,34 +188,32 @@ def channel_join(token, channel_id):
                 break
     if pub == False:
         raise AccessError
-    
+
     # add user to the channel
     # loop through each property of all channel
     channel = data['Channel']
 
-    
     for i in range(channel):
         # find the channel with same channel_id
         if channel[i]['channel_id'] == channel_id:
             # add member into that specific channel
             new_user = {'u_id': token}
-            channel[i]['all_members'].append(new_user) 
+            channel[i]['all_members'].append(new_user)
             break
 
-    return {
-    }
+    return {}
 
 
 def channel_addowner(token, channel_id, u_id):
     # looping to see if channel_id is listed, if not, InputError
-    found = False  
-    alreadyOwner = False  
+    found = False
+    alreadyOwner = False
     isAdmin = False
 
     # loop through each channel
     for channel in data['Channel']:
         # check channel_id exists
-        if channel_id == channel['channel_id']:  
+        if channel_id == channel['channel_id']:
             # loop through owners in that specific channel
             for owners in channel["owner_members"]:
                 # check if that owner is already an owner
@@ -225,28 +224,27 @@ def channel_addowner(token, channel_id, u_id):
                     isAdmin = True
             found = True
             break
-    
 
     if found == False or alreadyOwner == True:
         raise InputError
     elif isAdmin == False:
         raise AccessError
-    
+
     new_owner = {'u_id': u_id}
     channel["owner_members"].append(new_owner)
-    return {
-    }
+    return {}
+
 
 def channel_removeowner(token, channel_id, u_id):
     # looping to see if channel_id is listed, if not, InputError
-    found = False  
-    alreadyOwner = False  
+    found = False
+    alreadyOwner = False
     isAdmin = False
 
     # loop through each channel
     for channel in data['Channel']:
         # check channel_id exists
-        if channel_id == channel['channel_id']:  
+        if channel_id == channel['channel_id']:
             # loop through owners in that specific channel
             for owners in channel["owner_members"]:
                 # check if the owner being removed is actually an owner
@@ -257,7 +255,6 @@ def channel_removeowner(token, channel_id, u_id):
                     isAdmin = True
             found = True
             break
-    
 
     if found == False or alreadyOwner == False:
         raise InputError
@@ -269,5 +266,4 @@ def channel_removeowner(token, channel_id, u_id):
         if channel["owner_members"][i]["u_id"] == u_id:
             channel["owner_members"][i].clear()
 
-    return {
-    }
+    return {}
