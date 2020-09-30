@@ -51,6 +51,7 @@ AUTH TEST
 CHANNEL TEST
 
 ---
+If a user leaves a channel, they will be removed as a member and owner (if they are an owner)
 
 ---
 
