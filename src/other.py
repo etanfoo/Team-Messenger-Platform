@@ -1,6 +1,7 @@
+from globalDic import data, empty_data
+
 def clear():
-    
-    pass
+    data = empty_data
 
 def users_all(token):
     return {

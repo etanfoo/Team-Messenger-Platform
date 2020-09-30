@@ -61,4 +61,4 @@ Making all channels public at the moment
 
 - The user that calls channels_create is automatically an owner and member
 - The 20 character name limit includes white spaces
-- channels_listall will also so private channels
+- channels_listall will also include private channels
