@@ -1,5 +1,8 @@
 from global_dic import data
+<<<<<<< HEAD
 
+=======
+>>>>>>> 89d73dc9d445a1c971bdcd0a1614a01252cdd230
 
 def clear_data():
     data["users"].clear()
