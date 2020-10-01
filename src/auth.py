@@ -29,6 +29,7 @@ def auth_login(email, password):
 
 
 def auth_logout(token):
+
     return {
         'is_success': True,
     }
