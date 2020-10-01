@@ -66,8 +66,9 @@ def test_channel_invite():
     with pytest.raises(AccessError):
         unautharised_user = auth_register("filler@gmail.com", "filler",
                                           "filler", "filler")
+        user_invitee = auth_register("invitee@gmail.com", "invitee", "Inv", "Tee")
         channel_invite(unautharised_user['token'], channel['channel_id'],
-                       invalid_u_id)
+                       user_invitee['u_id'])
     
     clear_data()
 
@@ -162,7 +163,7 @@ def test_channel_messages():
         messages = channel_messages(authorised_user['token'], "string_input",
                                     0)
 
-    # Access error when user is not a emember of channel with channel_id
+    # Access error when user is not a member of channel with channel_id
     with pytest.raises(AccessError):
         new_user = auth_register("newEmail@gmail.com", "new_password",
                                  "New", "Last")
@@ -204,7 +205,7 @@ def test_channel_leave():
     # input error when channel ID is not a valid channel
     with pytest.raises(InputError):
         random_user_1 = auth_register("random1@gmail.com", "random1_password",
-                                      "random1_first", "random1_last")
+                                      "One", "Random")
         channel_invite(authorised_user['token'], channel['channel_id'],
                        random_user_1['u_id'])
         channel_leave(random_user_1['token'], invalid_channel_id)
@@ -212,7 +213,7 @@ def test_channel_leave():
     # input error, when channel_id is not of the same data type as expected (integer)
     with pytest.raises(InputError):
         random_user_2 = auth_register("random2@gmail.com", "random2_password",
-                                      "random2_first", "random2_last")
+                                      "Two", "Random")
         channel_invite(authorised_user['token'], channel['channel_id'],
                        random_user_2['u_id'])
         channel_leave(random_user_2['token'], "string_input")
@@ -220,8 +221,8 @@ def test_channel_leave():
     # Access error, when user is not a member of channel with channel_id
     with pytest.raises(AccessError):
         random_user_3 = auth_register("random3@gmail.com", "random3_password",
-                                      "random3_first", "random3_last")
-        channel_leave(random_user_3['token'], "string_input")
+                                      "Three", "Random")
+        channel_leave(random_user_3['token'], channel['channel_id'])
 
     clear_data()
 
@@ -239,12 +240,12 @@ def test_channel_join():
     # input error when channel ID is not a valid channel
     with pytest.raises(InputError):
         random_user_1 = auth_register("random1@gmail.com", "random1_password",
-                                      "random1_first", "random1_last")
+                                      "One", "Random")
         channel_join(random_user_1['token'], invalid_channel_id)
 
     # Access error when channel_id refers to a channel that is private (when the authorised user is not an admin)
     with pytest.raises(AccessError):
-        random_user_2 = auth_register("random2@gmail.com", "random2_password", "random2_first", "random2_last")
+        random_user_2 = auth_register("random2@gmail.com", "random2_password", "Two", "Random")
         channel_join(random_user_2['token'], private_channel['channel_id'])
 
     #####################################################################################
@@ -279,7 +280,7 @@ def test_channel_addowner():
     # input error when channel ID is not a valid channel
     with pytest.raises(InputError):
         random_user_1 = auth_register("random1@gmail.com", "random1_password",
-                                      "random1_first", "random1_last")
+                                      "One", "Random")
         channel_addowner(random_user_1['token'], invalid_channel_id,
                          random_user_1['u_id'])
 
@@ -289,7 +290,7 @@ def test_channel_addowner():
 
     # access error when the authorised user is not an owner of the flockr, or an owner of this channel
     with pytest.raises(AccessError):
-        random_user_2 = auth_register("random2@gmail.com", "random2_password", "random2_first", "random2_last")
+        random_user_2 = auth_register("random2@gmail.com", "random2_password", "Two", "Random")
         channel_addowner(random_user_2['token'], channel['channel_id'], random_user_2['u_id'])
 
     #####################################################################################
@@ -311,12 +312,12 @@ def test_channel_removeowner():
 
     # input error when user with user id u_id is not an owner of the channel
     with pytest.raises(InputError):
-        random_user_1 = auth_register("random1@gmail.com", "random1_password", "random1_first", "random1_last")
+        random_user_1 = auth_register("random1@gmail.com", "random1_password", "One", "Random")
         channel_removeowner(random_user_1['token'], channel['channel_id'], authorised_user['u_id'])
 
     # access error when the authorised user is not an owner of the flockr, or an owner of this channel -> not done
     with pytest.raises(AccessError):
-        random_user_2 = auth_register("random2@gmail.com", "random2_password", "random2_first", "random2_last")
+        random_user_2 = auth_register("random2@gmail.com", "random2_password", "Two", "Random")
         channel_removeowner(random_user_2['token'], channel['channel_id'], random_user_2['u_id'])
 
     clear_data()
