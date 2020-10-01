@@ -46,11 +46,17 @@ AUTH TEST
 - Password cannot be empty
 - None of the fields can be empty
 
+# Auth_logout
+
+-User must be login to logout
+-Logout token must exist in the dictionary
+
 ---
 
 CHANNEL TEST
 
 ---
+
 If a user leaves a channel, they will be removed as a member and owner (if they are an owner)
 
 ---
@@ -58,6 +64,7 @@ If a user leaves a channel, they will be removed as a member and owner (if they 
 CHANNELS TEST
 
 ---
+
 Making all channels public at the moment
 
 - The user that calls channels_create is automatically an owner and member
