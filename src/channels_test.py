@@ -54,6 +54,7 @@ def test_channels_list_uninvited():
 
     # Creating valid account and channel for new_user2
     new_user2 = auth_register("validEmail2@gmail.com", "valid_password_2", "Jason", "Henry")
+    auth_login("validEmail2@gmail.com", "valid_password_2")
     channel_20 = channels_create(new_user2['token'], "new_channel20", True)
     # Creating mutliple channels.
     channel = channels_create(uninvited_user['token'], "new_channel", True)
@@ -63,7 +64,7 @@ def test_channels_list_uninvited():
     # Obtain the list of channels of authorised_user
     channels_list_1 = channels_list(new_user2['token'])  
     # Return an empty set since user is not apart of any channels.
-    assert channels_list_1['channels'] == [{'channel_id': 0, 'name': 'new_channel20'}]
+    assert channels_list_1['channels'] == [{'channel_id': 0, 'name': 'new_channel20'}, {'channel_id': 1, 'name': 'new_channel'}, {'channel_id': 2, 'name': 'new_channel2'}, {'channel_id': 3, 'name': 'new_channel3'}]
     clear_data()
 
 def test_channels_listall_empty():
@@ -107,7 +108,7 @@ def test_channels_listall_individual():
     channels_list_all = channels_listall(authorised_user['token'])
 
     # Ordering may be an issue. Put in alphabetical so its consistent 
-    assert channels_list_all['channels'] == [{"channel_id": 0, "name": "solo_channel"}, {"channel_id": 1, "name": "solo_channel2"}, {"channel_id": 2, "name": "solo_channel2"}]
+    assert channels_list_all['channels'] == [{"channel_id": 0, "name": "solo_channel"}, {"channel_id": 1, "name": "invited_channel"}, {"channel_id": 2, "name": "solo_channel2"}]
     clear_data()
 
 def test_channels_create_fails():
