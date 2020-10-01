@@ -16,15 +16,17 @@ def auth_login(email, password):
     for i in range(len(data["users"])):
         if (data["users"][i]["email"] == email):
             find = True
+            u_id_and_token = data['users'][i]
             if (data["users"][i]["password"] != password):
                 raise InputError(InputError)
             else:
                 data["users"][i]["status"] = "active"
     if find == False:
         raise InputError(InputError)
+
     return {
-        'u_id': 1,
-        'token': '12345',
+        'u_id': u_id_and_token['u_id'],
+        'token':  u_id_and_token['u_id'],
     }
 
 
@@ -56,8 +58,10 @@ def auth_register(email, password, name_first, name_last):
     for i in range(len(data["users"])):
         if (data["users"][i]["email"] == email):
             raise InputError(InputError)
+
+    user_id = uuid.uuid4().hex
     data["users"].append({
-        "u_id": uuid.uuid4().hex,
+        "u_id": user_id,
         "email": email,
         "first_name": name_first,
         "last_name": name_last,
@@ -66,6 +70,6 @@ def auth_register(email, password, name_first, name_last):
     })
 
     return {
-        'u_id': 1,
-        'token': '12345',
+        'u_id': user_id,
+        'token': user_id,
     }
