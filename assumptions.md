@@ -58,6 +58,9 @@ If a user leaves a channel, they will be removed as a member and owner (if they 
 CHANNELS TEST
 
 ---
-
-When user calls channels_create, they are automatically part of the channel as an owner and member
 Making all channels public at the moment
+
+- The user that calls channels_create is automatically an owner and member
+- The 20 character name limit includes white spaces
+- Channels_listall will also include private channels
+- Channel names cannot be empty or blank spaces

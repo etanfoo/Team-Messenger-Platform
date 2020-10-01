@@ -1,4 +1,3 @@
-
 # global dict that will be populated as functions are called
 data = {
     "users": [
@@ -70,5 +69,6 @@ data = {
 }
 '''
 # data we are going to populate
+>>>>>>> d50aa7586c5275f15cc6362b30fd283850ed8e2f:src/global_dic.py
 
 

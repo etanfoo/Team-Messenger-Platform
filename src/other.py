@@ -1,7 +1,8 @@
-from global_dic import data, empty_data
+from globalDic import data
 
-def clear():
-    data = empty_data
+def clear_data():
+    data["users"].clear()
+    data["channels"].clear()
 
 def users_all(token):
     return {
