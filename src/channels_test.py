@@ -1,9 +1,9 @@
-from auth import *
-from channel import * 
-from channels import *
-from other import clear_data
-from error import InputError
+from auth import auth_login, auth_register, auth_register
+from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
+from channels import channels_list, channels_listall, channels_create
 import pytest
+from error import InputError, AccessError
+from other import clear_data
 
 def test_channels_list_empty(): 
     # Creating a valid account

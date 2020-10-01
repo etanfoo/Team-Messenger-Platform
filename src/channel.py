@@ -1,11 +1,13 @@
-from global_dic import data
-from auth import *
-from channels import *
+from auth import auth_login, auth_register, auth_register
+from channels import channels_list, channels_listall, channels_create
 from error import InputError, AccessError
+from other import clear_data
+from global_dic import data
 
 
 def channel_invite(token, channel_id, u_id):
-
+    print(data)
+    print(u_id)
     # looping to see if channel_id is listed, if not, input error
     found = False
     for channel in data['channels']:
@@ -93,11 +95,7 @@ def channel_messages(token, channel_id, start):
             break
     if found == False:
         raise InputError
-
-    # seeing if start is greater than total number of messages in the channel
-    if start > len(channel['messages']):
-        raise InputError
-
+    
     # if user is not a member of channel with channel_id, access error
     # channel is already selected on channel with channel_id (from first for loop)
     # comparing token with u_id right now for iteration 1
@@ -108,6 +106,11 @@ def channel_messages(token, channel_id, start):
             break
     if found == False:
         raise AccessError
+
+    # seeing if start is greater than total number of messages in the channel
+    if start > len(channel['messages']):
+        raise InputError
+
 
     return {
         'messages': [{
@@ -146,14 +149,14 @@ def channel_leave(token, channel_id):
         raise AccessError
 
     # deleting member from channels all_members
-    for member in channel['all_members']:
-        if token == member['u_id']:
-            member.clear()
+    for i in range(0, len(channel['all_members'])):
+        if token == channel['all_members'][i]['u_id']:
+            del channel['all_members'][i]
 
     # deleting from owner_members if an owner
-    for member in channel['owner_members']:
-        if token == member['u_id']:
-            member.clear()
+    for i in range(0, len(channel['owner_members'])):
+        if token == channel['owner_members'][i]['u_id']:
+            del channel['owner_members'][i]
 
     return {}
 
@@ -181,7 +184,7 @@ def channel_join(token, channel_id):
     '''
     pub = False
     # utilises a diff globalDict
-    for channel_type in data['channelss']:
+    for channel_type in data['channels']:
         for c_id in channel_type['public']:
             if c_id['channel_id'] == channel_id:
                 pub = True
