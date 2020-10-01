@@ -1,5 +1,5 @@
 from global_dic import data
-from channel import *
+import channel
 from error import InputError
 
 def channels_list(token):
@@ -35,5 +35,5 @@ def channels_create(token, name, is_public):
         id_counter += 1
     data["channels"].append({"channel_id": id_counter, "name": name, "all_members": [{"u_id": token}]})
     # Token == u_id for now
-    channel_addowner(token, id_counter, token)
+    channel.channel_addowner(token, id_counter, token)
     return {'channel_id': id_counter}

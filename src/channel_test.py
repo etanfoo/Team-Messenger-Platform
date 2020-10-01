@@ -1,9 +1,9 @@
-from auth import *
-from channel import *
-from channels import *
+from auth import auth_login, auth_register, auth_register
+from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
+from channels import channels_list, channels_listall, channels_create
 import pytest
 from error import InputError, AccessError
-from other import *
+from other import clear_data
 
 # variables to represent invalid id's
 invalid_u_id = 99999999999
@@ -11,7 +11,9 @@ invalid_channel_id = 5555555555
 
 
 def test_channel_invite():
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
+    clear_data()
+
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "First", "Last")
     auth_login("validEmail@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
@@ -67,10 +69,12 @@ def test_channel_invite():
         channel_invite(unautharised_user['token'], channel['channel_id'],
                        invalid_u_id)
     
-    clear()
+    clear_data()
 
 def test_channel_details():
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
+    clear_data()
+
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "First", "Last")
     auth_login("validEmail@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
@@ -133,7 +137,7 @@ def test_channel_details():
                                           "filler", "filler")
         channel_details(unautharised_user['token'], channel['channel_id'])
 
-    clear()
+    clear_data()
 
 def test_channel_messages():
     # Cant do regular tests as no messages can be sent, according to piazza's instructors answer:
@@ -141,8 +145,10 @@ def test_channel_messages():
     # "For iteration 1 it's not expected that you test every function to the full extent.
     # Some functions may not be testable at all, and other functions may not be testable
     # until further implementation is done in future iterations."
-    
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
+
+    clear_data()
+
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "First", "Last")
     auth_login("validEmail@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
@@ -163,10 +169,13 @@ def test_channel_messages():
         messages = channel_messages(new_user['token'], channel['channel_id'],
                                     0)
 
-    clear()
+    clear_data()
 
 def test_channel_leave():
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
+
+    clear_data()
+
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "First", "Last")
     auth_login("validEmail@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
@@ -214,10 +223,13 @@ def test_channel_leave():
                                       "random3_first", "random3_last")
         channel_leave(random_user_3['token'], "string_input")
 
-    clear()
+    clear_data()
 
 def test_channel_join():
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
+
+    clear_data()
+
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "First", "Last")
     auth_login("validEmail@gmail.com", "valid_password")
     public_channel = channels_create(authorised_user['token'], "public_new_channel", True)
     private_channel = channels_create(authorised_user['token'], "private_new_channel", False)
@@ -252,10 +264,13 @@ def test_channel_join():
             found = True
             break
     assert found == True
-
+    clear_data()
 
 def test_channel_addowner():
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
+
+    clear_data()
+
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "First", "Last")
     auth_login("validEmail@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "public_new_channel", True)
 
@@ -279,10 +294,13 @@ def test_channel_addowner():
 
     #####################################################################################
     #
-
+    clear_data()
 
 def test_channel_removeowner():
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "valid_first", "valid_last")
+
+    clear_data()
+    
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "First", "Last")
     auth_login("validEmail@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
@@ -300,3 +318,5 @@ def test_channel_removeowner():
     with pytest.raises(AccessError):
         random_user_2 = auth_register("random2@gmail.com", "random2_password", "random2_first", "random2_last")
         channel_removeowner(random_user_2['token'], channel['channel_id'], random_user_2['u_id'])
+
+    clear_data()

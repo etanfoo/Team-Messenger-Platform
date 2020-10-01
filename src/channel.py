@@ -1,7 +1,8 @@
-from global_dic import data
-from auth import *
-from channels import *
+from auth import auth_login, auth_register, auth_register
+from channels import channels_list, channels_listall, channels_create
 from error import InputError, AccessError
+from other import clear_data
+from global_dic import data
 
 
 def channel_invite(token, channel_id, u_id):
