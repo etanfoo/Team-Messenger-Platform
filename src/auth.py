@@ -1,4 +1,4 @@
-from error import InputError
+from error import InputError, AccessError
 from global_dic import data
 import uuid
 import re
@@ -16,7 +16,7 @@ def auth_login(email, password):
     for i in range(len(data["users"])):
         if (data["users"][i]["email"] == email):
             find = True
-            u_id_and_token = data['users'][i]
+            u_id_and_token = data['users'][i]['u_id']
             if (data["users"][i]["password"] != password):
                 raise InputError(InputError)
             else:
@@ -25,13 +25,21 @@ def auth_login(email, password):
         raise InputError(InputError)
 
     return {
-        'u_id': u_id_and_token['u_id'],
-        'token':  u_id_and_token['u_id'],
+        'u_id': u_id_and_token,
+        'token': u_id_and_token,
     }
 
 
 def auth_logout(token):
-
+    find = False
+    for i in range(len(data["users"])):
+        if (data["users"][i]["id"] == token):
+            if (data["users"][i] != "active"):
+                raise AccessError(AccessError)
+            data["users"][i] = "inactive"
+            find = True
+    if find == False:
+        raise AccessError(AccessError)
     return {
         'is_success': True,
     }
