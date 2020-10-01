@@ -1,4 +1,4 @@
-from globalDic import data
+from global_dic import data
 from channel import *
 from error import InputError
 

@@ -1,4 +1,4 @@
-from globalDic import data
+from global_dic import data
 
 def clear_data():
     data["users"].clear()
