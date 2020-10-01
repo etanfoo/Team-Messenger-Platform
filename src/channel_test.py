@@ -19,8 +19,8 @@ def test_channel_invite():
 
     #####################################################################################
     # regular channel invite, u_id should appear in all_members but not in owner_members
-    new_user = auth_register("newEmail@gmail.com", "new_password", "new_first",
-                             "new_last")
+    new_user = auth_register("newEmail@gmail.com", "new_password", "New",
+                             "Last")
     channel_invite(authorised_user['token'], channel['channel_id'],
                    new_user['u_id'])
     details = channel_details(authorised_user['token'], channel['channel_id'])
@@ -100,8 +100,8 @@ def test_channel_details():
     assert found == True
 
     # inviting new user to channel
-    new_user = auth_register("newEmail@gmail.com", "new_password", "new_first",
-                             "new_last")
+    new_user = auth_register("newEmail@gmail.com", "new_password", "New",
+                             "Last")
     channel_invite(authorised_user['token'], channel['channel_id'],
                    new_user['u_id'])
     details = channel_details(authorised_user['token'], channel['channel_id'])
@@ -165,7 +165,7 @@ def test_channel_messages():
     # Access error when user is not a emember of channel with channel_id
     with pytest.raises(AccessError):
         new_user = auth_register("newEmail@gmail.com", "new_password",
-                                 "new_first", "new_last")
+                                 "New", "Last")
         messages = channel_messages(new_user['token'], channel['channel_id'],
                                     0)
 
@@ -183,8 +183,8 @@ def test_channel_leave():
     # testing regular channel_leave
 
     # invite new user to channel
-    new_user = auth_register("newEmail@gmail.com", "new_password", "new_first",
-                             "new_last")
+    new_user = auth_register("newEmail@gmail.com", "new_password", "New",
+                             "Last")
     channel_invite(authorised_user['token'], channel['channel_id'],
                    new_user['u_id'])
 
@@ -251,8 +251,8 @@ def test_channel_join():
     # testing can join public channel
 
     # user joins channel
-    new_user = auth_register("newEmail@gmail.com", "new_password", "new_first",
-                             "new_last")
+    new_user = auth_register("newEmail@gmail.com", "new_password", "New",
+                             "Last")
     channel_join(new_user['token'], public_channel)
 
     details = channel_details(authorised_user['token'],
@@ -299,7 +299,7 @@ def test_channel_addowner():
 def test_channel_removeowner():
 
     clear_data()
-    
+
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "First", "Last")
     auth_login("validEmail@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)

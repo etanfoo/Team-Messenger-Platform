@@ -33,7 +33,6 @@ def channels_create(token, name, is_public):
     # Loops through all channels 
     for i in range(len(data["channels"])):
         id_counter += 1
-    data["channels"].append({"channel_id": id_counter, "name": name, "all_members": [{"u_id": token}]})
+    data["channels"].append({"channel_id": id_counter, "name": name, "all_members": [{"u_id": token}], "owner_members": [{"u_id": token}]})
     # Token == u_id for now
-    channel.channel_addowner(token, id_counter, token)
     return {'channel_id': id_counter}
