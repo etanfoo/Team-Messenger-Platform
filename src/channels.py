@@ -16,13 +16,17 @@ def channels_list(token):
     return {'channels': authorised_channels}
 
 def channels_listall(token):
-    channel_list = []
+    authorised_channels = []
     # Loops through all channels
     for channels in data["channels"]:
-        # Add channel_id and channel_name to channel_list
-        channel_list.append({"channel_id": channels["channel_id"], "name": channels["name"]})    
-    # Potential bug - Don't know how to separate each dictionary with , 
-    return {'channels': channel_list}
+        # Loops through the all members of that channel
+        for members in channels["all_members"]:
+            # Token == u_id for now
+            # Channel is public or user is part of this channel
+            if channels["is_public"] == True or members["u_id"] == token:
+                # Add channel_id and channel_name to authorised_channels
+                authorised_channels.append({"channel_id": channels["channel_id"], "name": channels["name"],})
+    return {'channels': authorised_channels}
 
 def channels_create(token, name, is_public):
     # Name is over 20 characters long => input error
