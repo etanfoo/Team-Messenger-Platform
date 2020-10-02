@@ -6,33 +6,37 @@ def channels_list(token):
     authorised_channels = []
     # Loops through all channels
     for channels in data["channels"]:
-        # Loops through the all members of that channel
+        # Loops through all members of that channel
         for members in channels["all_members"]:
             # Token == u_id for now
-            # User is part of this channel
+            # Checks if user is part of this channel
             if members["u_id"] == token:
-                # Add channel_id and channel_name to authorised_channels
-                authorised_channels.append({"channel_id": channels["channel_id"], "name": channels["name"],})
+                # Add details to the authorised_channels list
+                authorised_channels.append({"channel_id": channels["channel_id"], "name": channels["name"]})
     return {'channels': authorised_channels}
 
 def channels_listall(token):
-    channel_list = []
+    authorised_channels = []
     # Loops through all channels
     for channels in data["channels"]:
-        # Add channel_id and channel_name to channel_list
-        channel_list.append({"channel_id": channels["channel_id"], "name": channels["name"]})    
-    # Potential bug - Don't know how to separate each dictionary with , 
-    return {'channels': channel_list}
+        # Loops through all members of that channel
+        for members in channels["all_members"]:
+            # Token == u_id for now
+            # Checks if the channel is public or user is part of this channel
+            if channels["is_public"] == True or members["u_id"] == token:
+                # Add details to the authorised_channels list
+                authorised_channels.append({"channel_id": channels["channel_id"], "name": channels["name"]})
+                # Prevent duplicates by breaking out of the loop once details have been added
+                break
+    return {'channels': authorised_channels}
 
 def channels_create(token, name, is_public):
-    # Name is over 20 characters long => input error
-    if len(name) > 20 or name == '' or name == ' ':
+    # Name is over 20 characters long or empty or space => input error
+    if len(name) > 20 or name == '' or name.isspace():
         raise InputError
-    # Counter that increments to the next available channel_id
-    id_counter = 0
-    # Loops through all channels 
-    for i in range(len(data["channels"])):
-        id_counter += 1
-    data["channels"].append({"channel_id": id_counter, "name": name, "all_members": [{"u_id": token}], "owner_members": [{"u_id": token}], "is_public": is_public})
+    # The next available id
+    available_id = len(data["channels"])
+    # Form the data structure
+    data["channels"].append({"name": name, "channel_id": available_id, "is_public": is_public, "owner_members": [{"u_id": token}], "all_members": [{"u_id": token}]})
     # Token == u_id for now
-    return {'channel_id': id_counter}
+    return {'channel_id': available_id}

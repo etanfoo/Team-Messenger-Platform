@@ -6,8 +6,6 @@ from global_dic import data
 
 
 def channel_invite(token, channel_id, u_id):
-    print(data)
-    print(u_id)
     # looping to see if channel_id is listed, if not, input error
     found = False
     for channel in data['channels']:
