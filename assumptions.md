@@ -69,9 +69,9 @@ CHANNEL TEST
 # channel_messages
 - only passing through values that would result in input/acccess errors as sending messages not implemented yet for iteration 1
 
+# channel_leave
+- If a user leaves a channel, they will be removed as a member and owner (if they are an owner)
 
-
-If a user leaves a channel, they will be removed as a member and owner (if they are an owner)
 
 ---
 
