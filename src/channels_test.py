@@ -3,10 +3,10 @@ from channel import channel_invite, channel_details, channel_messages, channel_l
 from channels import channels_list, channels_listall, channels_create
 import pytest
 from error import InputError, AccessError
-from other import clear_data
+from other import clear
 
 def test_channels_list_empty():
-    clear_data() 
+    clear() 
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     #######################################################################################
@@ -14,10 +14,10 @@ def test_channels_list_empty():
     # Return a empty list since no channels were created
     channel_empty = channels_list(authorised_user['token'])
     assert channel_empty['channels'] == []
-    clear_data() 
+    clear() 
 
 def test_channels_list_simple():
-    clear_data()
+    clear()
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
@@ -31,10 +31,10 @@ def test_channels_list_simple():
     # Return both channel and channel_2 because of the invitation
     channel_simple = channels_list(authorised_user['token'])
     assert channel_simple['channels'] == [{"channel_id": 0, "name": "new_channel"}, {"channel_id": 1, "name": "new_channel2"}]
-    clear_data() 
+    clear() 
 
 def test_channels_list_multiple():
-    clear_data()
+    clear()
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     #######################################################################################
@@ -47,10 +47,10 @@ def test_channels_list_multiple():
     # Return all channels created
     channel_multiple = channels_list(authorised_user['token'])
     assert channel_multiple['channels'] == [{'channel_id': 0, 'name': 'new_channel'}, {'channel_id': 1, 'name': 'new_channel2'}, {'channel_id': 2, 'name': 'new_channel3'}, {'channel_id': 3, 'name': 'new_channel5'}]
-    clear_data() 
+    clear() 
 
 def test_channels_list_uninvited():
-    clear_data()
+    clear()
     uninvited_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     #######################################################################################
@@ -66,10 +66,10 @@ def test_channels_list_uninvited():
     # Return a empty list since user is not apart of any channels
     channels_uninvited = channels_list(uninvited_user['token'])  
     assert channels_uninvited['channels'] == []
-    clear_data() 
+    clear() 
 
 def test_channels_listall_empty():
-    clear_data()
+    clear()
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     #######################################################################################
@@ -77,10 +77,10 @@ def test_channels_listall_empty():
     # Return a empty list since no channels were created
     channel_all_empty = channels_listall(authorised_user['token'])
     assert channel_all_empty['channels']== []
-    clear_data() 
+    clear() 
 
 def test_channels_listall_simple():
-    clear_data()
+    clear()
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
@@ -95,10 +95,10 @@ def test_channels_listall_simple():
     # Return both channel and channel_2 because of the invitation
     channel_all_simple = channels_listall(authorised_user['token'])
     assert channel_all_simple['channels'] == [{"channel_id": 0, "name": "new_channel"}, {"channel_id": 1, "name": "new_channel2"}]
-    clear_data() 
+    clear() 
 
 def test_channels_listall_individual():
-    clear_data()
+    clear()
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "solo_channel", True)
@@ -115,10 +115,10 @@ def test_channels_listall_individual():
     # Return the three channels thave were created because they are all public
     channel_all_individual = channels_listall(authorised_user['token'])
     assert channel_all_individual['channels'] == [{"channel_id": 0, "name": "solo_channel"}, {"channel_id": 1, "name": "invited_channel"}, {"channel_id": 2, "name": "solo_channel2"}]
-    clear_data() 
+    clear() 
 
 def test_channels_create_fails():
-    clear_data()
+    clear()
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     ####################################################################################### 
@@ -128,10 +128,10 @@ def test_channels_create_fails():
     # InputError, channel name is over 20 characters long
     with pytest.raises(InputError):   
         channels_create(authorised_user['token'], "The Kanye East experience", True)
-    clear_data() 
+    clear() 
 
 def test_channels_create_working():
-    clear_data()
+    clear()
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     #######################################################################################
@@ -140,10 +140,10 @@ def test_channels_create_working():
     assert channel['channel_id'] == 0
     channel_2 = channels_create(authorised_user['token'], "TSM Legends", True)
     assert channel_2['channel_id'] == 1
-    clear_data() 
+    clear() 
 
 def test_channels_create_empty():
-    clear_data()
+    clear()
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     #######################################################################################
@@ -153,34 +153,34 @@ def test_channels_create_empty():
     # InputError, channel name is only spaces
     with pytest.raises(InputError):   
         channels_create(authorised_user['token'], '     ', True)
-    clear_data() 
+    clear() 
 
 def test_channels_create_integer():
-    clear_data()
+    clear()
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     #######################################################################################
     # Creating channel with purely integers
     channel_num = channels_create(authorised_user['token'], "2020", True)
     assert channel_num['channel_id'] == 0
-    clear_data() 
+    clear() 
 
 def test_channels_create_special():
-    clear_data()
+    clear()
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     #######################################################################################
     # Creating a channel with special characters.
     channel_special = channels_create(authorised_user['token'], "#*$@*!", True)
     assert channel_special['channel_id'] == 0
-    clear_data() 
+    clear() 
 
 def test_channels_create_mix():
-    clear_data()
+    clear()
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     #######################################################################################
     # Creating channel with mixed numbers and letters. Also special characters
     channel_mix = channels_create(authorised_user['token'], "COVID-19", True)
     assert channel_mix['channel_id'] == 0
-    clear_data() 
+    clear() 
