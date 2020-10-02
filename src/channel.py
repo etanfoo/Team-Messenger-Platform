@@ -179,31 +179,22 @@ def channel_join(token, channel_id):
         raise InputError
 
     # if channel is private -> AccessError
-    '''
-    Not sure what it means by "(when the authorised user is not a global owner)"
-    '''
     pub = False
     # utilises a diff globalDict
-    for channel_type in data['channels']:
-        for c_id in channel_type['public']:
-            if c_id['channel_id'] == channel_id:
-                pub = True
-                break
+    for channel in data['channels']:
+        if channel['channel_id'] == channel_id and channel['is_public'] == True:
+            pub = True
+            break
     if pub == False:
         raise AccessError
 
     # add user to the channel
     # loop through each property of all channel
-    channel = data['channels']
-
-    for i in range(channel):
-        # find the channel with same channel_id
-        if channel[i]['channel_id'] == channel_id:
-            # add member into that specific channel
+    
+    for channel in data['channels']:
+        if channel['channel_id'] == channel_id:
             new_user = {'u_id': token}
-            channel[i]['all_members'].append(new_user)
-            break
-
+            channel['all_members'].append(new_user)
     return {}
 
 
@@ -228,7 +219,9 @@ def channel_addowner(token, channel_id, u_id):
             found = True
             break
 
-    if found == False or alreadyOwner == True:
+    if found == False: #or alreadyOwner == True
+        raise InputError
+    elif alreadyOwner == True:
         raise InputError
     elif isAdmin == False:
         raise AccessError
@@ -259,7 +252,9 @@ def channel_removeowner(token, channel_id, u_id):
             found = True
             break
 
-    if found == False or alreadyOwner == False:
+    if found == False: #or alreadyOwner == False:
+        raise InputError
+    elif alreadyOwner == False:
         raise InputError
     elif isAdmin == False:
         raise AccessError

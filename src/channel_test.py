@@ -249,12 +249,12 @@ def test_channel_join():
         channel_join(random_user_2['token'], private_channel['channel_id'])
 
     #####################################################################################
-    # testing can join public channel
+    # test joining public channel
 
     # user joins channel
     new_user = auth_register("newEmail@gmail.com", "new_password", "New",
                              "Last")
-    channel_join(new_user['token'], public_channel)
+    channel_join(new_user['token'], public_channel['channel_id'])
 
     details = channel_details(authorised_user['token'],
                               public_channel['channel_id'])
@@ -294,7 +294,10 @@ def test_channel_addowner():
         channel_addowner(random_user_2['token'], channel['channel_id'], random_user_2['u_id'])
 
     #####################################################################################
-    #
+    # test adding owner to the channel
+
+
+
     clear_data()
 
 def test_channel_removeowner():
@@ -302,6 +305,7 @@ def test_channel_removeowner():
     clear_data()
 
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "First", "Last")
+    authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password", "First", "Last")
     auth_login("validEmail@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
@@ -313,11 +317,14 @@ def test_channel_removeowner():
     # input error when user with user id u_id is not an owner of the channel
     with pytest.raises(InputError):
         random_user_1 = auth_register("random1@gmail.com", "random1_password", "One", "Random")
-        channel_removeowner(random_user_1['token'], channel['channel_id'], authorised_user['u_id'])
+        channel_removeowner(authorised_user['u_id'], channel['channel_id'], random_user_1['token'])
 
-    # access error when the authorised user is not an owner of the flockr, or an owner of this channel -> not done
+    # access error when the authorised user is not an owner of the flockr, or an owner of this channel 
     with pytest.raises(AccessError):
         random_user_2 = auth_register("random2@gmail.com", "random2_password", "Two", "Random")
-        channel_removeowner(random_user_2['token'], channel['channel_id'], random_user_2['u_id'])
+        # add different user as an owner to the channel
+        # channel_addowner(random_user_2['token'], channel['channel_id'], random_user_2['u_id'])
+        # channel_addowner(authorised_user['token'], channel['channel_id'], authorised_user2['token'])
+        channel_removeowner(random_user_2['token'], channel['channel_id'], authorised_user['token'])
 
     clear_data()
