@@ -2,7 +2,7 @@ import pytest
 import re
 from error import InputError, AccessError
 from auth import auth_register, auth_login, auth_logout
-from other import clear_data
+from other import clear
 
 ########################
 ######Test Login#######

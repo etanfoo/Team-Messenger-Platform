@@ -1,7 +1,7 @@
 from global_dic import data
 
 
-def clear_data():
+def clear():
     data["users"].clear()
     data["channels"].clear()
 
