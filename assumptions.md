@@ -57,6 +57,19 @@ AUTH TEST
 CHANNEL TEST
 
 ---
+# all functions
+- comparing u_id with token for iteration 1
+
+# channel_invite
+- invitee becomes apart of all_members, but not owner_members
+
+# channel_details
+
+
+# channel_messages
+- only passing through values that would result in input/acccess errors as sending messages not implemented yet for iteration 1
+
+
 
 If a user leaves a channel, they will be removed as a member and owner (if they are an owner)
 
