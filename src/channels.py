@@ -8,11 +8,12 @@ def channels_list(token):
     for channels in data["channels"]:
         # Loops through all members of that channel
         for members in channels["all_members"]:
-            # Token == u_id for now
             # Checks if user is part of this channel
             if members["u_id"] == token:
                 # Add details to the authorised_channels list
                 authorised_channels.append({"channel_id": channels["channel_id"], "name": channels["name"]})
+                # Speed up the search efficiency, by iterating to the next channel after being added to the list
+                break
     return {'channels': authorised_channels}
 
 def channels_listall(token):
@@ -21,7 +22,6 @@ def channels_listall(token):
     for channels in data["channels"]:
         # Loops through all members of that channel
         for members in channels["all_members"]:
-            # Token == u_id for now
             # Checks if the channel is public or user is part of this channel
             if channels["is_public"] == True or members["u_id"] == token:
                 # Add details to the authorised_channels list

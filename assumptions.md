@@ -78,10 +78,15 @@ CHANNEL TEST
 CHANNELS TEST
 
 ---
+# all functions
+- u_id == token for iteration 1
 
-Making all channels public at the moment
+# channels_list
 
+# channels_listall
+- Returns all public channels plus any private channels the user is part of
+
+# channels_create
+- Channel name is limited to 20 character including spaces
+- Channel name cannot be empty or blank spaces
 - The user that calls channels_create is automatically an owner and member
-- The 20 character name limit includes white spaces
-- Channels_listall will also include private channels
-- Channel names cannot be empty or blank spaces

@@ -122,6 +122,7 @@ def test_channels_create_fails():
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     ####################################################################################### 
+    
     # InputError, channel name is over 20 characters long (no spaces)
     with pytest.raises(InputError):   
         channels_create(authorised_user['token'], "ThisIsATestForALongChannelName", True)
@@ -135,6 +136,7 @@ def test_channels_create_working():
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     #######################################################################################
+    
     # Testing if the channel_ids increment correctly
     channel = channels_create(authorised_user['token'], "Chicken Nuggets", True)
     assert channel['channel_id'] == 0
@@ -147,6 +149,7 @@ def test_channels_create_empty():
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     #######################################################################################
+    
     # InputError, channel name is empty
     with pytest.raises(InputError):   
         channels_create(authorised_user['token'], '', True)
@@ -160,6 +163,7 @@ def test_channels_create_integer():
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     #######################################################################################
+    
     # Creating channel with purely integers
     channel_num = channels_create(authorised_user['token'], "2020", True)
     assert channel_num['channel_id'] == 0
@@ -170,6 +174,7 @@ def test_channels_create_special():
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     #######################################################################################
+    
     # Creating a channel with special characters.
     channel_special = channels_create(authorised_user['token'], "#*$@*!", True)
     assert channel_special['channel_id'] == 0
@@ -180,6 +185,7 @@ def test_channels_create_mix():
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
     #######################################################################################
+    
     # Creating channel with mixed numbers and letters. Also special characters
     channel_mix = channels_create(authorised_user['token'], "COVID-19", True)
     assert channel_mix['channel_id'] == 0
