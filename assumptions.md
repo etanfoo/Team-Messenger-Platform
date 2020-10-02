@@ -8,6 +8,7 @@ AUTH TEST
 
 # Test_auth_login
 
+- Token will be the same as u_id for iteration 1
 - Email address must exist
 - Email address username, domain can only contain letters (a-z), numbers (0-9) and periods (.) are allowed.
 - Email address first character of username must be an ascii letter (a-z) or number (0-9)
