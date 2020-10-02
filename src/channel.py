@@ -259,9 +259,10 @@ def channel_removeowner(token, channel_id, u_id):
     elif isAdmin == False:
         raise AccessError
 
-    # find the dicitonary in the owner list, and delete it
-    for i in range(channel["owner_members"]):
-        if channel["owner_members"][i]["u_id"] == u_id:
-            channel["owner_members"][i].clear()
+    # find the dicitonary in the owner list, and delete 
+    for member in channel['owner_members'][:]:
+        if member['u_id'] == u_id:
+            channel['owner_members'].remove(member)
+            break
 
     return {}

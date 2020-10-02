@@ -281,7 +281,7 @@ def test_channel_addowner():
     with pytest.raises(InputError):
         random_user_1 = auth_register("random1@gmail.com", "random1_password",
                                       "One", "Random")
-        channel_addowner(random_user_1['token'], invalid_channel_id,
+        channel_addowner(authorised_user['token'], invalid_channel_id,
                          random_user_1['u_id'])
 
     # input error when user with user id u_id is already an owner of the channel 
@@ -295,8 +295,20 @@ def test_channel_addowner():
 
     #####################################################################################
     # test adding owner to the channel
+    new_user = auth_register("newEmail@gmail.com", "new_password", "New",
+                             "Last")
 
+    channel_addowner(authorised_user['token'], channel['channel_id'], new_user['u_id'])
 
+    details = channel_details(authorised_user['token'],
+                              channel['channel_id'])
+
+    found = False
+    for dictionary in details['owner_members']:
+        if new_user['u_id'] == dictionary['u_id']:
+            found = True
+            break
+    assert found == True
 
     clear_data()
 
@@ -322,9 +334,22 @@ def test_channel_removeowner():
     # access error when the authorised user is not an owner of the flockr, or an owner of this channel 
     with pytest.raises(AccessError):
         random_user_2 = auth_register("random2@gmail.com", "random2_password", "Two", "Random")
-        # add different user as an owner to the channel
-        # channel_addowner(random_user_2['token'], channel['channel_id'], random_user_2['u_id'])
-        # channel_addowner(authorised_user['token'], channel['channel_id'], authorised_user2['token'])
         channel_removeowner(random_user_2['token'], channel['channel_id'], authorised_user['token'])
+
+    #####################################################################################
+    # test adding owner to the channel
+    new_user = auth_register("newEmail@gmail.com", "new_password", "New",
+                             "Last")
+    channel_addowner(authorised_user['token'], channel['channel_id'], new_user['u_id'])
+    channel_removeowner(authorised_user['token'], channel['channel_id'], new_user['u_id'])
+    details = channel_details(authorised_user['token'],
+                              channel['channel_id'])
+
+    found = False
+    for dictionary in details['owner_members']:
+        if new_user['u_id'] == dictionary['u_id']:
+            found = True
+            break
+    assert found == False
 
     clear_data()
