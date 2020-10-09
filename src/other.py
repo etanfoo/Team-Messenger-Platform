@@ -1,5 +1,10 @@
+from global_dic import data
+
+
 def clear():
-    pass
+    data["users"].clear()
+    data["channels"].clear()
+
 
 def users_all(token):
     return {
@@ -19,12 +24,10 @@ def admin_userpermission_change(token, u_id, permission_id):
 
 def search(token, query_str):
     return {
-        'messages': [
-            {
-                'message_id': 1,
-                'u_id': 1,
-                'message': 'Hello world',
-                'time_created': 1582426789,
-            }
-        ],
+        'messages': [{
+            'message_id': 1,
+            'u_id': 1,
+            'message': 'Hello world',
+            'time_created': 1582426789,
+        }],
     }
