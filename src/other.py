@@ -19,6 +19,11 @@ def users_all(token):
         ],
     }
 
+<<<<<<< HEAD
+=======
+def admin_userpermission_change(token, u_id, permission_id):
+    pass
+>>>>>>> dev
 
 def search(token, query_str):
     return {
