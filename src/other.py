@@ -20,10 +20,15 @@ def users_all(token):
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 def admin_userpermission_change(token, u_id, permission_id):
     pass
 >>>>>>> dev
+=======
+def admin_userpermission_change(token, u_id, permission_id):
+    pass
+>>>>>>> 4250d04268f97679940622e88326f0d422e16b07
 
 def search(token, query_str):
     return {
