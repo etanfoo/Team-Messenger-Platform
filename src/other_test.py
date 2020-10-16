@@ -6,59 +6,6 @@ from auth import auth_register, auth_login
 from message import message_send, message_remove, message_edit
 from other import clear, users_all, admin_userpermission_change, search
 from error import InputError, AccessError
-'''
-clear function tests
-'''
-'''
-def test_clear_user():
-    clear()
-    # Test if clear returns expected output.
-    # Adding user to global dictionary
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
-
-    clear()
-
-    assert data["users"] == []
-
-def test_clear_channel_public():
-    clear()
-    # Test if clear returns expected output with public channel.
-    # Adding user and creating channel.
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
-
-    channels_create(authorised_user['token'], "new_channel", True)
-
-    clear()
-
-    assert data["channels"] == []
-
-def test_clear_channel_private():
-    clear()
-    # Test if clear returns expected output with private channel.
-    # Adding user and creating channel.
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
-
-    channels_create(authorised_user['token'], "new_channel", False)
-
-    clear()
-
-    assert data["channels"] == []
-
-def test_clear_multiple():
-    clear()
-    # Test if clear returns expected output with both dictionaries containing information.
-    # Adding user and creating channel.
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
-    authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password2", "Tara", "Oliver")
-
-    channels_create(authorised_user['token'], "new_channel", True)
-    channels_create(authorised_user2['token'], "new_channel", False)
-
-    clear()
-
-    assert data["users"] == []
-    assert data["channels"] == []
-'''
 
 '''
 users_all function tests
