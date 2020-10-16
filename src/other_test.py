@@ -3,7 +3,7 @@ from channel import channel_invite, channel_details, channel_messages, channel_l
 from channels import channels_list, channels_listall, channels_create
 import pytest
 from auth import auth_register, auth_login
-from message import message_send
+from message import message_send, message_remove, message_edit
 from other import clear, users_all, admin_userpermission_change, search
 from error import InputError, AccessError
 '''
@@ -97,6 +97,8 @@ def test_admin_permission_change_new():
     channel = channels_create(authorised_user['token'], "new_channel", True)
     # 2nd User, new admin
     authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password", "Tara", "Simons")
+    channel_invite(authorised_user['token'], channel['channel_id'], authorised_user2['u_id'])
+
     # Making the 2nd user a new admin. auth_user[token] is granting auth_user2[u_id] permission owner
     admin_userpermission_change(authorised_user['token'], authorised_user2['u_id'], 1)
 
@@ -121,7 +123,7 @@ def test_admin_permission_change_remove():
     # Creating channel with admin user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
     channel = channels_create(authorised_user['token'], "new_channel", True)
-    # 2nd User, new admin
+    # 2nd User, removing their owner status
     authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password", "Tara", "Simons")
     # Making the 2nd user a new admin. auth_user[token] is granting auth_user2[u_id] permission owner
     admin_userpermission_change(authorised_user['token'], authorised_user2['u_id'], 1)
@@ -185,8 +187,10 @@ def test_admin_permission_change_remove_multiple_self():
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
-     # 2nd User, new admin
+     # 2nd User, new admin. Inviting them to the channel
     authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password", "Tara", "Simons")
+    channel_invite(authorised_user['token'], channel['channel_id'], authorised_user2['u_id'])
+    
     # Making the 2nd user a new admin. auth_user[token] is granting auth_user2[u_id] permission owner
     admin_userpermission_change(authorised_user['token'], authorised_user2['u_id'], 1)
 
@@ -203,27 +207,57 @@ def test_admin_permission_change_remove_multiple_self():
     # Check if authorised_user was found as an owner
     assert found == 0
 
-# UNSURE ABOUT THIS ONE!!!!!!!!!! HOW TO PROVE U_ID IS INVALID. COME BACK TO THIS
+def test_admin_permission_change_invalid_self_promotion():
+    clear()
+    # AccessError if user's u_id refers to an invalid user
+    # Creating channel with admin user
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
+    channel = channels_create(authorised_user['token'], "new_channel", True)
+    # 2nd User, new admin. 2nd user's u_id is 'u_id: 2'
+    authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password", "Tara", "Simons")
+    channel_invite(authorised_user['token'], channel['channel_id'], authorised_user2['u_id'])
+
+    # AccessError when member attempts to promote another self to owner
+    with pytest.raises(InputError) as e:
+        admin_userpermission_change(authorised_user2['token'], authorised_user2['u_id'], 2)
+
+def test_admin_permission_change_invalid_other_promotion():
+    clear()
+    # AccessError if user's u_id refers to an invalid user
+    # Creating channel with admin user
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
+    channel = channels_create(authorised_user['token'], "new_channel", True)
+    # 2nd User, new admin. 2nd user's u_id is 'u_id: 2'
+    authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password", "Tara", "Simons")
+    channel_invite(authorised_user['token'], channel['channel_id'], authorised_user2['u_id'])
+
+    # AccessError when member attempts to promote another user to owner 
+    with pytest.raises(InputError) as e:
+        admin_userpermission_change(authorised_user2['token'], authorised_user['u_id'], 2)
+
 def test_admin_permission_change_invalid_user_id():
     clear()
     # InputError if user's u_id refers to an invalid user
     # Creating channel with admin user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
-    channels_create(authorised_user['token'], "new_channel", True)
+    channel = channels_create(authorised_user['token'], "new_channel", True)
     # 2nd User, new admin. 2nd user's u_id is 'u_id: 2'
     authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password", "Tara", "Simons")
+    channel_invite(authorised_user['token'], channel['channel_id'], authorised_user2['u_id'])
 
     with pytest.raises(InputError) as e:
-        admin_userpermission_change(authorised_user2['token'], authorised_user['u_id'], 2)
+        unauthorised_user = auth_register("invalidEmail2@gmail.com", "invalid_password", "In", "Valid")
+        admin_userpermission_change(authorised_user2['token'], unauthorised_user['u_id'], 2)
 
 def test_admin_permission_change_empty_user_id():
     clear()
     # InputError if user's u_id refers to an invalid user
     # Creating channel with admin user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
-    channels_create(authorised_user['token'], "new_channel", True)
+    channel = channels_create(authorised_user['token'], "new_channel", True)
     # 2nd User, new admin. 2nd user's u_id is 'u_id: 2'
     authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password", "Tara", "Simons")
+    channel_invite(authorised_user['token'], channel['channel_id'], authorised_user2['u_id'])
 
     with pytest.raises(InputError) as e:
         admin_userpermission_change(authorised_user2['token'], '', 2)
@@ -233,9 +267,10 @@ def test_admin_permission_change_invalid_string():
         # InputError if user inputs invalid permission type (anything other than member and owner)
         # Creating channel with admin user
         authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
-        channels_create(authorised_user['token'], "new_channel", True)
+        channel = channels_create(authorised_user['token'], "new_channel", True)
         # 2nd User, new admin. 2nd user's u_id is 'u_id: 2'
         authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password", "Tara", "Simons")
+        channel_invite(authorised_user['token'], channel['channel_id'], authorised_user2['u_id'])
 
         with pytest.raises(InputError) as e:
             admin_userpermission_change(authorised_user['token'], authorised_user2['u_id'], "string_input")
@@ -245,9 +280,10 @@ def test_admin_permission_change_invalid_integer():
         # InputError if user inputs invalid permission type (anything other than member and owner)
         # Creating channel with admin user
         authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
-        channels_create(authorised_user['token'], "new_channel", True)
+        channel = channels_create(authorised_user['token'], "new_channel", True)
         # 2nd User, new admin. 2nd user's u_id is 'u_id: 2'
         authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password", "Tara", "Simons")
+        channel_invite(authorised_user['token'], channel['channel_id'], authorised_user2['u_id'])
 
         with pytest.raises(InputError) as e:
             admin_userpermission_change(authorised_user['token'], authorised_user2['u_id'], 0)
@@ -263,46 +299,84 @@ def test_admin_permission_change_empty_permission():
         # InputError if user inputs invalid permission type (anything other than member and owner)
         # Creating channel with admin user
         authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
-        channels_create(authorised_user['token'], "new_channel", True)
+        channel = channels_create(authorised_user['token'], "new_channel", True)
         # 2nd User, new admin. 2nd user's u_id is 'u_id: 2'
         authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password", "Tara", "Simons")
 
         with pytest.raises(InputError) as e:
-            admin_userpermission_change(authorised_user['token'], authorised_user2['u_id'], '')
+            admin_userpermission_change(authorised_user['token'], authorised_user2['u_id'], None)
 
 '''
 search function tests
+Until implementation is complete, message_sent will return a message_id of 1.
+Thus, tests not check type/access errors will pass.
 '''
-
 def test_search_expected():
     clear()
     # Test if user can find pevious messge
     # Creating user, channel, and posting message
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
     channels_create(authorised_user['token'], "new_channel", True)
-    message_send(authorised_user['token'], 'new_channel', 'Ready or not, here I come!')
+    message_sent = message_send(authorised_user['token'], 'new_channel', 'Hello world')
 
-    search_test = search(authorised_user['token'], 'Ready or not, here I come!')
+    search_test = search(authorised_user['token'], 'Hello world')
 
-    #MESSAGE SEARCH ASSERT
+    message_access = search_test['messages']
+    # Loop through nested dictionary to test if message_id is equal to the message_sent's message id
+    for message_data in message_access:
+        assert message_data["message_id"] == message_sent['message_id']
 
-def test_search_invalid():
-    # InputError if message does not exisit
+def test_search_multiple():
+    clear()
+    # Test if user can find pevious messge when there is more than one message
     # Creating user, channel, and posting message
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
     channels_create(authorised_user['token'], "new_channel", True)
-    message_send(authorised_user['token'], 'new_channel', 'Hello world!')
 
-    with pytest.raises(InputError) as e:
-       search_test = search(authorised_user['token'], 'Ready or not, here I come!')
+    message_sent = message_send(authorised_user['token'], 'new_channel', 'Old')
+    message_sent2 = message_send(authorised_user['token'], 'new_channel', 'Young')
 
-def test_search_partial():
-    # InputError if query_str is not the same as the message previously posted.
+    search_test = search(authorised_user['token'], 'Young')
+
+    message_access = search_test['messages']
+    # Loop through nested dictionary to test if message_id is equal to the message_sent's message id
+    found = 0
+    for message_data in message_access:
+        if message_data["message_id"] == message_sent2['message_id']:
+            found = 1
+    assert found == 1
+
+def test_search_different_user():
+    clear()
+    # Test if user can find pevious messge when other users have messaged
     # Creating user, channel, and posting message
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
     channels_create(authorised_user['token'], "new_channel", True)
-    message_send(authorised_user['token'], 'new_channel', 'Hello world!')
 
-    with pytest.raises(InputError) as e:
-       search_test = search(authorised_user['token'], 'world!')
+    authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password", "Tara", "Simons")
 
+
+    message_sent = message_send(authorised_user['token'], 'new_channel', 'Old')
+    message_sent2 = message_send(authorised_user['token'], 'new_channel', 'Young')
+
+    search_test = search(authorised_user['token'], 'Young')
+
+    message_access = search_test['messages']
+    # Loop through nested dictionary to test if message_id is equal to the message_sent's message id
+    found = 0
+    for message_data in message_access:
+        if message_data["message_id"] == message_sent2['message_id']:
+            found = 1
+    assert found == 1
+
+def test_search_null():
+    clear()
+    # Test if user can find pevious messge
+    # Creating user, channel, and posting message
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
+    channels_create(authorised_user['token'], "new_channel", True)
+
+    message_sent = message_send(authorised_user['token'], 'new_channel', 'Old')
+    
+    with pytest.raises(InputError):
+        search_test = search(authorised_user['token'], None)
