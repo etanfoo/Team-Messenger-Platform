@@ -174,3 +174,4 @@ def test_channel_invite_access_error(url):
         login_user(url, unauthorised_user)
         # user_3 invites user_2 to channel_1
         requests.post(f"{url}/channel/invite", data = {"token": user_3['token'], "channel_id": channel_1['channel_id'], "user": user_2['u_id']})
+
