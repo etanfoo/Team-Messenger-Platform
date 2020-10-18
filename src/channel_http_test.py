@@ -269,10 +269,21 @@ def test_channel_messages_input_error(url):
 
     # input error when channel ID not a valid channel
     with pytest.raises(InputError):
-        # requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : channnel_1["channel_id"], 0})
+        # requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : channel_1["channel_id"], 0})
         messages = requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : invalid_channel_id, 0})
 
     # input error when channel_id is not of the same data type as expected (integer)
     with pytest.raises(InputError):
         messages = requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : "string_input", 0})
 
+def test_channel_messages_access_error(url):
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+    # Create user_1 and their channel
+    user_1 = prepare_user(url, authorised_user)
+    channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
+
+    # Access error when user is not a member of channel with channel_id
+    with pytest.raises(AccessError):
+        user_2 = prepare_user(url, unauthorised_user)
+        messages = requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : channel_1["channel_id"], 0})
