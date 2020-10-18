@@ -225,4 +225,20 @@ def test_channel_details_normal(url):
     assert found == False
     #####################################################################################
 
-    
+def test_channel_details_input_error(url):
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+    # Create user_1 and their channel
+    user_1 = prepare_user(url, authorised_user)
+    channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
+
+    # details = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : channel_1['channel_id']})
+    # input error test when channel ID is not a valid channel
+    with pytest.raises(InputError):
+        details = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : invalid_channel_id})
+
+    # input error test when channel_id is not of the same data type as expected (integer)
+    with pytest.raises(InputError):
+        details = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : "string_input"})
+
+
