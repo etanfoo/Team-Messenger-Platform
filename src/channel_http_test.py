@@ -8,6 +8,8 @@ from time import sleep
 from error import InputError
 import pytest
 from channel import channel_details
+from channel_test import invalid_u_id, invalid_channel_id
+
 
 @pytest.fixture
 def url():
@@ -123,6 +125,26 @@ def test_channel_invite_normal(url):
 
 
 def test_channel_invite_input_error(url):
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+    # Create user_1 and their channel
+    user_1 = register_user(url, authorised_user)
+    login_user(url, authorised_user)
+    channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
+    # Create user_2 and their channel
+    user_2 = register_user(url, second_user)
+    login_user(url, second_user)
 
-
-# invite user to a
+    # input error test, when channel_id does not refer to a valid channel
+    with pytest.raises(InputError):
+        requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": invalid_channel_id, "user": user_2['u_id']})
+    # input error test, when u_id does not refer to a valid id
+    with pytest.raises(InputError):
+        requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": channel_1['channel_id'], "user": invalid_u_id)
+    # input error, when channel_id is not of the same data type as expected (integer)
+    with pytest.raises(InputError):
+        requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": "string_input", "user": user_2['u_id']})
+    # input error, when u_id is not of the same data type as expected (integer)
+    with pytest.raises(InputError):
+        requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": channel_1['channel_id'], "user": "string_input")
+    

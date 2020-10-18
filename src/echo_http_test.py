@@ -41,15 +41,3 @@ def test_echo(url):
     resp = requests.get(url + 'echo', params={'data': 'hello'})
     assert json.loads(resp.text) == {'data': 'hello'}
 
-def test_channel_invite(url):
-    '''
-    '''
-    @APP.route(url + '/channel/invite', methods=['POST'])
-    resp = requests.get(url + '/channel/invite', params={'data': 'hello'})
-    payload = resp.json()
-    print(payload)
-    
-
-
-if __name__ == "__main__":
-    test_channel_invite()
