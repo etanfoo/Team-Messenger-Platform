@@ -316,20 +316,21 @@ def test_channel_leave_regular(url):
     #####################################################################################
 
 def test_channel_leave_input_error(url):
-    clear()
-
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "First", "Last")
-    auth_login("validEmail@gmail.com", "valid_password")
-    channel = channels_create(authorised_user['token'], "new_channel", True)
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+    # Create user_1 and their channel
+    user_1 = prepare_user(url, authorised_user)
+    channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
 
     # input error when channel ID is not a valid channel
     with pytest.raises(InputError):
-        random_user_1 = auth_register("random1@gmail.com", "random1_password", "One", "Random")
-        channel_invite(authorised_user['token'], channel['channel_id'], random_user_1['u_id'])
-        channel_leave(random_user_1['token'], invalid_channel_id)
+        user_2 = aprepare_user(url, second_user)
+        invite_channel(url, user_1['token'], channel_1['channel_id'], user_2['u_id'])
+        requests.post(url, data = {user_2['token'], invalid_channel_id})
 
     # input error, when channel_id is not of the same data type as expected (integer)
     with pytest.raises(InputError):
-        random_user_2 = auth_register("random2@gmail.com", "random2_password", "Two", "Random")
-        channel_invite(authorised_user['token'], channel['channel_id'], random_user_2['u_id'])
-        channel_leave(random_user_2['token'], "string_input")
+        user_3 = aprepare_user(url, unauthorised_user)
+        invite_channel(url, user_1['token'], channel_1['channel_id'], user_3['u_id'])
+        requests.post(url, data = {user_3['token'], "string_input"})
+
