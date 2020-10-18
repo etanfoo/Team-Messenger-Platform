@@ -5,9 +5,11 @@ import signal
 from time import sleep
 import requests
 import json
+import channel 
+import flask
 
 
-
+APP = flask.Flask(url)
 # just uploading new branch
 
 # Use this fixture to get the URL of the server. It starts the server for you,
@@ -38,3 +40,16 @@ def test_echo(url):
     '''
     resp = requests.get(url + 'echo', params={'data': 'hello'})
     assert json.loads(resp.text) == {'data': 'hello'}
+
+def test_channel_invite(url):
+    '''
+    '''
+    @APP.route(url + '/channel/invite', methods=['POST'])
+    resp = requests.get(url + '/channel/invite', params={'data': 'hello'})
+    payload = resp.json()
+    print(payload)
+    
+
+
+if __name__ == "__main__":
+    test_channel_invite()
