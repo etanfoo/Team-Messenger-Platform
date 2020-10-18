@@ -251,4 +251,28 @@ def test_channel_details_acces_error(url):
     with pytest.raises(AccessError):
         user_3 = prepare_user(url, unauthorised_user)
         details = requests.get(f"{url}/channel/details", params = {"token" : user_3['token'], "channel_id" : channel_1['channel_id']})
-    # details = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : channel_1['channel_id']})
+
+'''MAKE TEST FOR channel/message normal'''
+
+
+def test_channel_messages_input_error(url):
+    # Cant do regular tests as no messages can be sent, according to piazza's instructors answer:
+
+    # "For iteration 1 it's not expected that you test every function to the full extent.
+    # Some functions may not be testable at all, and other functions may not be testable
+    # until further implementation is done in future iterations."
+
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+    # Create user_1 and their channel
+    user_1 = prepare_user(url, authorised_user)
+
+    # input error when channel ID not a valid channel
+    with pytest.raises(InputError):
+        # requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : channnel_1["channel_id"], 0})
+        messages = requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : invalid_channel_id, 0})
+
+    # input error when channel_id is not of the same data type as expected (integer)
+    with pytest.raises(InputError):
+        messages = requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : "string_input", 0})
+
