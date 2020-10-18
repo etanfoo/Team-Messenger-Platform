@@ -94,6 +94,12 @@ def invite_channel(url, token, channel_id, u_id):
     r = requests.post(f"{url}/channel/invite", json = invite)
     return r.json()
 
+'''___________________________________'''
+def prepare_user(url, user):
+    new_user = register_user(url, user)
+    login_user(url, user)
+    return new_user
+
 ###################
 # channel/invite
 ###################
@@ -102,12 +108,10 @@ def test_channel_invite_normal(url):
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
-    user_1 = register_user(url, authorised_user)
-    login_user(url, authorised_user)
+    user_1 = prepare_user(url, authorised_user)
     channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
     # Create user_2
-    user_2 = register_user(url, second_user)
-    login_user(url, second_user)
+    user_2 = prepare_user(url, second_user)
     # user_1 invites user_2 to channel_1
     requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": channel_1['channel_id'], "user": user_2['u_id']})
     # grab details of channel 1
@@ -115,7 +119,7 @@ def test_channel_invite_normal(url):
 
     # check if you can find all members in all_members
     count = 0
-    for members in details[2]:
+    for members in details['all_members']:
         if members['u_id'] == user_1['u_id'] or members['u_id'] == user_2['u_id']:
             count += 1
         elif count == 2:
@@ -124,23 +128,20 @@ def test_channel_invite_normal(url):
 
     # check if owner is in owner_members
     count = 0
-    for members in details[1]:
+    for members in details['owner_members']:
         if members['u_id'] == user_1['u_id'] or members['u_id'] == user_2['u_id']:
             count += 1
 
     assert count == 1
 
-
 def test_channel_invite_input_error(url):
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
-    user_1 = register_user(url, authorised_user)
-    login_user(url, authorised_user)
+    user_1 = prepare_user(url, authorised_user)
     channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
     # Create user_2
-    user_2 = register_user(url, second_user)
-    login_user(url, second_user)
+    user_2 = prepare_user(url, second_user)
 
     # input error test, when channel_id does not refer to a valid channel
     with pytest.raises(InputError):
@@ -159,19 +160,69 @@ def test_channel_invite_access_error(url):
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
-    user_1 = register_user(url, authorised_user)
-    login_user(url, authorised_user)
+    user_1 = prepare_user(url, authorised_user)
     channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
     # Create user_2
-    user_2 = register_user(url, second_user)
-    login_user(url, second_user)
-    
+    user_2 = prepare_user(url, second_user)    
 
     # access error test, when authorised user is not part of channel
     with pytest.raises(AccessError):
         # Create user_3
-        user_3 = register_user(url, unauthorised_user)
-        login_user(url, unauthorised_user)
+        user_3 = prepare_user(url, unauthorised_user)
         # user_3 invites user_2 to channel_1
         requests.post(f"{url}/channel/invite", data = {"token": user_3['token'], "channel_id": channel_1['channel_id'], "user": user_2['u_id']})
 
+def test_channel_details_normal(url):
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+    # Create user_1 and their channel
+    user_1 = prepare_user(url, authorised_user)
+    channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
+    # Create user_2
+    user_2 = prepare_user(url, second_user)    
+
+    #####################################################################################
+    # regular channel details, should display correct information
+    details = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : channel_1['channel_id']})
+    
+    assert details['name'] == "GoodThings"
+
+    # authorised_user should be an owner
+    found = False
+    for member in details['owner_members']:
+        if user_1['u_id'] == member['u_id']:
+            found = True
+            break
+    assert found == True
+
+    # authorised_user should be a member
+    found = False
+    for member in details['all_members']:
+        if user_1['u_id'] == details['u_id']:
+            found = True
+            break
+    assert found == True
+
+    # inviting new user to channel
+    invite_channel(url, user_1['token'], channel_1['channel_id'], user_2['u_id'])
+
+    details = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : channel_1['channel_id']})
+    found = False
+
+    # checking new_user found in all members
+    for member in details['all_members']:
+        if user_2['u_id'] == member['u_id']:
+            found = True
+            break
+    assert found == True
+
+    # checking new_user not found in owner_members
+    found = False
+    for member in details['owner_members']:
+        if user_2['u_id'] == member['u_id']:
+            found = True
+            break
+    assert found == False
+    #####################################################################################
+
+    
