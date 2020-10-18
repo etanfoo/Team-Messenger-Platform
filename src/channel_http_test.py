@@ -232,7 +232,6 @@ def test_channel_details_input_error(url):
     user_1 = prepare_user(url, authorised_user)
     channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
 
-    # details = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : channel_1['channel_id']})
     # input error test when channel ID is not a valid channel
     with pytest.raises(InputError):
         details = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : invalid_channel_id})
@@ -241,6 +240,15 @@ def test_channel_details_input_error(url):
     with pytest.raises(InputError):
         details = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : "string_input"})
 
+def test_channel_details_acces_error(url):
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+    # Create user_1 and their channel
+    user_1 = prepare_user(url, authorised_user)
+    channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
 
-    
-
+    # Access Error when authorised user is not part of channel
+    with pytest.raises(AccessError):
+        user_3 = prepare_user(url, unauthorised_user)
+        details = requests.get(f"{url}/channel/details", params = {"token" : user_3['token'], "channel_id" : channel_1['channel_id']})
+    # details = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : channel_1['channel_id']})
