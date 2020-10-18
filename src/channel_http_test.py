@@ -242,3 +242,5 @@ def test_channel_details_input_error(url):
         details = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : "string_input"})
 
 
+    
+
