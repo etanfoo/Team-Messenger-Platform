@@ -5,7 +5,7 @@ import re
 from subprocess import Popen, PIPE
 import signal
 from time import sleep
-from error import InputError
+from error import InputError, AccessError
 import pytest
 from channel import channel_details
 from channel_test import invalid_u_id, invalid_channel_id
@@ -47,6 +47,13 @@ second_user = {
     "password": "valid_password2",
     "name_first": "Donald",
     "name_last": "Trump",
+}
+
+unauthorised_user = {
+    "email": "unauthorised@gmail.com",
+    "password": "ILoveSleep",
+    "name_first": "Sleepy",
+    "name_last": "Joe",
 }
 
 ###################
@@ -98,7 +105,7 @@ def test_channel_invite_normal(url):
     user_1 = register_user(url, authorised_user)
     login_user(url, authorised_user)
     channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
-    # Create user_2 and their channel
+    # Create user_2
     user_2 = register_user(url, second_user)
     login_user(url, second_user)
     # user_1 invites user_2 to channel_1
@@ -131,7 +138,7 @@ def test_channel_invite_input_error(url):
     user_1 = register_user(url, authorised_user)
     login_user(url, authorised_user)
     channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
-    # Create user_2 and their channel
+    # Create user_2
     user_2 = register_user(url, second_user)
     login_user(url, second_user)
 
@@ -140,11 +147,30 @@ def test_channel_invite_input_error(url):
         requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": invalid_channel_id, "user": user_2['u_id']})
     # input error test, when u_id does not refer to a valid id
     with pytest.raises(InputError):
-        requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": channel_1['channel_id'], "user": invalid_u_id)
+        requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": channel_1['channel_id'], "user": invalid_u_id})
     # input error, when channel_id is not of the same data type as expected (integer)
     with pytest.raises(InputError):
         requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": "string_input", "user": user_2['u_id']})
     # input error, when u_id is not of the same data type as expected (integer)
     with pytest.raises(InputError):
-        requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": channel_1['channel_id'], "user": "string_input")
+        requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": channel_1['channel_id'], "user": "string_input"})
     
+def test_channel_invite_access_error(url):
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+    # Create user_1 and their channel
+    user_1 = register_user(url, authorised_user)
+    login_user(url, authorised_user)
+    channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
+    # Create user_2
+    user_2 = register_user(url, second_user)
+    login_user(url, second_user)
+    
+
+    # access error test, when authorised user is not part of channel
+    with pytest.raises(AccessError):
+        # Create user_3
+        user_3 = register_user(url, unauthorised_user)
+        login_user(url, unauthorised_user)
+        # user_3 invites user_2 to channel_1
+        requests.post(f"{url}/channel/invite", data = {"token": user_3['token'], "channel_id": channel_1['channel_id'], "user": user_2['u_id']})
