@@ -413,3 +413,15 @@ def test_channel_addowner_input_error():
     with pytest.raises(InputError):        
         requests.post(f"{url}/channel/addowner", data = {user_1['token'], channel_1['channel_id'], user_1['u_id']})
 
+def test_channel_addowner_access_error():
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+    # Create user_1 and their channel
+    user_1 = prepare_user(url, authorised_user)
+    channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
+
+    # access error when the authorised user is not an owner of the flockr, or an owner of this channel
+    with pytest.raises(AccessError):
+        user_2 = prepare_user(url, second_user)
+        requests.post(f"{url}/channel/addowner", data = {user_1['token'], channel_1['channel_id'], user_2['u_id']})
+
