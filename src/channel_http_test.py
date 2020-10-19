@@ -372,4 +372,26 @@ def test_channel_join_acccess_error():
         user_2 = prepare_user(url, second_user)
         requests.post(f"{url}/channel/join", data = {user_2['token'], private_channel['channel_id']})
 
+def test_channel_join_normal():
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+    # Create user_1 and their channel
+    user_1 = prepare_user(url, authorised_user)
+    public_channel = create_channel(url, user_1['token'], "public_channel", True)
 
+    #####################################################################################
+    # test joining public channel
+
+    # user joins channel
+    user_2 = prepare_user(url, second_user)
+    requests.post(f"{url}/channel/join", data = {user_2['token'], public_channel['channel_id']})
+
+    details = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : public_channel['channel_id']})
+
+    found = False
+    for member in details['all_members']:
+        if new_user['u_id'] == member['u_id']:
+            found = True
+            break
+    assert found == True
+    
