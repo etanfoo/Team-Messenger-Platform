@@ -453,7 +453,6 @@ def test_channel_removeowner_input_error(url):
     # Create user_1 and their channel
     user_1 = prepare_user(url, authorised_user)
     channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
-    user_2 = prepare_user(url, second_user)
 
     # input error when channel ID is not a valid channel
     with pytest.raises(InputError):
@@ -462,5 +461,38 @@ def test_channel_removeowner_input_error(url):
     # input error when user with user id u_id is not an owner of the channel
     with pytest.raises(InputError):
         user_2 = prepare_user(url, second_user)
-        requests.post(f"{url}/channel/removeowner", data = {user_1['token'], invalid_channel_id, user_2['u_id']})
+        requests.post(f"{url}/channel/removeowner", data = {user_1['token'], channel_1['channel_id'], user_2['u_id']})
 
+def test_channel_removeowner_acces_error(url):
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+    # Create user_1 and their channel
+    user_1 = prepare_user(url, authorised_user)
+    channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
+
+    # access error when the authorised user is not an owner of the flockr, or an owner of this channel 
+    with pytest.raises(AccessError):
+        user_2 = prepare_user(url, second_user)
+        requests.post(f"{url}/channel/removeowner", data = {user_2['token'], channel_1['channel_id'], user_1['u_id']})
+
+def test_channel_removeowner_normal():
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+    # Create user_1 and their channel
+    user_1 = prepare_user(url, authorised_user)
+    channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
+
+    #####################################################################################
+    # test adding owner to the channel
+    user_2 = prepare_user(url, second_user)
+
+    requests.post(f"{url}/channel/addowner", data = {user_1['token'], channel_1['channel_id'], user_2['u_id']})
+    requests.post(f"{url}/channel/removeowner", data = {user_1['token'], channel_1['channel_id'], user_2['u_id']})
+    details = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : channel_1['channel_id']})
+
+    found = False
+    for member in details['owner_members']:
+        if user_1['u_id'] == member['u_id']:
+            found = True
+            break
+    assert found == False
