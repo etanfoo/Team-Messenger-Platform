@@ -395,3 +395,21 @@ def test_channel_join_normal():
             break
     assert found == True
     
+def test_channel_addowner_input_error():
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+    # Create user_1 and their channel
+    user_1 = prepare_user(url, authorised_user)
+    channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
+
+    #####################################################################################
+
+    # input error when channel ID is not a valid channel
+    with pytest.raises(InputError):
+        user_2 = prepare_user(url, second_user)
+        requests.post(f"{url}/channel/addowner", data = {user_1['token'], invalid_channel_id, user_2['u_id']})
+
+    # input error when user with user id u_id is already an owner of the channel 
+    with pytest.raises(InputError):        
+        requests.post(f"{url}/channel/addowner", data = {user_1['token'], channel_1['channel_id'], user_1['u_id']})
+
