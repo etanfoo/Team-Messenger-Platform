@@ -324,7 +324,7 @@ def test_channel_leave_input_error(url):
 
     # input error when channel ID is not a valid channel
     with pytest.raises(InputError):
-        user_2 = aprepare_user(url, second_user)
+        user_2 = prepare_user(url, second_user)
         invite_channel(url, user_1['token'], channel_1['channel_id'], user_2['u_id'])
         requests.post(url, data = {user_2['token'], invalid_channel_id})
 
@@ -334,3 +334,14 @@ def test_channel_leave_input_error(url):
         invite_channel(url, user_1['token'], channel_1['channel_id'], user_3['u_id'])
         requests.post(url, data = {user_3['token'], "string_input"})
 
+def test_channel_leave_access_error(url):
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+    # Create user_1 and their channel
+    user_1 = prepare_user(url, authorised_user)
+    channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
+
+    # Access error, when user is not a member of channel with channel_id
+    with pytest.raises(AccessError):
+        user_3 = prepare_user(url, unauthorised_user)
+        requests.post(f"{url}/channel/leave", data = {user_3['token'], channel_1['channel_id']})
