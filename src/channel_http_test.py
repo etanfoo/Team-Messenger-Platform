@@ -345,3 +345,31 @@ def test_channel_leave_access_error(url):
     with pytest.raises(AccessError):
         user_3 = prepare_user(url, unauthorised_user)
         requests.post(f"{url}/channel/leave", data = {user_3['token'], channel_1['channel_id']})
+
+def test_channel_join_input_error():
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+    # Create user_1 and their channel
+    user_1 = prepare_user(url, authorised_user)
+    channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
+
+    #####################################################################################
+
+    # input error when channel ID is not a valid channel
+    with pytest.raises(InputError):
+        user_2 = prepare_user(url, second_user)
+        requests.post(f"{url}/channel/join", data = {user_2['token'], invalid_channel_id})
+
+def test_channel_join_acccess_error():
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+    # Create user_1 and their channel
+    user_1 = prepare_user(url, authorised_user)
+    private_channel = create_channel(url, user_1['token'], "Private", False)
+
+    # Access error when channel_id refers to a channel that is private (when the authorised user is not an admin)
+    with pytest.raises(AccessError):
+        user_2 = prepare_user(url, second_user)
+        requests.post(f"{url}/channel/join", data = {user_2['token'], private_channel['channel_id']})
+
+
