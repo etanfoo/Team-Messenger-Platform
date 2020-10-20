@@ -5,10 +5,10 @@ from error import InputError
 ###################
 # helper function
 ###################
-def token_to_id(token)
+def token_to_id(token):
     #Compare tokens and find the corresponding user
     for users in data["users"]:
-        if users["token"] = token:
+        if users["token"] == token:
             u_id = user["u_id"]
             break
     return u_id
