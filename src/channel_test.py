@@ -390,7 +390,6 @@ def test_channel_removeowner_input_error():
     clear()
 
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "First", "Last")
-    authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password", "First", "Last")
     auth_login("validEmail@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
@@ -409,7 +408,6 @@ def test_channel_removeowner_acces_error():
     clear()
 
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "First", "Last")
-    authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password", "First", "Last")
     auth_login("validEmail@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
@@ -424,7 +422,6 @@ def test_channel_removeowner_normal():
     clear()
 
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "First", "Last")
-    authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password", "First", "Last")
     auth_login("validEmail@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
