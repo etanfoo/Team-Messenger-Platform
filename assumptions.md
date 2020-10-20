@@ -8,7 +8,7 @@ AUTH TEST
 
 # Test_auth_login
 
-- Token will be the same as u_id for iteration 1
+- Token generated will be valid for 30mins
 - Email address must exist
 - Email address username, domain can only contain letters (a-z), numbers (0-9) and periods (.) are allowed.
 - Email address first character of username must be an ascii letter (a-z) or number (0-9)
@@ -51,42 +51,50 @@ AUTH TEST
 
 -User must be login to logout
 -Logout token must exist in the dictionary
+-Token removed once user logs out
 
 ---
 
 CHANNEL TEST
 
 ---
+
 # all functions
+
 - comparing u_id with token for iteration 1
 
 # channel_invite
+
 - invitee becomes apart of all_members, but not owner_members
 
 # channel_details
 
-
 # channel_messages
+
 - only passing through values that would result in input/acccess errors as sending messages not implemented yet for iteration 1
 
 # channel_leave
-- If a user leaves a channel, they will be removed as a member and owner (if they are an owner)
 
+- If a user leaves a channel, they will be removed as a member and owner (if they are an owner)
 
 ---
 
 CHANNELS TEST
 
 ---
+
 # all functions
+
 - u_id == token for iteration 1
 
 # channels_list
 
 # channels_listall
+
 - Returns all public channels plus any private channels the user is part of
 
 # channels_create
+
 - Channel name is limited to 20 character including spaces
 - Channel name cannot be empty or blank spaces
 - The user that calls channels_create is automatically an owner and member
