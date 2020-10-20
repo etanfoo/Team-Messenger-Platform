@@ -36,21 +36,23 @@ def echo():
 # channels
 ###################
 @APP.route("/channels/list", methods = ["GET"])
-def channels_list():
-    new_data = request.get_json()
+def http_channels_list():
+    new_data = {
+        "token": request.args.get("token")
+    }
     return dumps(channels_list(new_data["token"]))
 
 @APP.route("/channels/listall", methods = ["GET"])
-def channels_listall():
-    new_data = request.get_json()
+def http_channels_listall():
+    new_data = {
+        "token": request.args.get("token")
+    }
     return dumps(channels_listall(new_data["token"]))
 
 @APP.route("/channels/create", methods = ["POST"])
-def channels_create():
+def http_channels_create():
     new_data = request.get_json()
     return dumps(channels_create(new_data["token"], new_data["name"], new_data["is_public"]))
-
-
 
 if __name__ == "__main__":
     APP.run(port=0) # Do not edit this port
