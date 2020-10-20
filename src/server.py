@@ -46,6 +46,14 @@ def http_channel_invite():
     data = request.get_json()
     return dumps(channel_invite(data['token'], data['channel_id'], data['u_id']))
 
+@APP.route("/channel/details", methods = ["GET"])
+def http_channel_details():
+    data = {
+        'token': request.args.get('token'),
+        'channel_id': request.args.get('channel_id'),
+    }
+    return dumps(channel_details(data['token'], data['channel_id']))
+
 
 
 @APP.route("/channels/list", methods = ["GET"])
