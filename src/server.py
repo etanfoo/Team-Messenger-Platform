@@ -3,6 +3,8 @@ from json import dumps
 from flask import Flask, request
 from flask_cors import CORS
 from error import InputError
+from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
+
 
 def defaultHandler(err):
     response = err.get_response()
@@ -31,5 +33,44 @@ def echo():
         'data': data
     })
 
+
+###################
+# channel 
+###################
+
+# data is passed through the URL for GET methods
+# post put and delete does not pass the data through the URL, its rather passed as a body/packet sent to the web server
+
+@APP.route("/channel/invite", methods = ["POST"])
+def http_channel_invite():
+    data = request.get_json()
+    return dumps(channel_invite(data['token'], data['channel_id'], data['u_id']))
+
+
+
+@APP.route("/channels/list", methods = ["GET"])
+def channels_list():
+    new_data = request.get_json()
+    return dumps(channels_list(new_data["token"]))
+
+@APP.route("/channels/listall", methods = ["GET"])
+def channels_listall():
+    new_data = request.get_json()
+    return dumps(channels_listall(new_data["token"]))
+
+@APP.route("/channels/create", methods = ["POST"])
+def channels_create():
+    new_data = request.get_json()
+    return dumps(channels_create(new_data["token"], new_data["name"], new_data["is_public"]))
+
+
+
+
+
+
+
+
+
 if __name__ == "__main__":
     APP.run(port=0) # Do not edit this port
+
