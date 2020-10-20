@@ -4,7 +4,7 @@ from flask import Flask, request
 from flask_cors import CORS
 from error import InputError
 from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
-
+from auth import auth_login, auth_logout, auth_register
 
 def defaultHandler(err):
     response = err.get_response()
@@ -83,7 +83,23 @@ def http_channel_removeowner():
     data = request.get_json()
     return dumps(channel_removeowner(data['token'], data['channel_id'], data['u_id']))
 
+###################
+# auth 
+###################
+@APP.route("/auth/login", methods = ['POST'])
+def http_auth_login():
+    data = request.get_json()
+    return dumps(auth_login(data['email'], data['password']))
 
+@APP.route("/auth/logout", methods = ['POST'])
+def http_auth_logout():
+    data = request.get_json()
+    return dumps(auth_logout(data['token']))
+    
+@APP.route("/auth/register", methods = ['POST'])
+def http_auth_register():
+    data = request.get_json()
+    return dumps(auth_register(data['email'], data['password'], data['name_first'], data['name_last']))
 
 
 if __name__ == "__main__":
