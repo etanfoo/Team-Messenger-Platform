@@ -1,5 +1,5 @@
 from global_dic import data
-import channel
+# import channel
 from error import InputError
 
 def channels_list(token):

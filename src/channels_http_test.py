@@ -31,7 +31,6 @@ def url():
 ###################
 # Global variables
 ###################
-
 authorised_user = {
     "email": "validEmail@gmail.com",
     "password": "valid_password",
@@ -49,7 +48,6 @@ second_user = {
 ###################
 # Helper functions
 ###################
-
 def register_user(url, user):
     # Registers a new user
     r = requests.post(f"{url}/auth/register", json = user)
@@ -87,7 +85,6 @@ def invite_channel(url, token, channel_id, u_id):
 ###################
 # channels/list
 ###################
-
 def test_list_empty(url):
     '''
     No channels are created
@@ -196,7 +193,6 @@ def test_list_uninvited(url):
 ###################
 # channels/listall
 ###################
-
 def test_listall_empty(url):
     '''
     No channels are created
@@ -310,7 +306,6 @@ def test_listall_uninvited(url):
 ###################
 # channels/creates
 ###################
-
 def test_creates_long(url):
     '''
     Channel names that are too long (over 20 characters)

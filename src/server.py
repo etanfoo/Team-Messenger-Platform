@@ -3,6 +3,7 @@ from json import dumps
 from flask import Flask, request
 from flask_cors import CORS
 from error import InputError
+from channels import channels_list, channels_listall, channels_create
 
 def defaultHandler(err):
     response = err.get_response()
@@ -30,6 +31,26 @@ def echo():
     return dumps({
         'data': data
     })
+
+###################
+# channels
+###################
+@APP.route("/channels/list", methods = ["GET"])
+def channels_list():
+    new_data = request.get_json()
+    return dumps(channels_list(new_data["token"]))
+
+@APP.route("/channels/listall", methods = ["GET"])
+def channels_listall():
+    new_data = request.get_json()
+    return dumps(channels_listall(new_data["token"]))
+
+@APP.route("/channels/create", methods = ["POST"])
+def channels_create():
+    new_data = request.get_json()
+    return dumps(channels_create(new_data["token"], new_data["name"], new_data["is_public"]))
+
+
 
 if __name__ == "__main__":
     APP.run(port=0) # Do not edit this port
