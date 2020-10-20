@@ -9,7 +9,7 @@ def token_to_id(token):
     #Compare tokens and find the corresponding user
     for users in data["users"]:
         if users["token"] == token:
-            u_id = user["u_id"]
+            u_id = users["u_id"]
             break
     return u_id
 
