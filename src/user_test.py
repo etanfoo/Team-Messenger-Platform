@@ -129,7 +129,7 @@ def test_user_profile_setemail_input_error_emaily_already_used():
     clear()
 
     regular_user = register_user()
-    new_user = auth_register("NewEmail@gmail.com", "valid_password", "Woopdidi", "Scoop")
+    auth_register("NewEmail@gmail.com", "valid_password", "Woopdidi", "Scoop")
     auth_login("NewEmail@gmail.com", "valid_password")
 
     with pytest.raises(InputError):

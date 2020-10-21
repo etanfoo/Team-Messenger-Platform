@@ -45,12 +45,19 @@ def user_profile_setname(token, name_first, name_last):
     '''
     Update the authorised user's first and last name
     '''
-
+    # input error checking
     if len(name_first) < 1 or len(name_first) > 50:
         raise InputError
 
     if len(name_last) < 1 or len(name_last) > 50:
         raise InputError
+    
+    # looping until we reach the user with corresponding token
+    # and changing their respective first/last name
+    for user in data['users']:
+        if token == user['token']:
+            user['first_name'] = name_first
+            user['last_name'] = name_last
 
     return {
     }
@@ -75,6 +82,12 @@ def user_profile_setemail(token, email):
         if (data["users"][i]["email"] == email):
             raise InputError
 
+    # looping until we reach the user with corresponding token
+    # and changing their email
+    for user in data['users']:
+        if token == user['token']:
+            user['email'] = email
+
     return {
     }
 
@@ -91,6 +104,12 @@ def user_profile_sethandle(token, handle_str):
     for i in range(len(data["users"])):
         if (data["users"][i]["handle"] == handle_str):
             raise InputError
+
+    # looping until we reach the user with corresponding token
+    # and changing their respective handle_str
+    for user in data['users']:
+        if token == user['token']:
+            user['handle'] = handle_str
 
     return {
     }
