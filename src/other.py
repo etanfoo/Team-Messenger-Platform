@@ -1,5 +1,19 @@
 from global_dic import data
+from error import InputError
 
+def valid_token(token):
+    '''
+    function to raise InputErrors for invalid users
+    '''
+    # check for matching u_id. if none, then raise an error
+    found = False
+    for user in data['users']:
+        if user['u_id'] == token:
+            found = True
+            break
+
+    if found == False:
+        raise InputError
 
 def clear():
     data["users"].clear()
@@ -7,17 +21,33 @@ def clear():
 
 
 def users_all(token):
-    return {
-        'users': [
-            {
-                'u_id': 1,
-                'email': 'cs1531@cse.unsw.edu.au',
-                'name_first': 'Hayden',
-                'name_last': 'Jacobs',
-                'handle_str': 'hjacobs',
-            },
-        ],
-    }
+    '''
+    valid_token(token)
+    '''
+    authorised_users = []
+
+    # u_id is not matching. u_id is returning wack string
+    # try:
+    for user in data["users"]:
+        authorised_users.append({"u_id": user["u_id"], "email": user["email"], "first_name": user["first_name"], "last_name": user["last_name"]})
+        # authorised_users.append({"u_id": user["u_id"], "email": user["email"], "first_name": user["first_name"], "last_name": user["last_name"], "status": user["status"]})
+
+    return {'users': authorised_users}
+
+    # except KeyError:
+    #     raise InputError
+
+    # return {
+    #     'users': [
+    #         {
+    #             'u_id': 1,
+    #             'email': 'cs1531@cse.unsw.edu.au',
+    #             'name_first': 'Hayden',
+    #             'name_last': 'Jacobs',
+    #             'handle_str': 'hjacobs',
+    #         },
+    #     ],
+    # } 
 
 
 def admin_userpermission_change(token, u_id, permission_id):
