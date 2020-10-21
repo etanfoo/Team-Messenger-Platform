@@ -1,9 +1,12 @@
+'''
+Tests for other.py. Testing functions users_all, admin_userpermission_change, and search.
+'''
+import pytest
 from auth import auth_login, auth_register, auth_register
 from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
 from channels import channels_list, channels_listall, channels_create
-import pytest
 from auth import auth_register, auth_login
-from message import message_send, message_remove, message_edit
+from message import message_send, message_remove
 from other import clear, users_all, admin_userpermission_change, search
 from error import InputError, AccessError
 
@@ -19,7 +22,10 @@ def test_users_all_expected():
 
     users_all_expected = users_all(authorised_user['token'])
 
-    assert users_all_expected['users'] == [{"u_id": 1, "email": "validEmail@gmail.com"}, {"name_first": 'Philgee', "last_lame": "Vlad"}, {'handle_str': 'pvlad'}] 
+    assert users_all_expected['users'] == [{"u_id": authorised_user["u_id"], "email": "validEmail@gmail.com", "first_name": 'Philgee', "last_name": "Vlad"}] 
+
+    # assert users_all_expected['users'] == [{"u_id": 1, "email": "validEmail@gmail.com"}, {"first_name": 'Philgee', "last_lame": "Vlad"}, {'handle_str': 'pvlad'}] 
+
 
 def test_users_all_multiple():
     clear()
