@@ -230,7 +230,6 @@ def test_channel_details_input_error(url):
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
     user_1 = prepare_user(url, authorised_user)
-    channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
 
     # input error test when channel ID is not a valid channel
     with pytest.raises(InputError):
@@ -330,7 +329,7 @@ def test_channel_leave_input_error(url):
 
     # input error, when channel_id is not of the same data type as expected (integer)
     with pytest.raises(InputError):
-        user_3 = aprepare_user(url, unauthorised_user)
+        user_3 = prepare_user(url, unauthorised_user)
         invite_channel(url, user_1['token'], channel_1['channel_id'], user_3['u_id'])
         requests.post(url, data = {user_3['token'], "string_input"})
 
