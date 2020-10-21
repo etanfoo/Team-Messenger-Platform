@@ -1,13 +1,10 @@
 from error import InputError, AccessError
 from global_dic import data
+from utils import generate_token
 import uuid
 import re
-import jwt
-import datetime
 import hashlib
-
-#Secret Key
-JWT_SECRET = "my-32-character-ultra-secure-and-ultra-long-secret"
+from appsecret import JWT_SECRET
 
 
 #Validate Email
@@ -39,16 +36,7 @@ def auth_login(email, password):
             if ('token' in data['users'][i]):
                 token = data['users'][i]['token']
             else:
-                token = jwt.encode(
-                    {
-                        'user_id':
-                        u_id,
-                        'exp':
-                        datetime.datetime.utcnow() +
-                        datetime.timedelta(minutes=30)
-                    },
-                    JWT_SECRET,
-                    algorithm='HS256').decode('UTF-8')
+                user_token = generate_token(u_id)
             #Check if hashed password match
             if (data["users"][i]["password"] != hashlib.sha256(
                     str(password).encode('utf-8')).hexdigest()):
@@ -102,13 +90,7 @@ def auth_register(email, password, name_first, name_last):
             raise InputError(InputError)
 
     user_id = uuid.uuid4().hex
-    token = jwt.encode(
-        {
-            'user_id': user_id,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
-        },
-        JWT_SECRET,
-        algorithm='HS256').decode('UTF-8')
+    user_token = generate_token(user_id)
     password = hashlib.sha256(str(password).encode('utf-8')).hexdigest()
     data["users"].append({
         "u_id": user_id,
