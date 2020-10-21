@@ -1,5 +1,5 @@
 from datetime import datetime
-from jwt import encode, decode, InvalidTokenError
+import jwt
 from appsecret import JWT_SECRET
 
 
