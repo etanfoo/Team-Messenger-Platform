@@ -36,10 +36,10 @@ def auth_login(email, password):
             find = True
             u_id = data['users'][i]['u_id']
             #Check if a token exist for that user
-            if ('u_token' in data['users'][i]):
-                u_token = data['users'][i]['u_token']
+            if ('token' in data['users'][i]):
+                token = data['users'][i]['token']
             else:
-                user_token = jwt.encode(
+                token = jwt.encode(
                     {
                         'user_id':
                         u_id,
@@ -61,7 +61,7 @@ def auth_login(email, password):
 
     return {
         'u_id': u_id,
-        'u_token': u_token,
+        'token': token,
     }
 
 
@@ -69,12 +69,12 @@ def auth_logout(token):
     find = False
     for i in range(len(data["users"])):
         #Find token
-        if (data["users"][i]["u_token"] == token):
+        if (data["users"][i]["token"] == token):
             if (data["users"][i]['state'] != "active"):
                 raise AccessError(AccessError)
             data["users"][i]['state'] = "inactive"
             #Remove token
-            del data["users"][i]["u_token"]
+            del data["users"][i]["token"]
             find = True
     if find == False:
         raise AccessError(AccessError)
@@ -102,7 +102,7 @@ def auth_register(email, password, name_first, name_last):
             raise InputError(InputError)
 
     user_id = uuid.uuid4().hex
-    user_token = jwt.encode(
+    token = jwt.encode(
         {
             'user_id': user_id,
             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
@@ -112,7 +112,7 @@ def auth_register(email, password, name_first, name_last):
     password = hashlib.sha256(str(password).encode('utf-8')).hexdigest()
     data["users"].append({
         "u_id": user_id,
-        "u_token": user_token,
+        "token": token,
         "email": email,
         "first_name": name_first,
         "last_name": name_last,
@@ -122,5 +122,5 @@ def auth_register(email, password, name_first, name_last):
     })
     return {
         'u_id': user_id,
-        'u_token': user_token,
+        'token': token,
     }
