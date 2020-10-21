@@ -4,6 +4,17 @@ from error import InputError, AccessError
 from other import clear
 from global_dic import data
 
+###################
+# helper function
+###################
+def token_to_id(token):
+    #Compare tokens and find the corresponding user
+    for users in data["users"]:
+        if users["token"] == token:
+            u_id = users["u_id"]
+            break
+    return u_id
+
 
 def channel_invite(token, channel_id, u_id):
     # looping to see if channel_id is listed, if not, input error
@@ -24,12 +35,13 @@ def channel_invite(token, channel_id, u_id):
     if found == False:
         raise InputError
 
+    matching_u_id = token_to_id(token)
+
     # if user is not a member of channel with channel_id, access error
     # channel is already selected on channel with channel_id (from first for loop)
-    # comparing token with u_id right now for iteration 1
     found = False
     for member in channel['all_members']:
-        if token == member['u_id']:
+        if matching_u_id == member['u_id']:
             found = True
             break
     if found == False:
@@ -52,16 +64,18 @@ def channel_details(token, channel_id):
     if found == False:
         raise InputError
 
+    matching_u_id = token_to_id(token)
+
     # if user is not a member of channel with channel_id, access error
     # channel is already selected on channel with channel_id (from first for loop)
-    # comparing token with u_id right now for iteration 1
     found = False
     for member in channel['all_members']:
-        if token == member['u_id']:
+        if matching_u_id == member['u_id']:
             found = True
             break
     if found == False:
         raise AccessError
+
 
     return channel
     # return {
@@ -135,25 +149,27 @@ def channel_leave(token, channel_id):
     if found == False:
         raise InputError
 
+    matching_u_id = token_to_id(token)
+
     # if user is not a member of channel with channel_id, access error
     # channel is already selected on channel with channel_id (from first for loop)
-    # comparing token with u_id right now for iteration 1
     found = False
     for member in channel['all_members']:
-        if token == member['u_id']:
+        if matching_u_id == member['u_id']:
             found = True
             break
     if found == False:
         raise AccessError
 
+
     # deleting member from channels all_members
     for i in range(0, len(channel['all_members'])):
-        if token == channel['all_members'][i]['u_id']:
+        if matching_u_id == channel['all_members'][i]['u_id']:
             del channel['all_members'][i]
 
     # deleting from owner_members if an owner
     for i in range(0, len(channel['owner_members'])):
-        if token == channel['owner_members'][i]['u_id']:
+        if matching_u_id == channel['owner_members'][i]['u_id']:
             del channel['owner_members'][i]
 
     return {}
@@ -186,12 +202,14 @@ def channel_join(token, channel_id):
     if pub == False:
         raise AccessError
 
+    matching_u_id = token_to_id(token)
+
     # add user to the channel
     # loop through each property of all channel
     
     for channel in data['channels']:
         if channel['channel_id'] == channel_id:
-            new_user = {'u_id': token}
+            new_user = {'u_id': matching_u_id}
             channel['all_members'].append(new_user)
     return {}
 
@@ -201,6 +219,8 @@ def channel_addowner(token, channel_id, u_id):
     found = False
     alreadyOwner = False
     isAdmin = False
+
+    matching_u_id = token_to_id(token)
 
     # loop through each channel
     for channel in data['channels']:
@@ -212,7 +232,7 @@ def channel_addowner(token, channel_id, u_id):
                 if owners["u_id"] == u_id:
                     alreadyOwner = True
                 # check if the requester is an owner of the channel
-                if owners["u_id"] == token:
+                if owners["u_id"] == matching_u_id:
                     isAdmin = True
             found = True
             break
@@ -235,6 +255,8 @@ def channel_removeowner(token, channel_id, u_id):
     alreadyOwner = False
     isAdmin = False
 
+    matching_u_id = token_to_id(token)
+
     # loop through each channel
     for channel in data['channels']:
         # check channel_id exists
@@ -245,7 +267,7 @@ def channel_removeowner(token, channel_id, u_id):
                 if owners["u_id"] == u_id:
                     alreadyOwner = True
                 # check if the requester is an owner of the channel
-                if owners["u_id"] == token:
+                if owners["u_id"] == matching_u_id:
                     isAdmin = True
             found = True
             break
