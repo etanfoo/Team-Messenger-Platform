@@ -26,11 +26,13 @@ def users_all(token):
     '''
     authorised_users = []
 
-    # u_id is not matching. u_id is returning wack string
+    # Unable to iterate through multiple users.
     # try:
+    
     for user in data["users"]:
-        authorised_users.append({"u_id": user["u_id"], "email": user["email"], "first_name": user["first_name"], "last_name": user["last_name"]})
-        # authorised_users.append({"u_id": user["u_id"], "email": user["email"], "first_name": user["first_name"], "last_name": user["last_name"], "status": user["status"]})
+        for u_id in data["users"]:
+            authorised_users.append({"u_id": user["u_id"], "email": user["email"], "first_name": user["first_name"], "last_name": user["last_name"]})
+            # authorised_users.append({"u_id": user["u_id"], "email": user["email"], "first_name": user["first_name"], "last_name": user["last_name"], "status": user["status"]})
 
     return {'users': authorised_users}
 
@@ -53,13 +55,25 @@ def users_all(token):
 def admin_userpermission_change(token, u_id, permission_id):
     pass
 
-
 def search(token, query_str):
-    return {
-        'messages': [{
-            'message_id': 1,
-            'u_id': 1,
-            'message': 'Hello world',
-            'time_created': 1582426789,
-        }],
-    }
+    
+    result = []
+
+    for channel in data["channels"]:
+        if token == channel["all_members"]:
+            for message in channel["messages"]:
+                if query_str in message['messages']:
+                    result.append(message)
+
+    sorted(result, key=lambda message: message["time_created"], reverse = True)
+
+    return {"messages": result}
+
+    # return {
+    #     'messages': [{
+    #         'message_id': 1,
+    #         'u_id': 1,
+    #         'message': 'Hello world',
+    #         'time_created': 1582426789,
+    #     }],
+    # }
