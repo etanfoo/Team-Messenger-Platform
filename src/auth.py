@@ -5,9 +5,7 @@ import re
 import jwt
 import datetime
 import hashlib
-
-#Secret Key
-JWT_SECRET = "my-32-character-ultra-secure-and-ultra-long-secret"
+from appsecret import JWT_SECRET
 
 
 #Validate Email
