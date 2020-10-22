@@ -18,7 +18,7 @@ def decode_token(token):
     '''
     decode_token
     '''
-    decoded = jwt.decode(token, JWT_SECRET, algorithms='HS256')
+    return jwt.decode(token, JWT_SECRET, algorithms='HS256')
 
 
 def check_token(token):

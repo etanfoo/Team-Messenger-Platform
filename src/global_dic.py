@@ -3,6 +3,8 @@ data = {
     "users": [],
     "channels": [],
 }
+
+num_messages = 0
 '''
 An example of how data would look like when populated
 data = {
