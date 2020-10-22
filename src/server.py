@@ -1,3 +1,6 @@
+'''
+Importing required modules and functions to run the server
+'''
 import sys
 from json import dumps
 from flask import Flask, request
@@ -43,11 +46,19 @@ def echo():
 
 @APP.route("/channel/invite", methods = ["POST"])
 def http_channel_invite():
+    '''
+    Grabs data from the server.
+    Send the correct data to the functions.
+    '''
     data = request.get_json()
     return dumps(channel_invite(data['token'], data['channel_id'], data['u_id']))
 
 @APP.route("/channel/details", methods = ["GET"])
 def http_channel_details():
+    '''
+    Grabs data from the URL
+    Sends selected data from the URL to the function
+    '''
     data = {
         'token': request.args.get('token'),
         'channel_id': request.args.get('channel_id'),
@@ -56,6 +67,10 @@ def http_channel_details():
 
 @APP.route("/channel/messages", methods = ["GET"])
 def http_channel_messages():
+    '''
+    Grabs data from the URL
+    Sends selected data from the URL to the function
+    '''
     data = {
         'token': request.args.get('token'),
         'channel_id': request.args.get('channel_id'),
@@ -65,21 +80,37 @@ def http_channel_messages():
 
 @APP.route("/channel/leave", methods = ['POST'])
 def http_channel_leave():
+    '''
+    Grabs data from the server.
+    Send the correct data to the functions.
+    '''
     data = request.get_json()
     return dumps(channel_leave(data['token'], data['channel_id']))
 
 @APP.route("/channel/join", methods = ["POST"])
 def http_channel_join():
+    '''
+    Grabs data from the server.
+    Send the correct data to the functions.
+    '''
     data = request.get_json()
     return dumps(channel_join(data['token'], data['channel_id']))
 
 @APP.route("/channel/addowner", methods = ['POST'])
 def http_channel_addowner():
+    '''
+    Grabs data from the server.
+    Send the correct data to the functions.
+    '''
     data = request.get_json()
     return dumps(channel_addowner(data['token'], data['channel_id'], data['u_id']))
 
 @APP.route("/channel/removeowner", methods = ['POST'])
 def http_channel_removeowner():
+    '''
+    Grabs data from the server.
+    Send the correct data to the functions.
+    '''
     data = request.get_json()
     return dumps(channel_removeowner(data['token'], data['channel_id'], data['u_id']))
 
@@ -88,16 +119,28 @@ def http_channel_removeowner():
 ###################
 @APP.route("/auth/login", methods = ['POST'])
 def http_auth_login():
+    '''
+    Grabs data from the server.
+    Send the correct data to the functions.
+    '''
     data = request.get_json()
     return dumps(auth_login(data['email'], data['password']))
 
 @APP.route("/auth/logout", methods = ['POST'])
 def http_auth_logout():
+    '''
+    Grabs data from the server.
+    Send the correct data to the functions.
+    '''
     data = request.get_json()
     return dumps(auth_logout(data['token']))
     
 @APP.route("/auth/register", methods = ['POST'])
 def http_auth_register():
+    '''
+    Grabs data from the server.
+    Send the correct data to the functions.
+    '''
     data = request.get_json()
     return dumps(auth_register(data['email'], data['password'], data['name_first'], data['name_last']))
 
