@@ -59,7 +59,7 @@ def test_user_profile_setname_input_error_name_first_long():
     regular_user = register_user()
 
     with pytest.raises(InputError):
-        user_profile_setname(regular_user['token'], "Uncleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "Joe")
+        user_profile_setname(regular_user['token'], "Uncle" * 20, "Joe")
 
 
     clear()
@@ -83,7 +83,7 @@ def test_user_profile_setname_input_error_name_last_long():
     regular_user = register_user()
 
     with pytest.raises(InputError):
-        user_profile_setname(regular_user['token'], "Uncle", "Joeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+        user_profile_setname(regular_user['token'], "Uncle", "Joe" * 20)
 
 
     clear()
@@ -163,7 +163,7 @@ def test_user_profile_sethandle_input_error_too_long():
     regular_user = register_user()
 
     with pytest.raises(InputError):
-        user_profile_sethandle(regular_user['token'], "loooooooooooooooooooooooooooong")
+        user_profile_sethandle(regular_user['token'], "long" * 20)
 
 
     clear()
