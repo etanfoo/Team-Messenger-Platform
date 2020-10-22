@@ -56,15 +56,6 @@ def admin_userpermission_change(token, u_id, permission_id):
     if permission_id == None:
         raise InputError
 
-    # Check if person is a member
-    member_check = False
-    for channels in data["channels"]:
-        for members in channels["all_members"]:
-            if token_id == members["u_id"]:
-                member_check = True
-    if member_check == False:
-        raise InputError
-
     # Check if u_id exists in the channel
     user_check = False
     for channels in data["channels"]:
@@ -73,6 +64,15 @@ def admin_userpermission_change(token, u_id, permission_id):
                 user_check = True
     if user_check == False:
         raise InputError
+
+    # Check if person is a owner with perms
+    owner_check = False
+    for channels in data["channels"]:
+        for owners in channels["owner_members"]:
+            if token_id == owners["u_id"]:
+                owner_check = True
+    if owner_check == False:
+        raise AccessError
 
     # Depending on permission_id, either promote or demote user
     if permission_id == 1:
@@ -85,7 +85,6 @@ def admin_userpermission_change(token, u_id, permission_id):
 
     elif permission_id == 2:
         # 2, Demote user to member
-        owner_check(u_id)
         for demotion in data["channels"]:
             for demotion_id in demotion["owner_members"]:
                 if demotion_id["u_id"] == u_id:
@@ -117,12 +116,3 @@ def search(token, query_str):
     #         'time_created': 1582426789,
     #     }],
     # }
-
-def owner_check(u_id):
-    owner = False
-    for permissions in data["channels"]:
-        for owners in permissions["owner_members"]:
-            if u_id == owners["u_id"]:
-                owner = True
-    if owner == False:
-        raise AccessError
