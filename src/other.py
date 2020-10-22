@@ -1,6 +1,6 @@
 from global_dic import data
-from error import InputError
-from utils import check_token
+from error import InputError, AccessError
+from utils import check_token, decode_token
 
 def clear():
     data["users"].clear()
@@ -21,42 +21,91 @@ def users_all(token):
     # try:
     
     for user in data["users"]:
-        # for u_id in data["users"]:
         authorised_users.append({"u_id": user["u_id"], "email": user["email"], "first_name": user["first_name"], "last_name": user["last_name"]})
-            # authorised_users.append({"u_id": user["u_id"], "email": user["email"], "first_name": user["first_name"], "last_name": user["last_name"], "status": user["status"]})
 
     return {"users": authorised_users}
 
-    # except KeyError:
-    #     raise InputError
-
-    # return {
-    #     'users': [
-    #         {
-    #             'u_id': 1,
-    #             'email': 'cs1531@cse.unsw.edu.au',
-    #             'name_first': 'Hayden',
-    #             'name_last': 'Jacobs',
-    #             'handle_str': 'hjacobs',
-    #         },
-    #     ],
-    # } 
-
-
 def admin_userpermission_change(token, u_id, permission_id):
-    pass
+    
+    # Check for valid token
+    check = check_token(token)
+    if check == False:
+        raise InputError
+    token_id = decode_token(token)
+    '''
+    found_permission = False
+    for user in data["channels"]:
+        if token == user["owner_members"]:
+            found_permission = True
+    if found_permission == False:
+        raise AccessError '''
+    # Check for self demotion/promotion
+    if token_id == u_id:
+        raise AccessError
+    # Check for empty u_id
+    if u_id == '':
+        raise InputError
+    # Check for invalid permission_id type
+    if type(permission_id) == str:
+        raise InputError
+    # Check if permission_id's are valid inputs
+    if permission_id != 1:
+        if permission_id != 2:
+            raise InputError
+    # Check if permission_id is not empty
+    if permission_id == None:
+        raise InputError
+
+    # Check if person is a member
+    member_check = False
+    for channels in data["channels"]:
+        for members in channels["all_members"]:
+            if token_id == members["u_id"]:
+                member_check = True
+    if member_check == False:
+        raise InputError
+
+    # Check if u_id exists in the channel
+    user_check = False
+    for channels in data["channels"]:
+        for users in channels["all_members"]:
+            if u_id == users["u_id"]:
+                user_check = True
+    if user_check == False:
+        raise InputError
+
+    # Depending on permission_id, either promote or demote user
+    if permission_id == 1:
+        # 1, Promote user to admin
+        completed = False
+        for promotion in data["channels"]:
+            if completed == False:
+                promotion["owner_members"].append({"u_id": u_id})
+                completed = True
+
+    elif permission_id == 2:
+        # 2, Demote user to member
+        owner_check(u_id)
+        for demotion in data["channels"]:
+            for demotion_id in demotion["owner_members"]:
+                if demotion_id["u_id"] == u_id:
+                    demotion["owner_members"].remove({"u_id": u_id})
+    
+    return 0
 
 def search(token, query_str):
     
     result = []
 
+    matching_u_id = decode_token(token)
+
     for channel in data["channels"]:
-        if token == channel["all_members"]:
+        if matching_u_id == channel["all_members"]:
             for message in channel["messages"]:
                 if query_str in message['messages']:
                     result.append(message)
 
-    sorted(result, key=lambda message: message["time_created"], reverse = True)
+    sorted(result, key=lambda message: message["time_created"], reverse=True)
 
     return {"messages": result}
 
@@ -68,3 +117,12 @@ def search(token, query_str):
     #         'time_created': 1582426789,
     #     }],
     # }
+
+def owner_check(u_id):
+    owner = False
+    for permissions in data["channels"]:
+        for owners in permissions["owner_members"]:
+            if u_id == owners["u_id"]:
+                owner = True
+    if owner == False:
+        raise AccessError

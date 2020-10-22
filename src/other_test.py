@@ -9,6 +9,7 @@ from auth import auth_register, auth_login
 from message import message_send, message_remove
 from other import clear, users_all, admin_userpermission_change, search
 from error import InputError, AccessError
+from utils import decode_token
 
 '''
 users_all function tests
@@ -91,6 +92,8 @@ def test_admin_permission_change_remove():
     # 2nd User, removing their owner status
     authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password", "Tara", "Simons")
     auth_login("validEmail2@gmail.com", "valid_password")
+    channel_invite(authorised_user['token'], channel['channel_id'], authorised_user2['u_id'])
+    
     # Making the 2nd user a new admin. auth_user[token] is granting auth_user2[u_id] permission owner
     admin_userpermission_change(authorised_user['token'], authorised_user2['u_id'], 1)
 
@@ -133,18 +136,9 @@ def test_admin_permission_change_remove_single_self():
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
     # Attempting to remove owner status from themself
-    admin_userpermission_change(authorised_user['token'], authorised_user['u_id'], 2)
-
-    # Check added new owner by calling channel_details
-    details = channel_details(authorised_user['token'], channel['channel_id'])
-
-    # Checking authorised_user is still an owner. 0: False, 1: True
-    found = 0
-    for dictionary in details['owner_members']:
-        if authorised_user['u_id'] == dictionary['u_id']:
-            found = 1
-    # Check authorised_user is still an owner
-    assert found == 1
+    # Raise AccessError as Admin cannot remove their own role
+    with pytest.raises(AccessError) as e:
+        admin_userpermission_change(authorised_user['token'], authorised_user['u_id'], 2)
 
 def test_admin_permission_change_remove_multiple_self():
     clear()
@@ -163,18 +157,10 @@ def test_admin_permission_change_remove_multiple_self():
     # Making the 2nd user a new admin. auth_user[token] is granting auth_user2[u_id] permission owner
     admin_userpermission_change(authorised_user['token'], authorised_user2['u_id'], 1)
 
-    admin_userpermission_change(authorised_user['token'], authorised_user['u_id'], 2)
-
-    # Check added new owner by calling channel_details
-    details = channel_details(authorised_user['token'], channel['channel_id'])
-
-    # Checking authorised_user is still an owner. 0: False, 1: True
-    found = 0
-    for dictionary in details['owner_members']:
-        if authorised_user['u_id'] == dictionary['u_id']:
-            found = 1
-    # Check if authorised_user was found as an owner
-    assert found == 0
+    # Attempting to remove owner status from themself
+    # Raise AccessError as Admin cannot remove their own role
+    with pytest.raises(AccessError) as e:
+        admin_userpermission_change(authorised_user2['token'], authorised_user2['u_id'], 2)
 
 def test_admin_permission_change_invalid_self_promotion():
     clear()
@@ -188,13 +174,13 @@ def test_admin_permission_change_invalid_self_promotion():
     auth_login("validEmail2@gmail.com", "valid_password")
     channel_invite(authorised_user['token'], channel['channel_id'], authorised_user2['u_id'])
 
-    # AccessError when member attempts to promote another self to owner
-    with pytest.raises(InputError) as e:
+    # AccessError when member attempts to promote self to owner
+    with pytest.raises(AccessError) as e:
         admin_userpermission_change(authorised_user2['token'], authorised_user2['u_id'], 2)
 
 def test_admin_permission_change_invalid_other_promotion():
     clear()
-    # AccessError if user's u_id refers to an invalid user
+    # InputError if user's u_id refers to an invalid user
     # Creating channel with admin user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
     auth_login("validEmail@gmail.com", "valid_password")
@@ -204,8 +190,8 @@ def test_admin_permission_change_invalid_other_promotion():
     auth_login("validEmail2@gmail.com", "valid_password")
     channel_invite(authorised_user['token'], channel['channel_id'], authorised_user2['u_id'])
 
-    # AccessError when member attempts to promote another user to owner 
-    with pytest.raises(InputError) as e:
+    # InputError when member attempts to promote another user to owner 
+    with pytest.raises(AccessError) as e:
         admin_userpermission_change(authorised_user2['token'], authorised_user['u_id'], 2)
 
 def test_admin_permission_change_invalid_user_id():
@@ -299,7 +285,10 @@ def test_search_expected():
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
     auth_login("validEmail@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], 'new_channel', True)
-    message_sent = message_send(authorised_user['token'], channel['channel_id'], 'Hello world')
+
+    token_decoded = decode_token(authorised_user['token'])
+
+    message_sent = message_send(token_decoded, channel['channel_id'], 'Hello world')
 
     search_test = search(authorised_user['token'], 'Hello world')
 
@@ -363,7 +352,9 @@ def test_search_null():
 
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
-    message_sent = message_send(authorised_user['token'], channel['channel_id'], 'Old')
+    token_decoded = decode_token(authorised_user['token'])
+
+    message_sent = message_send(token_decoded, channel['channel_id'], 'Old')
     
     with pytest.raises(InputError):
         search_test = search(authorised_user['token'], None)
