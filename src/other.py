@@ -1,19 +1,6 @@
 from global_dic import data
 from error import InputError
-
-def valid_token(token):
-    '''
-    function to raise InputErrors for invalid users
-    '''
-    # check for matching u_id. if none, then raise an error
-    found = False
-    for user in data['users']:
-        if user['u_id'] == token:
-            found = True
-            break
-
-    if found == False:
-        raise InputError
+from utils import check_token
 
 def clear():
     data["users"].clear()
@@ -24,17 +11,21 @@ def users_all(token):
     '''
     valid_token(token)
     '''
+    check = check_token(token)
+    if check == False:
+        raise InputError
+    
     authorised_users = []
 
     # Unable to iterate through multiple users.
     # try:
     
     for user in data["users"]:
-        for u_id in data["users"]:
-            authorised_users.append({"u_id": user["u_id"], "email": user["email"], "first_name": user["first_name"], "last_name": user["last_name"]})
+        # for u_id in data["users"]:
+        authorised_users.append({"u_id": user["u_id"], "email": user["email"], "first_name": user["first_name"], "last_name": user["last_name"]})
             # authorised_users.append({"u_id": user["u_id"], "email": user["email"], "first_name": user["first_name"], "last_name": user["last_name"], "status": user["status"]})
 
-    return {'users': authorised_users}
+    return {"users": authorised_users}
 
     # except KeyError:
     #     raise InputError

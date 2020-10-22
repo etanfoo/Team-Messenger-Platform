@@ -22,9 +22,7 @@ def test_users_all_expected():
 
     users_all_expected = users_all(authorised_user['token'])
 
-    assert users_all_expected['users'] == [{"u_id": authorised_user["u_id"], "email": "validEmail@gmail.com", "first_name": 'Philgee', "last_name": "Vlad"}] 
-
-    # assert users_all_expected['users'] == [{"u_id": 1, "email": "validEmail@gmail.com"}, {"first_name": 'Philgee', "last_lame": "Vlad"}, {'handle_str': 'pvlad'}] 
+    assert users_all_expected['users'] == [{"u_id": authorised_user["u_id"], "email": "validEmail@gmail.com", "first_name": 'Philgee', "last_name": "Vlad"}]
 
 
 def test_users_all_multiple():
@@ -40,10 +38,15 @@ def test_users_all_multiple():
 
     users_all_expected = users_all(authorised_user['token'])
 
-    assert users_all_expected['users'] == [{"u_id": 1, "email": "validEmail@gmail.com"}, {"name_first": 'Chikcen', "last_lame": "Vlad"}, {'handle_str': 'cvlad'},
-    {"u_id": 2, "email": "validEmail2@gmail.com"}, {"name_first": 'Philip', "last_lame": "Denver"}, {'handle_str': 'pdevner'},
-    {"u_id": 3, "email": "validEmail3@gmail.com"}, {"name_first": 'Zac', "last_lame": "Philip"}, {'handle_str': 'zphilip'}] 
+    assert users_all_expected['users'] == [{"u_id": authorised_user["u_id"], "email": "validEmail@gmail.com", "first_name": 'Chicken', "last_name": "Vlad"},
+    {"u_id": authorised_user2["u_id"], "email": "validEmail2@gmail.com", "first_name": 'Philip', "last_name": "Denver"},
+    {"u_id": authorised_user3["u_id"], "email": "validEmail3@gmail.com", "first_name": 'Zac', "last_name": "Philip"}] 
 
+    '''
+    assert users_all_expected['users'] == [{"u_id": authorised_user["u_id"], "email": "validEmail@gmail.com"}, {"first_name": 'Chicken', "last_name": "Vlad"},
+    {"u_id": authorised_user2["u_id"], "email": "validEmail2@gmail.com"}, {"first_name": 'Philip', "last_name": "Denver"},
+    {"u_id": authorised_user3["u_id"], "email": "validEmail3@gmail.com"}, {"first_name": 'Zac', "last_name": "Philip"}] 
+    '''
     '''
     admin_userpermission_change function tests
     '''

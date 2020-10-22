@@ -28,9 +28,7 @@ def test_login_password():
 def test_login_email_limit():
     clear()
     with pytest.raises(InputError):
-        auth_login(
-            "atestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatest@gmail.com ",
-            "Test@12345")
+        auth_login("a" * 255 + "@hotmail.com", "password")
 
 
 #Email address first character of username must be an ascii letter (a-z) or number (0-9)
@@ -206,36 +204,34 @@ def test_register_check_user():
 def test_register_email_limit():
     clear()
     with pytest.raises(InputError):
-        auth_register(
-            "atestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatest@gmail.com",
-            "Test@12345", "Dummy", "Test")
+        auth_register("a" * 255 + "@hotmail.com", "password", "Dummy", "Test")
 
 
 #Email address first character of username must be an ascii letter (a-z) or number (0-9)
 def test_register_email_first_letter():
     clear()
     with pytest.raises(InputError):
-        auth_register(".atest@gmail.com ", "Test@12345", "Dummy", "Test")
+        auth_register(".atest@gmail.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError):
-        auth_register("~atest@gmail.com ", "Test@12345", "Dummy", "Test")
+        auth_register("~atest@gmail.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError):
-        auth_register("!atest@gmail.com ", "Test@12345", "Dummy", "Test")
+        auth_register("!atest@gmail.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError):
-        auth_register("#atest@gmail.com ", "Test@12345", "Dummy", "Test")
+        auth_register("#atest@gmail.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError):
-        auth_register("$atest@gmail.com ", "Test@12345", "Dummy", "Test")
+        auth_register("$atest@gmail.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError):
-        auth_register("^atest@gmail.com ", "Test@12345", "Dummy", "Test")
+        auth_register("^atest@gmail.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError):
-        auth_register("&atest@gmail.com ", "Test@12345", "Dummy", "Test")
+        auth_register("&atest@gmail.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError):
-        auth_register("*atest@gmail.com ", "Test@12345", "Dummy", "Test")
+        auth_register("*atest@gmail.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError):
-        auth_register("(atest@gmail.com ", "Test@12345", "Dummy", "Test")
+        auth_register("(atest@gmail.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError):
-        auth_register(")atest@gmail.com ", "Test@12345", "Dummy", "Test")
+        auth_register(")atest@gmail.com", "Test@12345", "Dummy", "Test")
     with pytest.raises(InputError):
-        auth_register("+atest@gmail.com ", "Test@12345", "Dummy", "Test")
+        auth_register("+atest@gmail.com", "Test@12345", "Dummy", "Test")
 
 
 #Email address cannot have a leading space
