@@ -14,7 +14,7 @@ def test_message_send_size():
                                     "Philgee", "Vlad")
     new_channel = channels_create(authorised_user['token'], "public_channel",
                                   True)
-    with py.test.raises(InputError):
+    with pytest.raises(InputError):
         message.send(authorised_user['token'], new_channel['channel_id'],
                      "x" * 1001)
 
@@ -29,7 +29,7 @@ def test_message_send_authorized():
                                         "Person")
     new_channel = channels_create(authorised_user['token'], "public_channel",
                                   True)
-    with py.test.raises(AccessError):
+    with pytest.raises(AccessError):
         messsage.send(non_authorised_user['token'], new_channel['channel_id'],
                       "message")
 
@@ -42,7 +42,7 @@ def test_message_remove_id_no_exists():
     clear()
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
-    with py.test.raises(InputError):
+    with pytest.raises(InputError):
         message_remove(authorised_user['token'], "1")
 
 
@@ -63,7 +63,7 @@ def test_authorised_user():
                                   True)
     message_id = message.send(authorised_user['token'],
                               new_channel['channel_id'], "message")
-    with py.test.raises(AccessError):
+    with pytest.raises(AccessError):
         message_remove(not_authorised['token'], message_id)
 
 
@@ -82,5 +82,5 @@ def test_message_edit_owner():
                                   True)
     message_id = message.send(authorised_user['token'],
                               new_channel['channel_id'], "message")
-    with py.test.raises(AccessError):
+    with pytest.raises(AccessError):
         message_edit(not_authorised['token'], message_id)

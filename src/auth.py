@@ -38,8 +38,7 @@ def auth_login(email, password):
 
 def auth_logout(token):
     #Find token
-    if (check_token(token) == False):
-        raise AccessError(AccessError)
+    check_token(token)
     remove_token(token)
     logout_state(token)
     return {
