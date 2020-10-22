@@ -43,3 +43,11 @@ def check_email(email):
         if (data["users"][i]["email"] == email):
             return True
     return False
+
+
+def logout_state(token):
+    for i in range(len(data["users"])):
+        if (data["users"][i]["token"] == token):
+            if (data["users"][i]['state'] != "active"):
+                raise AccessError(AccessError)
+            data["users"][i]['state'] = "inactive"

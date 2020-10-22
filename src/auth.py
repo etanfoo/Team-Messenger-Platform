@@ -1,22 +1,21 @@
 from error import InputError, AccessError
 from global_dic import data
-from utils import generate_token
+from utils import generate_token, check_token, remove_token
 import uuid
 import re
 from hashlib import sha256
 from appsecret import JWT_SECRET
-from auth_helper import validate_email, validate_password, hash_password, validate_name, check_email
+from auth_helper import validate_email, validate_password, hash_password, validate_name, check_email, logout_state
 
 
 def auth_login(email, password):
-    #Boolean if the email is found
     #Function to validate email
     validate_email(email)
     validate_password(password)
     #Input error if user not found
-    if (check_email == False):
+    if (check_email(email) == False):
         raise InputError(InputError)
-    #Check if email exist
+
     for i in range(len(data["users"])):
         if (data["users"][i]["email"] == email):
             u_id = data['users'][i]['u_id']
@@ -38,18 +37,11 @@ def auth_login(email, password):
 
 
 def auth_logout(token):
-    find = False
-    for i in range(len(data["users"])):
-        #Find token
-        if (data["users"][i]["token"] == token):
-            if (data["users"][i]['state'] != "active"):
-                raise AccessError(AccessError)
-            data["users"][i]['state'] = "inactive"
-            #Remove token
-            del data["users"][i]["token"]
-            find = True
-    if find == False:
+    #Find token
+    if (check_token(token) == False):
         raise AccessError(AccessError)
+    remove_token(token)
+    logout_state(token)
     return {
         'is_success': True,
     }
@@ -60,7 +52,7 @@ def auth_register(email, password, name_first, name_last):
     validate_password(password)
     validate_name(name_first)
     validate_name(name_last)
-    if (check_email == True):
+    if (check_email(email) == True):
         raise InputError(InputError)
     user_id = uuid.uuid4().hex
     user_token = generate_token(user_id)
