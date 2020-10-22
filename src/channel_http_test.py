@@ -230,15 +230,14 @@ def test_channel_details_input_error(url):
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
     user_1 = prepare_user(url, authorised_user)
-    channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
 
     # input error test when channel ID is not a valid channel
     with pytest.raises(InputError):
-        details = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : invalid_channel_id})
+        requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : invalid_channel_id})
 
     # input error test when channel_id is not of the same data type as expected (integer)
     with pytest.raises(InputError):
-        details = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : "string_input"})
+        requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : "string_input"})
 
 def test_channel_details_acces_error(url):
     # Reset/clear data
@@ -250,9 +249,7 @@ def test_channel_details_acces_error(url):
     # Access Error when authorised user is not part of channel
     with pytest.raises(AccessError):
         user_3 = prepare_user(url, unauthorised_user)
-        details = requests.get(f"{url}/channel/details", params = {"token" : user_3['token'], "channel_id" : channel_1['channel_id']})
-
-'''MAKE TEST FOR channel/message normal'''
+        requests.get(f"{url}/channel/details", params = {"token" : user_3['token'], "channel_id" : channel_1['channel_id']})
 
 
 def test_channel_messages_input_error(url):
@@ -269,12 +266,11 @@ def test_channel_messages_input_error(url):
 
     # input error when channel ID not a valid channel
     with pytest.raises(InputError):
-        # requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : channel_1["channel_id"], 0})
-        messages = requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : invalid_channel_id, 0})
+        requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : invalid_channel_id, "start" : 0})
 
     # input error when channel_id is not of the same data type as expected (integer)
     with pytest.raises(InputError):
-        messages = requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : "string_input", 0})
+        requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : "string_input", "start" : 0})
 
 def test_channel_messages_access_error(url):
     # Reset/clear data
@@ -286,7 +282,7 @@ def test_channel_messages_access_error(url):
     # Access error when user is not a member of channel with channel_id
     with pytest.raises(AccessError):
         user_2 = prepare_user(url, unauthorised_user)
-        messages = requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : channel_1["channel_id"], 0})
+        requests.get(f"{url}/channel/messages", params = {"token" : user_2['token'], "channel_id" : channel_1["channel_id"], "start" : 0})
 
 def test_channel_leave_regular(url):
     # Reset/clear data
@@ -330,7 +326,7 @@ def test_channel_leave_input_error(url):
 
     # input error, when channel_id is not of the same data type as expected (integer)
     with pytest.raises(InputError):
-        user_3 = aprepare_user(url, unauthorised_user)
+        user_3 = prepare_user(url, unauthorised_user)
         invite_channel(url, user_1['token'], channel_1['channel_id'], user_3['u_id'])
         requests.post(url, data = {user_3['token'], "string_input"})
 
@@ -351,14 +347,12 @@ def test_channel_join_input_error(url):
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
     user_1 = prepare_user(url, authorised_user)
-    channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
 
     #####################################################################################
 
     # input error when channel ID is not a valid channel
     with pytest.raises(InputError):
-        user_2 = prepare_user(url, second_user)
-        requests.post(f"{url}/channel/join", data = {user_2['token'], invalid_channel_id})
+        requests.post(f"{url}/channel/join", data = {user_1['token'], invalid_channel_id})
 
 def test_channel_join_acccess_error(url):
     # Reset/clear data
