@@ -7,6 +7,7 @@ import signal
 from time import sleep
 from error import InputError
 import pytest
+from utils import register_user, login_user, create_channel, invite_channel
 
 @pytest.fixture
 def url():
@@ -44,43 +45,6 @@ second_user = {
     "name_first": "Donald",
     "name_last": "Trump",
 }
-
-###################
-# Helper functions
-###################
-def register_user(url, user):
-    # Registers a new user
-    r = requests.post(f"{url}/auth/register", json = user)
-    return r.json()
-
-def login_user(url, user):
-    # Registers a new user
-    requests.post(f"{url}/auth/login", json = {
-        "email": user['email'], 
-        "password": user['password']
-    })
-
-def create_channel(url, token, name, is_public):
-    # Creates a new channel
-    new_channel = {
-        "token": token,
-        "name": name,
-        "is_public": is_public,
-    }
-    r = requests.post(f"{url}/channels/create", json = new_channel)
-    payload = r.json()
-    payload["name"] = new_channel["name"]
-    return payload
-
-def invite_channel(url, token, channel_id, u_id):
-    # Invites a user to a channel
-    invite = {
-        "token": token,
-        "channel_id": channel_id,
-        "u_id": u_id,
-    }
-    r = requests.post(f"{url}/channel/invite", json = invite)
-    return r.json()
 
 ###################
 # channels/list
@@ -190,9 +154,9 @@ def test_list_uninvited(url):
     payload = r.json()
     assert payload['channels'] == []
 
-###################
-# channels/listall
-###################
+# ###################
+# # channels/listall
+# ###################
 def test_listall_empty(url):
     '''
     No channels are created
@@ -246,7 +210,7 @@ def test_listall_public(url):
     user_2 = register_user(url, second_user)
     login_user(url, second_user)
     # Check the list of channels for user_2
-    r = requests.get(f"{url}/channels/list", params = {"token": user_2['token']})
+    r = requests.get(f"{url}/channels/listall", params = {"token": user_2['token']})
     payload = r.json()
     assert payload['channels'] == [
         {"channel_id": 0, "name": public_channel_1["name"]},
@@ -274,7 +238,7 @@ def test_listall_mix(url):
     public_channel_2 = create_channel(url, user_2['token'], "Donald", True)
     create_channel(url, user_2['token'], "TSM Wins Worlds", False)
     # Check the list of channels for user_1
-    r = requests.get(f"{url}/channels/list", params = {"token": user_1['token']})
+    r = requests.get(f"{url}/channels/listall", params = {"token": user_1['token']})
     payload = r.json()
     assert payload['channels'] == [
         {"channel_id": 0, "name": public_channel_1["name"]},
@@ -313,11 +277,22 @@ def test_creates_long(url):
     # Reset/clear data
     requests.delete(f"{url}/clear")
     user_1 = register_user(url, authorised_user) 
-    login_user(url, authorised_user)       
-    with pytest.raises(InputError):
-        create_channel(url, user_1['token'], "ThisIsATestForALongChannelName", True)
-    with pytest.raises(InputError):
-        create_channel(url, user_1['token'], "The Kanye East experience", True)
+    login_user(url, authorised_user)
+    new_channel = {
+        "token": user_1['token'],
+        "name": "ThisIsATestForALongChannelName",
+        "is_public": True,
+    }
+    payload = requests.post(f"{url}/channels/create", json = new_channel)
+    assert payload.status_code == 400
+
+    new_channel_2 = {
+        "token": user_1['token'],
+        "name": "The Kanye East experience",
+        "is_public": True,
+    }
+    payload = requests.post(f"{url}/channels/create", json = new_channel_2)
+    assert payload.status_code == 400
 
 def test_creates_success(url):
     '''
@@ -330,7 +305,7 @@ def test_creates_success(url):
     channel_1 = create_channel(url, user_1['token'], "Chicken Nuggets", True)
     assert channel_1['channel_id'] == 0
     channel_2 = create_channel(url, user_1['token'], "TSM Legends", True)
-    assert channel_2['channel_iq'] == 1
+    assert channel_2['channel_id'] == 1
 
 def test_creates_empty(url):
     '''
@@ -339,11 +314,22 @@ def test_creates_empty(url):
     # Reset/clear data
     requests.delete(f"{url}/clear")
     user_1 = register_user(url, authorised_user)   
-    login_user(url, authorised_user)     
-    with pytest.raises(InputError):
-        create_channel(url, user_1['token'], "      ", True)
-    with pytest.raises(InputError):
-        create_channel(url, user_1['token'], "", True)
+    login_user(url, authorised_user)  
+    new_channel = {
+        "token": user_1['token'],
+        "name": "         ",
+        "is_public": True,
+    }
+    payload = requests.post(f"{url}/channels/create", json = new_channel)
+    assert payload.status_code == 400 
+
+    new_channel_2 = {
+        "token": user_1['token'],
+        "name": "",
+        "is_public": True,
+    }
+    payload = requests.post(f"{url}/channels/create", json = new_channel_2)
+    assert payload.status_code == 400     
 
 def test_creates_integer(url):
     '''
