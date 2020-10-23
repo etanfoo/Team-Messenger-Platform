@@ -144,17 +144,21 @@ def test_channel_invite_input_error(url):
     user_2 = prepare_user(url, second_user)
 
     # input error test, when channel_id does not refer to a valid channel
-    with pytest.raises(InputError):
-        requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": invalid_channel_id, "user": user_2['u_id']})
+    payload = requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": invalid_channel_id, "user": user_2['u_id']})
+    print(payload)
+    assert payload.status_code == 400
     # input error test, when u_id does not refer to a valid id
-    with pytest.raises(InputError):
-        requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": channel_1['channel_id'], "user": invalid_u_id})
+    payload = requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": channel_1['channel_id'], "user": invalid_u_id})
+    print(payload)
+    assert payload.status_code == 400
     # input error, when channel_id is not of the same data type as expected (integer)
-    with pytest.raises(InputError):
-        requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": "string_input", "user": user_2['u_id']})
+    payload = requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": "string_input", "user": user_2['u_id']})
+    print(payload)
+    assert payload.status_code == 400
     # input error, when u_id is not of the same data type as expected (integer)
-    with pytest.raises(InputError):
-        requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": channel_1['channel_id'], "user": "string_input"})
+    payload = requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": channel_1['channel_id'], "user": "string_input"})
+    print(payload)
+    assert payload.status_code == 400
     
 def test_channel_invite_access_error(url):
     # Reset/clear data
@@ -166,11 +170,12 @@ def test_channel_invite_access_error(url):
     user_2 = prepare_user(url, second_user)    
 
     # access error test, when authorised user is not part of channel
-    with pytest.raises(AccessError):
-        # Create user_3
-        user_3 = prepare_user(url, unauthorised_user)
-        # user_3 invites user_2 to channel_1
-        requests.post(f"{url}/channel/invite", data = {"token": user_3['token'], "channel_id": channel_1['channel_id'], "user": user_2['u_id']})
+    # Create user_3
+    user_3 = prepare_user(url, unauthorised_user)
+    # user_3 invites user_2 to channel_1
+    payload = requests.post(f"{url}/channel/invite", data = {"token": user_3['token'], "channel_id": channel_1['channel_id'], "user": user_2['u_id']})
+    print(payload)
+    assert payload.status_code == 400
 
 def test_channel_details_normal(url):
     # Reset/clear data
@@ -232,12 +237,15 @@ def test_channel_details_input_error(url):
     user_1 = prepare_user(url, authorised_user)
 
     # input error test when channel ID is not a valid channel
-    with pytest.raises(InputError):
-        requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : invalid_channel_id})
-
+    
+    payload = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : invalid_channel_id})
+    print(payload)
+    assert payload.status_code == 400
     # input error test when channel_id is not of the same data type as expected (integer)
-    with pytest.raises(InputError):
-        requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : "string_input"})
+    
+    payload = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : "string_input"})
+    print(payload)
+    assert payload.status_code == 400
 
 def test_channel_details_acces_error(url):
     # Reset/clear data
@@ -247,9 +255,10 @@ def test_channel_details_acces_error(url):
     channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
 
     # Access Error when authorised user is not part of channel
-    with pytest.raises(AccessError):
-        user_3 = prepare_user(url, unauthorised_user)
-        requests.get(f"{url}/channel/details", params = {"token" : user_3['token'], "channel_id" : channel_1['channel_id']})
+    user_3 = prepare_user(url, unauthorised_user)
+    payload = requests.get(f"{url}/channel/details", params = {"token" : user_3['token'], "channel_id" : channel_1['channel_id']})
+    print(payload)
+    assert payload.status_code == 400
 
 
 def test_channel_messages_input_error(url):
@@ -265,12 +274,13 @@ def test_channel_messages_input_error(url):
     user_1 = prepare_user(url, authorised_user)
 
     # input error when channel ID not a valid channel
-    with pytest.raises(InputError):
-        requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : invalid_channel_id, "start" : 0})
-
-    # input error when channel_id is not of the same data type as expected (integer)
-    with pytest.raises(InputError):
-        requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : "string_input", "start" : 0})
+    payload = requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : invalid_channel_id, "start" : 0})
+    print(payload)
+    assert payload.status_code == 400
+    # input error when channel_id is not of the same data type as expected (integer)    
+    payload = requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : "string_input", "start" : 0})
+    print(payload)
+    assert payload.status_code == 400
 
 def test_channel_messages_access_error(url):
     # Reset/clear data
@@ -280,9 +290,10 @@ def test_channel_messages_access_error(url):
     channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
 
     # Access error when user is not a member of channel with channel_id
-    with pytest.raises(AccessError):
-        user_2 = prepare_user(url, unauthorised_user)
-        requests.get(f"{url}/channel/messages", params = {"token" : user_2['token'], "channel_id" : channel_1["channel_id"], "start" : 0})
+    user_2 = prepare_user(url, unauthorised_user)
+    payload = requests.get(f"{url}/channel/messages", params = {"token" : user_2['token'], "channel_id" : channel_1["channel_id"], "start" : 0})
+    print(payload)
+    assert payload.status_code == 400
 
 def test_channel_leave_regular(url):
     # Reset/clear data
@@ -319,16 +330,19 @@ def test_channel_leave_input_error(url):
     channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
 
     # input error when channel ID is not a valid channel
-    with pytest.raises(InputError):
-        user_2 = prepare_user(url, second_user)
-        invite_channel(url, user_1['token'], channel_1['channel_id'], user_2['u_id'])
-        requests.post(url, data = {user_2['token'], invalid_channel_id})
+    user_2 = prepare_user(url, second_user)
+    invite_channel(url, user_1['token'], channel_1['channel_id'], user_2['u_id'])
 
+    payload = requests.post(url, data = {user_2['token'], invalid_channel_id})
+    print(payload)
+    assert payload.status_code == 400
     # input error, when channel_id is not of the same data type as expected (integer)
-    with pytest.raises(InputError):
-        user_3 = prepare_user(url, unauthorised_user)
-        invite_channel(url, user_1['token'], channel_1['channel_id'], user_3['u_id'])
-        requests.post(url, data = {user_3['token'], "string_input"})
+    user_3 = prepare_user(url, unauthorised_user)
+    invite_channel(url, user_1['token'], channel_1['channel_id'], user_3['u_id'])
+
+    payload = requests.post(url, data = {user_3['token'], "string_input"})
+    print(payload)
+    assert payload.status_code == 400
 
 def test_channel_leave_access_error(url):
     # Reset/clear data
@@ -338,9 +352,10 @@ def test_channel_leave_access_error(url):
     channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
 
     # Access error, when user is not a member of channel with channel_id
-    with pytest.raises(AccessError):
-        user_3 = prepare_user(url, unauthorised_user)
-        requests.post(f"{url}/channel/leave", data = {user_3['token'], channel_1['channel_id']})
+    user_3 = prepare_user(url, unauthorised_user)
+    payload = requests.post(f"{url}/channel/leave", data = {user_3['token'], channel_1['channel_id']})
+    print(payload)
+    assert payload.status_code == 400
 
 def test_channel_join_input_error(url):
     # Reset/clear data
@@ -351,8 +366,9 @@ def test_channel_join_input_error(url):
     #####################################################################################
 
     # input error when channel ID is not a valid channel
-    with pytest.raises(InputError):
-        requests.post(f"{url}/channel/join", data = {user_1['token'], invalid_channel_id})
+    payload = requests.post(f"{url}/channel/join", data = {user_1['token'], invalid_channel_id})
+    print(payload)
+    assert payload.status_code == 400
 
 def test_channel_join_acccess_error(url):
     # Reset/clear data
@@ -362,9 +378,10 @@ def test_channel_join_acccess_error(url):
     private_channel = create_channel(url, user_1['token'], "Private", False)
 
     # Access error when channel_id refers to a channel that is private (when the authorised user is not an admin)
-    with pytest.raises(AccessError):
-        user_2 = prepare_user(url, second_user)
-        requests.post(f"{url}/channel/join", data = {user_2['token'], private_channel['channel_id']})
+    user_2 = prepare_user(url, second_user)
+    payload = requests.post(f"{url}/channel/join", data = {user_2['token'], private_channel['channel_id']})
+    print(payload)
+    assert payload.status_code == 400
 
 def test_channel_join_normal(url):
     # Reset/clear data
@@ -399,13 +416,15 @@ def test_channel_addowner_input_error(url):
     #####################################################################################
 
     # input error when channel ID is not a valid channel
-    with pytest.raises(InputError):
-        user_2 = prepare_user(url, second_user)
-        requests.post(f"{url}/channel/addowner", data = {user_1['token'], invalid_channel_id, user_2['u_id']})
+    user_2 = prepare_user(url, second_user)
+    payload = requests.post(f"{url}/channel/addowner", data = {user_1['token'], invalid_channel_id, user_2['u_id']})
+    print(payload)
+    assert payload.status_code == 400
 
     # input error when user with user id u_id is already an owner of the channel 
-    with pytest.raises(InputError):        
-        requests.post(f"{url}/channel/addowner", data = {user_1['token'], channel_1['channel_id'], user_1['u_id']})
+    payload = requests.post(f"{url}/channel/addowner", data = {user_1['token'], channel_1['channel_id'], user_1['u_id']})
+    print(payload)
+    assert payload.status_code == 400
 
 def test_channel_addowner_access_error(url):
     # Reset/clear data
@@ -415,9 +434,10 @@ def test_channel_addowner_access_error(url):
     channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
 
     # access error when the authorised user is not an owner of the flockr, or an owner of this channel
-    with pytest.raises(AccessError):
-        user_2 = prepare_user(url, second_user)
-        requests.post(f"{url}/channel/addowner", data = {user_2['token'], channel_1['channel_id'], user_2['u_id']})
+    user_2 = prepare_user(url, second_user)
+    payload = requests.post(f"{url}/channel/addowner", data = {user_2['token'], channel_1['channel_id'], user_2['u_id']})
+    print(payload)
+    assert payload.status_code == 400
 
 def test_channel_addowner_normal(url):
     # Reset/clear data
@@ -449,13 +469,15 @@ def test_channel_removeowner_input_error(url):
     channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
 
     # input error when channel ID is not a valid channel
-    with pytest.raises(InputError):
-        requests.post(f"{url}/channel/removeowner", data = {user_1['token'], invalid_channel_id, user_1['u_id']})
+    payload = requests.post(f"{url}/channel/removeowner", data = {user_1['token'], invalid_channel_id, user_1['u_id']})
+    print(payload)
+    assert payload.status_code == 400
 
     # input error when user with user id u_id is not an owner of the channel
-    with pytest.raises(InputError):
-        user_2 = prepare_user(url, second_user)
-        requests.post(f"{url}/channel/removeowner", data = {user_1['token'], channel_1['channel_id'], user_2['u_id']})
+    user_2 = prepare_user(url, second_user)
+    payload = requests.post(f"{url}/channel/removeowner", data = {user_1['token'], channel_1['channel_id'], user_2['u_id']})
+    print(payload)
+    assert payload.status_code == 400
 
 def test_channel_removeowner_acces_error(url):
     # Reset/clear data
@@ -465,9 +487,10 @@ def test_channel_removeowner_acces_error(url):
     channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
 
     # access error when the authorised user is not an owner of the flockr, or an owner of this channel 
-    with pytest.raises(AccessError):
-        user_2 = prepare_user(url, second_user)
-        requests.post(f"{url}/channel/removeowner", data = {user_2['token'], channel_1['channel_id'], user_1['u_id']})
+    user_2 = prepare_user(url, second_user)
+    payload = requests.post(f"{url}/channel/removeowner", data = {user_2['token'], channel_1['channel_id'], user_1['u_id']})
+    print(payload)
+    assert payload.status_code == 400
 
 def test_channel_removeowner_normal():
     # Reset/clear data
