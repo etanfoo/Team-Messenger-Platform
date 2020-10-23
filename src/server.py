@@ -7,6 +7,8 @@ from flask import Flask, request
 from flask_cors import CORS
 from error import InputError, AccessError
 from channels import channels_list, channels_listall, channels_create, channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
+from auth import auth_login, auth_logout, auth_register
+
 
 def defaultHandler(err):
     response = err.get_response()
