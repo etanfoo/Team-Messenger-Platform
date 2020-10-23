@@ -19,7 +19,7 @@ def decode_token(token):
     '''
     decode_token
     '''
-    return jwt.decode(token, JWT_SECRET, algorithms='HS256')
+    return jwt.decode(token, JWT_SECRET, algorithms='HS256')['user_id']
 
 
 def check_token(token):
@@ -47,5 +47,13 @@ def remove_token(token):
         if (data["users"][i]["token"] == token):
             del data["users"][i]["token"]
             return True
+<<<<<<< HEAD
     #Token does not exist
     raise AccessError(description="Token does not exist")
+=======
+    return False
+
+
+if __name__ == "__main__":
+    print(decode_token(generate_token("gilbert")))
+>>>>>>> it2_dev

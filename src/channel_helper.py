@@ -9,7 +9,7 @@ def check_channel(channel_id):
     return False
 
 
-def check_owner(channel_id, u_id):
+def check_owner(channel_id, u_id_match):
     # loop through each channel
     for channel in data['channels']:
         # check channel_id exists
@@ -17,22 +17,15 @@ def check_owner(channel_id, u_id):
             # loop through owners in that specific channel
             for owners in channel["owner_members"]:
                 # check if that owner is already an owner
-                if owners["u_id"] == u_id:
+                if owners["u_id"] == u_id_match:
                     return True
     return False
 
 
-def channel_details(channel_id):
+def channel_details_helper(channel_id):
     for channel in data['channels']:
-        if channel_id == channel['channel_id']:
+        if channel['channel_id'] == channel_id:
             return channel
-
-
-def check_channel_state(channel_id):
-    for channel in data['channels']:
-        if channel['channel_id'] == channel_id and channel['is_public'] == True:
-            return True
-    return False
 
 
 #Check if u_id is valid
@@ -45,8 +38,8 @@ def check_uid(u_id):
 
 def check_member_channel(channel_id, u_id):
     for channel in data['channels']:
-        if channel_id == channel['channel_id']:
-            if u_id == channel["all_members"]:
+        for member in channel['all_members']:
+            if u_id == member['u_id']:
                 return True
     return False
 
@@ -78,6 +71,13 @@ def add_user(channel_id, u_id):
         if channel['channel_id'] == channel_id:
             new_user = {'u_id': u_id}
             channel['all_members'].append(new_user)
+
+
+def add_owner(channel_id, uid):
+    for channel in data['channels']:
+        if channel['channel_id'] == channel_id:
+            new_owner = {'u_id': uid}
+            channel["owner_members"].append(new_owner)
 
 
 def delete_user(channel_id, u_id):
