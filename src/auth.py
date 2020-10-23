@@ -23,7 +23,7 @@ def auth_login(email, password):
             if ('token' in data['users'][i]):
                 token = data['users'][i]['token']
             else:
-                user_token = generate_token(u_id)
+                token = generate_token(u_id)
             #Check if hashed password match
             if (data["users"][i]["password"] != hash_password(password)):
                 raise InputError(InputError)
