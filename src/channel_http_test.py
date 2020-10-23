@@ -8,7 +8,7 @@ from time import sleep
 from error import InputError, AccessError
 import pytest
 from channel import channel_details
-from channel_test import invalid_u_id, invalid_channel_id
+from channel_test import INVALID_U_ID, INVALID_CHANNEL_ID
 
 
 @pytest.fixture
@@ -144,11 +144,11 @@ def test_channel_invite_input_error(url):
     user_2 = prepare_user(url, second_user)
 
     # input error test, when channel_id does not refer to a valid channel
-    payload = requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": invalid_channel_id, "user": user_2['u_id']})
+    payload = requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": INVALID_CHANNEL_ID, "user": user_2['u_id']})
     
     assert payload.status_code == 400
     # input error test, when u_id does not refer to a valid id
-    payload = requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": channel_1['channel_id'], "user": invalid_u_id})
+    payload = requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": channel_1['channel_id'], "user": INVALID_U_ID})
     
     assert payload.status_code == 400
     # input error, when channel_id is not of the same data type as expected (integer)
@@ -238,7 +238,7 @@ def test_channel_details_input_error(url):
 
     # input error test when channel ID is not a valid channel
     
-    payload = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : invalid_channel_id})
+    payload = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : INVALID_CHANNEL_ID})
     
     assert payload.status_code == 400
     # input error test when channel_id is not of the same data type as expected (integer)
@@ -274,7 +274,7 @@ def test_channel_messages_input_error(url):
     user_1 = prepare_user(url, authorised_user)
 
     # input error when channel ID not a valid channel
-    payload = requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : invalid_channel_id, "start" : 0})
+    payload = requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : INVALID_CHANNEL_ID, "start" : 0})
     
     assert payload.status_code == 400
     # input error when channel_id is not of the same data type as expected (integer)    
@@ -333,7 +333,7 @@ def test_channel_leave_input_error(url):
     user_2 = prepare_user(url, second_user)
     invite_channel(url, user_1['token'], channel_1['channel_id'], user_2['u_id'])
 
-    payload = requests.post(url, data = {user_2['token'], invalid_channel_id})
+    payload = requests.post(url, data = {user_2['token'], INVALID_CHANNEL_ID})
     
     assert payload.status_code == 400
     # input error, when channel_id is not of the same data type as expected (integer)
@@ -366,7 +366,7 @@ def test_channel_join_input_error(url):
     #####################################################################################
 
     # input error when channel ID is not a valid channel
-    payload = requests.post(f"{url}/channel/join", data = {user_1['token'], invalid_channel_id})
+    payload = requests.post(f"{url}/channel/join", data = {user_1['token'], INVALID_CHANNEL_ID})
     
     assert payload.status_code == 400
 
@@ -417,7 +417,7 @@ def test_channel_addowner_input_error(url):
 
     # input error when channel ID is not a valid channel
     user_2 = prepare_user(url, second_user)
-    payload = requests.post(f"{url}/channel/addowner", data = {user_1['token'], invalid_channel_id, user_2['u_id']})
+    payload = requests.post(f"{url}/channel/addowner", data = {user_1['token'], INVALID_CHANNEL_ID, user_2['u_id']})
     
     assert payload.status_code == 400
 
@@ -469,7 +469,7 @@ def test_channel_removeowner_input_error(url):
     channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
 
     # input error when channel ID is not a valid channel
-    payload = requests.post(f"{url}/channel/removeowner", data = {user_1['token'], invalid_channel_id, user_1['u_id']})
+    payload = requests.post(f"{url}/channel/removeowner", data = {user_1['token'], INVALID_CHANNEL_ID, user_1['u_id']})
     
     assert payload.status_code == 400
 
