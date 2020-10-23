@@ -5,12 +5,7 @@ import signal
 from time import sleep
 import requests
 import json
-import channel 
-import flask
 
-
-APP = flask.Flask(url)
-# just uploading new branch
 
 # Use this fixture to get the URL of the server. It starts the server for you,
 # so you don't need to.
@@ -40,4 +35,3 @@ def test_echo(url):
     '''
     resp = requests.get(url + 'echo', params={'data': 'hello'})
     assert json.loads(resp.text) == {'data': 'hello'}
-
