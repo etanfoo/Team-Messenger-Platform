@@ -8,9 +8,6 @@ def clear():
 
 
 def users_all(token):
-    '''
-    valid_token(token)
-    '''
     check = check_token(token)
     if check == False:
         raise InputError
@@ -21,7 +18,12 @@ def users_all(token):
     # try:
     
     for user in data["users"]:
-        authorised_users.append({"u_id": user["u_id"], "email": user["email"], "first_name": user["first_name"], "last_name": user["last_name"]})
+        authorised_users.append({
+            "u_id": user["u_id"], 
+            "email": user["email"], 
+            "first_name": user["first_name"], 
+            "last_name": user["last_name"]
+        })
 
     return {"users": authorised_users}
 
@@ -32,13 +34,7 @@ def admin_userpermission_change(token, u_id, permission_id):
     if check == False:
         raise InputError
     token_id = decode_token(token)
-    '''
-    found_permission = False
-    for user in data["channels"]:
-        if token == user["owner_members"]:
-            found_permission = True
-    if found_permission == False:
-        raise AccessError '''
+
     # Check for self demotion/promotion
     if token_id == u_id:
         raise AccessError
@@ -89,7 +85,7 @@ def admin_userpermission_change(token, u_id, permission_id):
             for demotion_id in demotion["owner_members"]:
                 if demotion_id["u_id"] == u_id:
                     demotion["owner_members"].remove({"u_id": u_id})
-    
+                    
     return 0
 
 def search(token, query_str):
@@ -100,10 +96,7 @@ def search(token, query_str):
 
     result = []
 
-    matching_u_id = decode_token(token)
-
     for channel in data["channels"]:
-        #if matching_u_id == channel["all_members"]:
         for message in channel["messages"]:
             if query_str in message['message']:
                 result.append(message)
@@ -111,12 +104,3 @@ def search(token, query_str):
     sorted(result, key=lambda message: message["time_created"], reverse=True)
 
     return {"messages": result}
-
-    # return {
-    #     'messages': [{
-    #         'message_id': 1,
-    #         'u_id': 1,
-    #         'message': 'Hello world',
-    #         'time_created': 1582426789,
-    #     }],
-    # }
