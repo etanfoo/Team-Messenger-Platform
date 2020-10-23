@@ -23,7 +23,7 @@ def auth_login(email, password):
             if ('token' in data['users'][i]):
                 token = data['users'][i]['token']
             else:
-                user_token = generate_token(u_id)
+                token = generate_token(u_id)
             #Check if hashed password match
             if (data["users"][i]["password"] != hash_password(password)):
                 raise InputError(InputError)
@@ -38,8 +38,7 @@ def auth_login(email, password):
 
 def auth_logout(token):
     #Find token
-    if (check_token(token) == False):
-        raise AccessError(AccessError)
+    check_token(token)
     remove_token(token)
     logout_state(token)
     return {
