@@ -16,7 +16,8 @@ def message_send(token, channel_id, message):
     #Decode token
     u_id = decode_token(token)
     #Check if the channel exist
-    check_channel(channel_id)
+    if (check_channel(channel_id) == False):
+        raise InputError
     #Check if the user is authorized in the channel
     if (check_member_channel(channel_id, u_id) == False):
         raise AccessError
@@ -50,14 +51,10 @@ def message_remove(token, message_id):
     #Check if user_id belongs to the message_id
     if u_id != get_message_owner(message_id):
         raise AccessError(AccessError)
-    find = False
     for channel in data['channels']:
         for i in range(0, len(channel['messages'])):
             if u_id == channel['messages'][i]['message_id']:
                 del channel['messages'][i]
-                find = True
-    if (find == False):
-        raise InputError(InputError)
 
 
 def message_edit(token, message_id, message):
