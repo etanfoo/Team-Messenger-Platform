@@ -3,6 +3,7 @@ from json import dumps
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from error import InputError
+from auth import auth_login, auth_register
 from channels import channels_list, channels_listall, channels_create
 from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle
 
@@ -32,6 +33,39 @@ def echo():
     return dumps({
         'data': data
     })
+
+###################
+# auth 
+###################
+@APP.route("/auth/login", methods = ['POST'])
+def http_auth_login():
+    '''
+    Grabs data from the server.
+    Send the correct data to the functions.
+    '''
+    data = request.get_json()
+    return dumps(auth_login(data['email'], data['password']))
+
+@APP.route("/auth/logout", methods = ['POST'])
+def http_auth_logout():
+    '''
+    Grabs data from the server.
+    Send the correct data to the functions.
+    '''
+    data = request.get_json()
+    return dumps(auth_logout(data['token']))
+    
+@APP.route("/auth/register", methods = ['POST'])
+def http_auth_register():
+    '''
+    Grabs data from the server.
+    Send the correct data to the functions.
+    '''
+    data = request.get_json()
+    
+    return dumps(auth_register(data['email'], data['password'], data['name_first'], data['name_last']))
+
+
 
 ###################
 # channels
@@ -65,7 +99,7 @@ def http_channels_create():
 @APP.route('/user/profile', methods = ['GET'])
 def http_user_profile():
     data = request.args
-    return jsonify(user_profile(data['token'], int(data['u_id'])))
+    return jsonify(user_profile(data['token'], data['u_id']))
 
 @APP.route('/user/profile/setname', methods = ['PUT'])
 def http_user_profile_setname():
