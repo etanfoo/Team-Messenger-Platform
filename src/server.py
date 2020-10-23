@@ -2,7 +2,7 @@ import sys
 from json import dumps
 from flask import Flask, request
 from flask_cors import CORS
-from error import InputError
+from error import InputError, AccessError
 from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
 
 
@@ -45,6 +45,7 @@ def echo():
 def http_channel_invite():
     data = request.get_json()
     return dumps(channel_invite(data['token'], data['channel_id'], data['u_id']))
+    
 
 @APP.route("/channel/details", methods = ["GET"])
 def http_channel_details():
