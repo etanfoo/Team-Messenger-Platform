@@ -5,9 +5,8 @@ import sys
 from json import dumps
 from flask import Flask, request
 from flask_cors import CORS
-from error import InputError
-from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
-from auth import auth_login, auth_logout, auth_register
+from error import InputError, AccessError
+from channels import channels_list, channels_listall, channels_create, channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
 
 def defaultHandler(err):
     response = err.get_response()
@@ -36,6 +35,27 @@ def echo():
         'data': data
     })
 
+###################
+# channels
+###################
+@APP.route("/channels/list", methods = ["GET"])
+def http_channels_list():
+    new_data = {
+        "token": request.args.get("token")
+    }
+    return dumps(channels_list(new_data["token"]))
+
+@APP.route("/channels/listall", methods = ["GET"])
+def http_channels_listall():
+    new_data = {
+        "token": request.args.get("token")
+    }
+    return dumps(channels_listall(new_data["token"]))
+
+@APP.route("/channels/create", methods = ["POST"])
+def http_channels_create():
+    new_data = request.get_json()
+    return dumps(channels_create(new_data["token"], new_data["name"], new_data["is_public"]))
 
 ###################
 # channel 
@@ -52,6 +72,7 @@ def http_channel_invite():
     '''
     data = request.get_json()
     return dumps(channel_invite(data['token'], data['channel_id'], data['u_id']))
+    
 
 @APP.route("/channel/details", methods = ["GET"])
 def http_channel_details():
