@@ -1,11 +1,16 @@
+'''
+Importing required modules and functions to run the server
+'''
 import sys
 from json import dumps
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from error import InputError
-from auth import auth_login, auth_register
+from error import InputError, AccessError
 from channels import channels_list, channels_listall, channels_create
+from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
+from auth import auth_login, auth_logout, auth_register
 from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle
+
 
 def defaultHandler(err):
     response = err.get_response()
@@ -35,6 +40,106 @@ def echo():
     })
 
 ###################
+# channels
+###################
+@APP.route("/channels/list", methods = ["GET"])
+def http_channels_list():
+    new_data = {
+        "token": request.args.get("token")
+    }
+    return dumps(channels_list(new_data["token"]))
+
+@APP.route("/channels/listall", methods = ["GET"])
+def http_channels_listall():
+    new_data = {
+        "token": request.args.get("token")
+    }
+    return dumps(channels_listall(new_data["token"]))
+
+@APP.route("/channels/create", methods = ["POST"])
+def http_channels_create():
+    new_data = request.get_json()
+    return dumps(channels_create(new_data["token"], new_data["name"], new_data["is_public"]))
+
+###################
+# channel 
+###################
+
+# data is passed through the URL for GET methods
+# post put and delete does not pass the data through the URL, its rather passed as a body/packet sent to the web server
+
+@APP.route("/channel/invite", methods = ["POST"])
+def http_channel_invite():
+    '''
+    Grabs data from the server.
+    Send the correct data to the functions.
+    '''
+    data = request.get_json()
+    return dumps(channel_invite(data['token'], data['channel_id'], data['u_id']))
+    
+
+@APP.route("/channel/details", methods = ["GET"])
+def http_channel_details():
+    '''
+    Grabs data from the URL
+    Sends selected data from the URL to the function
+    '''
+    data = {
+        'token': request.args.get('token'),
+        'channel_id': request.args.get('channel_id'),
+    }
+    return dumps(channel_details(data['token'], data['channel_id']))
+
+@APP.route("/channel/messages", methods = ["GET"])
+def http_channel_messages():
+    '''
+    Grabs data from the URL
+    Sends selected data from the URL to the function
+    '''
+    data = {
+        'token': request.args.get('token'),
+        'channel_id': request.args.get('channel_id'),
+        'start': request.args.get('start')
+    }
+    return dumps(channel_messages(data['token'], data['channel_id'], data['start']))
+
+@APP.route("/channel/leave", methods = ['POST'])
+def http_channel_leave():
+    '''
+    Grabs data from the server.
+    Send the correct data to the functions.
+    '''
+    data = request.get_json()
+    return dumps(channel_leave(data['token'], data['channel_id']))
+
+@APP.route("/channel/join", methods = ["POST"])
+def http_channel_join():
+    '''
+    Grabs data from the server.
+    Send the correct data to the functions.
+    '''
+    data = request.get_json()
+    return dumps(channel_join(data['token'], data['channel_id']))
+
+@APP.route("/channel/addowner", methods = ['POST'])
+def http_channel_addowner():
+    '''
+    Grabs data from the server.
+    Send the correct data to the functions.
+    '''
+    data = request.get_json()
+    return dumps(channel_addowner(data['token'], data['channel_id'], data['u_id']))
+
+@APP.route("/channel/removeowner", methods = ['POST'])
+def http_channel_removeowner():
+    '''
+    Grabs data from the server.
+    Send the correct data to the functions.
+    '''
+    data = request.get_json()
+    return dumps(channel_removeowner(data['token'], data['channel_id'], data['u_id']))
+
+###################
 # auth 
 ###################
 @APP.route("/auth/login", methods = ['POST'])
@@ -62,34 +167,7 @@ def http_auth_register():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    
     return dumps(auth_register(data['email'], data['password'], data['name_first'], data['name_last']))
-
-
-
-###################
-# channels
-###################
-@APP.route("/channels/list", methods = ["GET"])
-def http_channels_list():
-    new_data = {
-        "token": request.args.get("token")
-    }
-    return dumps(channels_list(new_data["token"]))
-
-@APP.route("/channels/listall", methods = ["GET"])
-def http_channels_listall():
-    new_data = {
-        "token": request.args.get("token")
-    }
-    return dumps(channels_listall(new_data["token"]))
-
-@APP.route("/channels/create", methods = ["POST"])
-def http_channels_create():
-    new_data = request.get_json()
-    return dumps(channels_create(new_data["token"], new_data["name"], new_data["is_public"]))
-
-
 
 
 
