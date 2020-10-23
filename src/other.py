@@ -27,8 +27,7 @@ def users_all(token):
 
     return {"users": authorised_users}
 
-def admin_userpermission_change(token, u_id, permission_id):
-    
+def admin_userpermission_change(token, u_id, permission_id):    
     # Check for valid token
     check = check_token(token)
     if check == False:
