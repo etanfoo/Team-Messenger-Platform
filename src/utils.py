@@ -1,6 +1,7 @@
 from datetime import datetime
 import jwt
 from appsecret import JWT_SECRET
+from error import AccessError
 from global_dic import data
 
 
@@ -23,13 +24,21 @@ def decode_token(token):
 
 def check_token(token):
     '''
-    Check if token exist
+    Checks if a jwt token corresponds to a currently logged in user.
+    If the user's account has been deleted, invalidates that users token.
+    :param token: jwt token
+    :type token: str
+    :raises AccessError: If the token does not correspond to a logged in user
+    :raises AccessError: If the token corresponds to a deleted user
+    :return: User id corresponding to the the valid token
+    :rtype: int
     '''
     for i in range(len(data["users"])):
         #Find token
         if (data["users"][i]["token"] == token):
             return True
-    return False
+    #Token does not exist
+    raise AccessError(description="Token does not exist")
 
 
 def remove_token(token):
@@ -38,8 +47,5 @@ def remove_token(token):
         if (data["users"][i]["token"] == token):
             del data["users"][i]["token"]
             return True
-    return False
-
-
-if __name__ == "__main__":
-    print(decode_token(generate_token("gilbert")))
+    #Token does not exist
+    raise AccessError(description="Token does not exist")

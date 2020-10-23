@@ -63,6 +63,7 @@ def channels_create(token, name, is_public):
         }],
         "all_members": [{
             "u_id": u_id
-        }]
+        }],
+        "messages": [],
     })
     return {'channel_id': available_id}

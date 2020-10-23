@@ -9,7 +9,6 @@ from message import message_send, message_remove
 from other import clear, users_all, admin_userpermission_change, search
 from error import InputError, AccessError
 from utils import decode_token
-
 '''
 users_all function tests
 '''
@@ -279,50 +278,23 @@ Thus, tests not check type/access errors will pass.
 '''
 def test_search_expected():
     clear()
-    # Test if user can find pevious messge
+    # Test if user can find pevious messge when there is more than one message
     # Creating user, channel, and posting message
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
     auth_login("validEmail@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
-    # Both are not correct
-    #message_id = message_send(authorised_user['token'], channel['channel_id'], 'messages')['message_id']
-
-    message_id = message_send(authorised_user['token'], channel['channel_id'], 
-                            f'messages')
-
-    '''
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
-    auth_login("validEmail@gmail.com", "valid_password")
-    channel = channels_create(authorised_user['token'], 'new_channel', True)
-
-    # token_decoded = decode_token(authorised_user['token'])
-
-    message_sent = message_send(authorised_user['token'], channel['channel_id'], 'Hello World')
-   
-    search_result = search(authorised_user['token'], 'Hello World')
-
-    message = search_result['messages']
-
-    assert message['message_id'] == message_sent['message_id'] 
-
-
-    message_id = message_send(authorized_user['token'],
-                              new_channel['channel_id'],
-                              "message")["message_id"]
-
+    message_sent = message_send(authorised_user['token'], channel['channel_id'], 'Old')
     
-    search_test = search(authorised_user['token'], 'Hello world')
+    search_test = search(authorised_user['token'], 'Old')
 
     message_access = search_test['messages']
     # Loop through nested dictionary to test if message_id is equal to the message_sent's message id
-    found = False
+    found = 0
     for message_data in message_access:
-        if message_sent == message_data["message_id"]:
-            found = True
-    assert found == True
-    # assert message_data["message_id"] == message_sent['message_id']
-    '''
+        if message_data["message_id"] == message_sent['message_id']:
+            found = 1
+    assert found == 1
 
 def test_search_multiple():
     clear()

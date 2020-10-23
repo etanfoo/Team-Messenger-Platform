@@ -94,15 +94,19 @@ def admin_userpermission_change(token, u_id, permission_id):
 
 def search(token, query_str):
     
+    # Check if query_str is not empty
+    if query_str == None:
+        raise InputError
+
     result = []
 
     matching_u_id = decode_token(token)
 
     for channel in data["channels"]:
-        if matching_u_id == channel["all_members"]:
-            for message in channel["messages"]:
-                if query_str in message['messages']:
-                    result.append(message)
+        #if matching_u_id == channel["all_members"]:
+        for message in channel["messages"]:
+            if query_str in message['message']:
+                result.append(message)
 
     sorted(result, key=lambda message: message["time_created"], reverse=True)
 
