@@ -93,7 +93,7 @@ def test_message_remove_authorized():
         message_remove(non_authorized_user['token'], message_id)
 
 
-#AccessError when none of the following are true:
+#AccessError when none of the following are true
 
 #Message with message_id was sent by the authorised user making this request ||
 #The authorised user is an owner of this channel or the flockr
