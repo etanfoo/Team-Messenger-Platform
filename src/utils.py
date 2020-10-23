@@ -97,5 +97,22 @@ def user_details(email, password):
     }
     return user_detail
 
+###################
+# Global variables
+###################
+authorised_user = {
+    "email": "validEmail@gmail.com",
+    "password": "valid_password",
+    "name_first": "Phil",
+    "name_last": "Knight",
+}
+
+second_user = {
+    "email": "validEmail2@gmail.com",
+    "password": "valid_password2",
+    "name_first": "Donald",
+    "name_last": "Trump",
+}
+
 # if __name__ == "__main__":
 #     print(decode_token(generate_token("gilbert")))

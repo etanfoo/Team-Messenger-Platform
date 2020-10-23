@@ -7,7 +7,7 @@ import signal
 from time import sleep
 from error import InputError
 import pytest
-from utils import register_user, login_user, create_channel, invite_channel
+from utils import register_user, login_user, create_channel, invite_channel, authorised_user, second_user
 
 @pytest.fixture
 def url():
@@ -28,23 +28,6 @@ def url():
     else:
         server.kill()
         raise Exception("Couldn't get URL from local server")
-
-###################
-# Global variables
-###################
-authorised_user = {
-    "email": "validEmail@gmail.com",
-    "password": "valid_password",
-    "name_first": "Phil",
-    "name_last": "Knight",
-}
-
-second_user = {
-    "email": "validEmail2@gmail.com",
-    "password": "valid_password2",
-    "name_first": "Donald",
-    "name_last": "Trump",
-}
 
 ###################
 # channels/list
