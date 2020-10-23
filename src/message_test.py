@@ -42,8 +42,8 @@ def test_message_remove_id_no_exists():
     clear()
     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
-    with pytest.raises(InputError):
-        message_remove(authorized_user['token'], "1")
+    with py.test.raises(InputError):
+        message_remove(authorised_user['token'], "5")
 
 
 #AccessError when none of the following are true:
