@@ -8,7 +8,7 @@ INVALID_U_ID = 99999999999
 
 # function to register a user and log them in
 def register_user():
-    user = auth_register("validEmail@gmail.com", "valid_password", "First", "Last")
+    user = auth_register("validEmail@gmail.com", "valid_password", "Phil", "Knight")
     auth_login("validEmail@gmail.com", "valid_password")
 
     return user
@@ -23,9 +23,9 @@ def test_user_profile_normal():
 
     assert profile['user']['u_id'] == regular_user['u_id']
     assert profile['user']['email'] == "validEmail@gmail.com"
-    assert profile['user']['name_first'] == "First"
-    assert profile['user']['name_last'] == "Last"
-    assert profile['user']['handle_str'] == "firstlast"
+    assert profile['user']['name_first'] == "Phil"
+    assert profile['user']['name_last'] == "Knight"
+    assert profile['user']['handle_str'] == "philknight"
 
     clear()
 
@@ -59,7 +59,7 @@ def test_user_profile_setname_input_error_name_first_long():
     regular_user = register_user()
 
     with pytest.raises(InputError):
-        user_profile_setname(regular_user['token'], "Uncleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "Joe")
+        user_profile_setname(regular_user['token'], "Uncle" * 20, "Joe")
 
 
     clear()
@@ -83,7 +83,7 @@ def test_user_profile_setname_input_error_name_last_long():
     regular_user = register_user()
 
     with pytest.raises(InputError):
-        user_profile_setname(regular_user['token'], "Uncle", "Joeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+        user_profile_setname(regular_user['token'], "Uncle", "Joe" * 20)
 
 
     clear()
@@ -163,7 +163,7 @@ def test_user_profile_sethandle_input_error_too_long():
     regular_user = register_user()
 
     with pytest.raises(InputError):
-        user_profile_sethandle(regular_user['token'], "loooooooooooooooooooooooooooong")
+        user_profile_sethandle(regular_user['token'], "long" * 20)
 
 
     clear()

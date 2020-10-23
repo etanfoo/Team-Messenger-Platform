@@ -3,12 +3,13 @@ Importing required modules and functions to run the server
 '''
 import sys
 from json import dumps
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from error import InputError, AccessError
 from channels import channels_list, channels_listall, channels_create
 from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
 from auth import auth_login, auth_logout, auth_register
+from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle
 
 
 def defaultHandler(err):
@@ -169,6 +170,39 @@ def http_auth_register():
     return dumps(auth_register(data['email'], data['password'], data['name_first'], data['name_last']))
 
 
+
+####################
+# User functions
+####################
+@APP.route('/user/profile', methods = ['GET'])
+def http_user_profile():
+    data = request.args
+    return jsonify(user_profile(data['token'], data['u_id']))
+
+@APP.route('/user/profile/setname', methods = ['PUT'])
+def http_user_profile_setname():
+    data = request.get_json()
+    return jsonify(user_profile_setname(data['token'], data['name_first'], data['name_last']))
+
+
+@APP.route('/user/profile/setemail', methods = ['PUT'])
+def http_user_profile_setemail():
+    data = request.get_json()
+    return jsonify(user_profile_setemail(data['token'], data['email']))
+
+@APP.route('/user/profile/sethandle', methods = ['PUT'])
+def http_user_profile_sethandle():
+    data = request.get_json()
+    return jsonify(user_profile_sethandle(data['token'], data['handle_str']))
+
+
+
+
+
+
+
 if __name__ == "__main__":
     APP.run(port=0) # Do not edit this port
+
+
 
