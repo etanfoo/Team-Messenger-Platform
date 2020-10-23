@@ -5,7 +5,6 @@ import pytest
 from auth import auth_login, auth_register, auth_register
 from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
 from channels import channels_list, channels_listall, channels_create
-from auth import auth_register, auth_login
 from message import message_send, message_remove
 from other import clear, users_all, admin_userpermission_change, search
 from error import InputError, AccessError
@@ -185,7 +184,7 @@ def test_admin_permission_change_invalid_other_promotion():
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
     auth_login("validEmail@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], "new_channel", True)
-    # 2nd User, new admin. 2nd user's u_id is 'u_id: 2'
+    # 2nd User, new admin.'
     authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password", "Tara", "Simons")
     auth_login("validEmail2@gmail.com", "valid_password")
     channel_invite(authorised_user['token'], channel['channel_id'], authorised_user2['u_id'])
@@ -284,18 +283,46 @@ def test_search_expected():
     # Creating user, channel, and posting message
     authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
     auth_login("validEmail@gmail.com", "valid_password")
+    channel = channels_create(authorised_user['token'], "new_channel", True)
+
+    # Both are not correct
+    #message_id = message_send(authorised_user['token'], channel['channel_id'], 'messages')['message_id']
+
+    message_id = message_send(authorised_user['token'], channel['channel_id'], 
+                            f'messages')
+
+    '''
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philip", "Dickens")
+    auth_login("validEmail@gmail.com", "valid_password")
     channel = channels_create(authorised_user['token'], 'new_channel', True)
 
-    token_decoded = decode_token(authorised_user['token'])
+    # token_decoded = decode_token(authorised_user['token'])
 
-    message_sent = message_send(token_decoded, channel['channel_id'], 'Hello world')
+    message_sent = message_send(authorised_user['token'], channel['channel_id'], 'Hello World')
+   
+    search_result = search(authorised_user['token'], 'Hello World')
 
+    message = search_result['messages']
+
+    assert message['message_id'] == message_sent['message_id'] 
+
+
+    message_id = message_send(authorized_user['token'],
+                              new_channel['channel_id'],
+                              "message")["message_id"]
+
+    
     search_test = search(authorised_user['token'], 'Hello world')
 
     message_access = search_test['messages']
     # Loop through nested dictionary to test if message_id is equal to the message_sent's message id
+    found = False
     for message_data in message_access:
-        assert message_data["message_id"] == message_sent['message_id']
+        if message_sent == message_data["message_id"]:
+            found = True
+    assert found == True
+    # assert message_data["message_id"] == message_sent['message_id']
+    '''
 
 def test_search_multiple():
     clear()
@@ -352,9 +379,9 @@ def test_search_null():
 
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
-    token_decoded = decode_token(authorised_user['token'])
+    # token_decoded = decode_token(authorised_user['token'])
 
-    message_sent = message_send(token_decoded, channel['channel_id'], 'Old')
+    message_id = message_send(authorised_user['token'], channel['channel_id'], '')["message_id"]
     
     with pytest.raises(InputError):
-        search_test = search(authorised_user['token'], None)
+        message_id = search(authorised_user['token'], None)
