@@ -173,10 +173,6 @@ def channel_addowner(token, channel_id, u_id):
 
 
 def channel_removeowner(token, channel_id, u_id):
-    # looping to see if channel_id is listed, if not, InputError
-    found = False
-    alreadyOwner = False
-    isAdmin = False
 
     matching_u_id = decode_token(token)
     if (check_channel(channel_id) == False):

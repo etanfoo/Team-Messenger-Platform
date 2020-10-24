@@ -324,8 +324,6 @@ def test_channel_leave_access_error():
 def test_channel_join_input_error():
     clear()
 
-    authorised_user = register_and_login()
-
     #####################################################################################
 
     # input error when channel ID is not a valid channel
