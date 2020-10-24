@@ -5,6 +5,7 @@ import re
 import hashlib
 from error import InputError, AccessError
 from global_dic import data
+from utils import decode_token
 
 
 #Validate Email
@@ -64,8 +65,9 @@ def logout_state(token):
     '''
     Change state when logging in and out
     '''
+    user_id = decode_token(token)
     for i in range(len(data["users"])):
-        if data["users"][i]["token"] == token:
-            data["users"][i]['state'] = "inactive"
+        if data["users"][i]["u_id"] == user_id:
             if data["users"][i]['state'] != "active":
                 raise AccessError(AccessError)
+            data["users"][i]['state'] = "inactive"
