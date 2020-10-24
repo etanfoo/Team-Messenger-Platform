@@ -36,12 +36,9 @@ def test_user_profile_normal(url):
     # requests.delete(f"{url}/clear")
 
     regular_user = register_user(url, authorised_user)
-    print(regular_user)
     login_user(url, authorised_user)
     r = requests.get(f"{url}/user/profile", params = {'token' : regular_user['token'], 'u_id' : regular_user['u_id']})
-    print(r)
     payload = r.json()
-    print(payload)
 
     assert payload['user']['u_id'] == regular_user['u_id']
     assert payload['user']['email'] == "validEmail@gmail.com"
@@ -72,7 +69,6 @@ def test_user_profile_setname_normal(url):
     r = requests.get(f"{url}/user/profile", params = {'token' : regular_user['token'], 'u_id' : regular_user['u_id']})
     payload = r.json()
 
-    print(payload)
     assert payload['user']['name_first'] == "Uncle"
     assert payload['user']['name_last'] == "Joe"
 
