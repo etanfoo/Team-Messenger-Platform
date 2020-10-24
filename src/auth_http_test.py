@@ -7,6 +7,7 @@ import signal
 from time import sleep
 from error import InputError, AccessError
 import pytest
+from utils import register_user_auth, login_user, user_details
 
 @pytest.fixture
 def url():
@@ -39,624 +40,368 @@ user = {
     "name_last": "Knight",
 }
 
-#Check login
 def test_login_email_nonexist(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "didntusethis@gmail.com",
-            "password": "123abcd!@#"
-        })
+    '''
+    An email that does not exist in the database
+    '''
+    payload = login_user(url, user_details("didntusethis@gmail.com", "123abcd!@#"))
+    assert payload.status_code == 400
 
-#Check password
 def test_login_password(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    requests.post(f"{url}/auth/register", json = user)
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "validEmail@gmail.com",
-            "password": "thisIsTheWrongPassword"
-        })
+    '''
+    A incorrect password
+    '''
+    payload = login_user(url, user_details("validEmail@gmail.com", "thisIsTheWrongPassword"))
+    assert payload.status_code == 400
 
-#Email address cannot exceed 254 characters
 def test_login_email_limit(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "atestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatest@gmail.com",
-            "password": "Test@12345"
-        })
+    '''
+    An email that exceed 254 characters
+    '''
+    payload = login_user(url, user_details("atestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatest@gmail.com",
+            "Test@12345"))
+    assert payload.status_code == 400
 
-#Email address first character of username must be an ascii letter (a-z) or number (0-9)
 def test_login_email_first_letter(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": ".atest@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "~atest@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "!atest@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "#atest@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "$atest@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "^atest@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "&atest@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "*atest@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "(atest@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": ")atest@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "+atest@gmail.com",
-            "password": "Test@12345"
-        })
+    '''
+    Email addresses with first character not 
+    being an ascii letter (a-z) or number (0-9)
+    '''
+    payload = login_user(url, user_details(".atest@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("~atest@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("!atest@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("#atest@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("$atest@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("&atest@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("*atest@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("(atest@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details(")atest@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("+atest@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
 
     
-#Email address cannot have any white spaces 
 def test_login_email_space_trailing(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "atest@gmail.com ",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "a test@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "atest@gm ail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "atest@gmail. com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "atest@gmail.c om",
-            "password": "Test@12345"
-        })
+    '''
+    Email addresses a whitespace inbetween
+    '''
+    payload = login_user(url, user_details("atest@gmail.com ", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("a test@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("atest@gm ail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("atest@gmail. com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("atest@gmail.c om", "Test@12345"))
+    assert payload.status_code == 400
+
     
-
-#Email address username can only contain letters (a-z), numbers (0-9) and periods (.) are allowed
 def test_login_email_username(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "a!test@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "a.te-st@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "ates]t@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "ates$@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "at#es@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "at~es@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "at-es@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "at*es@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "at&es@gmail.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "at_es@gmail.com",
-            "password": "Test@12345"
-        })
+    '''
+    Email addresses that contains a special symbol in the username section
+    '''
+    payload = login_user(url, user_details("a!test@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("a.te-st@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("ates]t@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("ates$@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("at#es@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("at~es@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("at-es@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("at*es@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("at&es@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("at_es@gmail.com", "Test@12345"))
+    assert payload.status_code == 400
 
-#Email address domain can only contain letters (a-z), numbers (0-9) and periods (.) are allowed
 def test_login_email_domain1(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "atest@a!test.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "test@a.te-st.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "test@ates]t.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "test@ates$.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "test@at#es.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "test@at~es.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "test@at-es.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "test@at*es.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "test@at&es.com",
-            "password": "Test@12345"
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/login", json = {
-            "email": "test@at_es.com",
-            "password": "Test@12345"
-        })
+    '''
+    Email addresses that contains a special symbol in the domain section
+    '''
+    payload = login_user(url, user_details("atest@a!test.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("test@a.te-st.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("test@ates]t.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("test@ates$.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("test@at#es.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("test@at~es.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("test@at-es.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("test@at*es.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("test@at&es.com", "Test@12345"))
+    assert payload.status_code == 400
+    payload = login_user(url, user_details("test@at_es.com", "Test@12345"))
+    assert payload.status_code == 400
 
-#Email address cannot contain consecutive periods (.)
+
 def test_login_email_period(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummy..test@gmail.com",
-            "password": "valid_password",
-            "name_first": "Phil",
-            "name_last": "Knight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest..@gmail.com",
-            "password": "valid_password",
-            "name_first": "Phil",
-            "name_last": "Knight",
-        })
+    '''
+    Email addresses that contains consecutive periods
+    '''
+    user["email"] = "dummy..test@gmail.com"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+    
+    user["email"] = "dummytest..@gmail.com"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+   
 
-#Email address domain cannot be localhost
 def test_register_localhost(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@localhost.com",
-            "password": "valid_password",
-            "name_first": "Phil",
-            "name_last": "Knight",
-        })
+    '''
+    Email address's domain being localhost
+    '''
+    user["email"] = "dummytest@localhost.com"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+   
 
-#Email address cannot contain more than 1 "@"
 def test_register_email(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummy@test@gmail.com",
-            "password": "valid_password",
-            "name_first": "Phil",
-            "name_last": "Knight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "@dummytest@gmail.com",
-            "password": "valid_password",
-            "name_first": "Phil",
-            "name_last": "Knight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@@gmail.com",
-            "password": "valid_password",
-            "name_first": "Phil",
-            "name_last": "Knight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com@",
-            "password": "valid_password",
-            "name_first": "Phil",
-            "name_last": "Knight",
-        })
+    '''
+    Email addresses containing more than one "@"
+    '''
+    user["email"] = "dummy@test@gmail.com"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+    
+    user["email"] = "@dummytest@gmail.com"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+   
+    user["email"] = "dummytest@@gmail.com"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
 
-#Email address must contain 1 "@"
+    user["email"] = "dummytest@gmail.com@"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
+
 def test_register_email_1(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummy.com",
-            "password": "valid_password",
-            "name_first": "Phil",
-            "name_last": "Knight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest.com",
-            "password": "valid_password",
-            "name_first": "Phil",
-            "name_last": "Knight",
-        })
+    '''
+    Email addresses that does not contain one "@"
+    '''
+    user["email"] = "dummy.com"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
 
-#Email address must have a domain after the @ sign
+    user["email"] = "dummytest.com"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
+
 def test_register_email_domain(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@",
-            "password": "valid_password",
-            "name_first": "Phil",
-            "name_last": "Knight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "apple.bottom.jeans@",
-            "password": "valid_password",
-            "name_first": "Phil",
-            "name_last": "Knight",
-        })
+    '''
+    Email addresses that does not contain a domain
+    '''
+    user["email"] = "dummytest@"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
 
-#Password entered is more than 18 characthers
+    user["email"] = "apple.bottom.jeans@"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
+
 def test_register_password_max(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "ThisIsAReallyLongSentenceThisIsAReallyLongSentence",
-            "name_first": "Phil",
-            "name_last": "Knight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
-            "name_first": "Phil",
-            "name_last": "Knight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "111111111111111111111111111111111111111111111111111",
-            "name_first": "Phil",
-            "name_last": "Knight",
-        })
+    '''
+    Passwords that exceeds 18 characters
+    '''
+    user["password"] = "ThisIsAReallyLongSentenceThisIsAReallyLongSentence"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
 
-#Pasword entered is less than 6 characters
+    user["password"] = "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
+    user["password"] = "111111111111111111111111111111111111111111111111111"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
 def test_register_password_min(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "12345",
-            "name_first": "Phil",
-            "name_last": "Knight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "12o45",
-            "name_first": "Phil",
-            "name_last": "Knight",
-        })
+    '''
+    Passwords that are less that 6 characters long
+    '''
+    user["password"] = "12345"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
 
-#Email is not empty
+    user["password"] = "12o45"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
 def test_register_email_empty(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "",
-            "password": "Test@12345",
-            "name_first": "Phil",
-            "name_last": "Knight",
-        })
+    '''
+    Email that is empty
+    '''
+    user["email"] = ""
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
 
-#Password is not empty
 def test_register_password_empty(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "",
-            "name_first": "Phil",
-            "name_last": "Knight",
-        })
+    '''
+    Password that is empty
+    '''
+    user["password"] = ""
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
 
-#First name is not empty
 def test_register_name_first_empty(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "",
-            "name_last": "Knight",
-        })
+    '''
+    First name that is empty
+    '''
+    user["name_first"] = ""
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
 
-#Last name is not empty
 def test_register_name_last_empty(url):
-    # Reset/clear data
+    '''
+    Last name that is empty
+    '''
     requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Phil",
-            "name_last": "",
-        })
+    user["name_last"] = ""
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
 
-#name_first is not between 1 and 50 characthers
+
 def test_register_name_first_50(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "ThisisaverylonglastnameThisisaverylonglastnameThisisaverylonglastname",
-            "name_last": "Knight",
-        })
+    '''
+    First name exceeds 50 characters
+    '''
+    user["name_first"] = "ThisisaverylonglastnameThisisaverylonglastnameThisisaverylonglastname"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
 
-#name_last is not between 1 and 50 characters in length
 def test_register_name_last_50(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Phil",
-            "name_last": "ThisisaverylonglastnameThisisaverylonglastnameThisisaverylonglastname",
-        })
+    '''
+    Last name exceeds 50 characters
+    '''
+    user["name_last"] = "ThisisaverylonglastnameThisisaverylonglastnameThisisaverylonglastname"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
 
 def test_register_name_first_symbol(url):
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Phil@",
-            "name_last": "Knight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Phi!l",
-            "name_last": "Knight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Ph#il",
-            "name_last": "Knight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "P$hil",
-            "name_last": "Knight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Ph^il",
-            "name_last": "Knight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Ph&il",
-            "name_last": "Knight",
-        })
+    '''
+    First name contains a special symbol
+    '''
+    user["name_first"] = "Phil@"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
     
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Phi*l",
-            "name_last": "Knight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "P(hil",
-            "name_last": "Knight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Phi)l",
-            "name_last": "Knight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Ph-il",
-            "name_last": "Knight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "P=hil",
-            "name_last": "Knight",
-        })
+    user["name_first"] = "Phi!l"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+ 
+    user["name_first"] = "Ph#il"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+    
+    user["name_first"] = "P$hil"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
 
-def test_register_name_last_symbol():
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Phil",
-            "name_last": "Kn!ight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Phil",
-            "name_last": "Knigh@t",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Phil",
-            "name_last": "Kni#ght",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Phil",
-            "name_last": "K$night",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Phil",
-            "name_last": "Knigh%t",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Phil",
-            "name_last": "Kn^ight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Phil",
-            "name_last": "Kni&ght",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Phil",
-            "name_last": "Knigh*t",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Phil",
-            "name_last": "Kn(ight",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Phil",
-            "name_last": "K)night",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Phil",
-            "name_last": "Kni-ght",
-        })
-    with pytest.raises(InputError):
-        requests.post(f"{url}/auth/register", json = {
-            "email": "dummytest@gmail.com",
-            "password": "Test@12345",
-            "name_first": "Phil",
-            "name_last": "K=night",
-        })
+    user["name_first"] = "Ph^il"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
+    user["name_first"] = "Ph&il"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
+    user["name_first"] = "Phi*l"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
+    user["name_first"] = "P(hil"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
+    user["name_first"] = "Phi)l"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
+    user["name_first"] = "Ph-il"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+    
+    user["name_first"] = "P=hil"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
+
+def test_register_name_last_symbol(url):
+    '''
+    Last name contains a special symbol
+    '''
+    user["name_last"] = "Kn!ight"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+   
+    user["name_last"] = "Knigh@t"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
+    user["name_last"] = "Kni#ght"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+    
+    user["name_last"] = "K$night"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
+    user["name_last"] = "Knigh%t"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
+    user["name_last"] = "Kn^ight"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
+    user["name_last"] = "Kni&ght"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
+    user["name_last"] = "Knigh*t"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+        
+    user["name_last"] = "Kn(ight"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+    
+    user["name_last"] = "K)night"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+        
+    user["name_last"] = "Kni-ght"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+        
+    user["name_last"] = "K=night"
+    payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+        
