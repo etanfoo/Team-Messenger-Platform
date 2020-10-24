@@ -187,14 +187,17 @@ def test_channel_messages_normal():
     assert output['start'] == 10
     assert output['end'] == 60
 
+    index = 0
     # checking message contents
     for j in range (10, 60):
-        assert output['messages'][j]['u_id'] == authorised_user['u_id']
-        assert output['messages'][j]['message'] ==  j
+        assert output['messages'][index]['u_id'] == authorised_user['u_id']
+        assert output['messages'][index]['message'] ==  f'{j}'
+
+        index += 1
 
     clear()
 
-def test_channel_messages_not_enough():
+def test_channel_messages_not_enough_messages_remaining():
     clear()
 
     authorised_user = register_and_login()
@@ -211,10 +214,13 @@ def test_channel_messages_not_enough():
     assert output['start'] == 70
     assert output['end'] == -1
 
+    index = 0
     # checking message contents
     for j in range (70, 100):
-        assert output['messages'][j]['u_id'] == authorised_user['u_id']
-        assert output['messages'][j]['message'] ==  j
+        assert output['messages'][index]['u_id'] == authorised_user['u_id']
+        assert output['messages'][index]['message'] ==  f'{j}'
+
+        index += 1
 
     clear()
 
