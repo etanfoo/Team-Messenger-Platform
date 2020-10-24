@@ -97,6 +97,47 @@ def user_details(email, password):
     }
     return user_detail
 
+def send_message(url, token, channel_id, message):
+    message_detail = {
+        "token": token, 
+        "channel_id": channel_id, 
+        "message": message
+    }
+    return requests.post(f"{url}/message/send", json = message_detail)
+
+def send_message(url, token, channel_id, message):
+    message_detail = {
+        "token": token, 
+        "channel_id": channel_id, 
+        "message": message
+    }
+    return requests.post(f"{url}/message/send", json = message_detail)
+
+def send_message_id(url, token, channel_id, message):
+    message_detail = {
+        "token": token, 
+        "channel_id": channel_id, 
+        "message": message
+    }
+    payload = requests.post(f"{url}/message/send", json = message_detail)
+    return payload.json()
+
+def remove_message(url, token, message_id):
+    message = {
+        "token": token, 
+        "message_id": message_id
+    }
+    return requests.delete(f"{url}/message/remove", json = message)
+
+def edit_message(url, token, message_id, message):
+    message = {
+        "token": token, 
+        "message_id": message_id,
+        "message": message
+    }
+    return requests.put(f"{url}/message/edit", json = message)
+
+
 ###################
 # Global variables
 ###################

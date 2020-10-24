@@ -266,16 +266,16 @@ def test_creates_long(url):
         "name": "ThisIsATestForALongChannelName",
         "is_public": True,
     }
-    payload = requests.post(f"{url}/channels/create", json = new_channel)
-    assert payload.status_code == 400
+    r = requests.post(f"{url}/channels/create", json = new_channel)
+    assert r.status_code == 400
 
     new_channel_2 = {
         "token": user_1['token'],
         "name": "The Kanye East experience",
         "is_public": True,
     }
-    payload = requests.post(f"{url}/channels/create", json = new_channel_2)
-    assert payload.status_code == 400
+    r = requests.post(f"{url}/channels/create", json = new_channel_2)
+    assert r.status_code == 400
 
 def test_creates_success(url):
     '''
@@ -303,16 +303,16 @@ def test_creates_empty(url):
         "name": "         ",
         "is_public": True,
     }
-    payload = requests.post(f"{url}/channels/create", json = new_channel)
-    assert payload.status_code == 400 
+    r = requests.post(f"{url}/channels/create", json = new_channel)
+    assert r.status_code == 400 
 
     new_channel_2 = {
         "token": user_1['token'],
         "name": "",
         "is_public": True,
     }
-    payload = requests.post(f"{url}/channels/create", json = new_channel_2)
-    assert payload.status_code == 400     
+    r = requests.post(f"{url}/channels/create", json = new_channel_2)
+    assert r.status_code == 400     
 
 def test_creates_integer(url):
     '''

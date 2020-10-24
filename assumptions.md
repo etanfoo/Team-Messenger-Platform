@@ -89,9 +89,12 @@ CHANNELS TEST
 
 # channels_list
 
+- The input(token) will be valid
+
 # channels_listall
 
 - Returns all public channels plus any private channels the user is part of
+- The input(token) will be valid
 
 # channels_create
 
