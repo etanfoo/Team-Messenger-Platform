@@ -115,7 +115,9 @@ def test_channel_invite_normal(url):
     # user_1 invites user_2 to channel_1
     requests.post(f"{url}/channel/invite", data = {"token": user_1['token'], "channel_id": channel_1['channel_id'], "user": user_2['u_id']})
     # grab details of channel 1
-    details = channel_details(user_1['token'], channel_1['channel_id'])
+    details = requests.get(f"{url}/channel/details", data = {"token": user_1['token'], "channel_id": channel_1['channel_id']})
+    
+    
 
     # check if you can find all members in all_members
     count = 0
@@ -513,3 +515,4 @@ def test_channel_removeowner_normal():
             found = True
             break
     assert found == False
+
