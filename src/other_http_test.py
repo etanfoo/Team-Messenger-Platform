@@ -8,7 +8,8 @@ import json
 from error import InputError
 from utils import register_user, login_user, create_channel, invite_channel, authorised_user, second_user
 from channel import channel_details
-
+from message import message_send
+from other import search
 
 # Use this fixture to get the URL of the server. It starts the server for you,
 # so you don't need to.
