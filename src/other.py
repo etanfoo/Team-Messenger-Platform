@@ -1,22 +1,31 @@
+'''
+other.py contains the clear, users_all, admin_permission_change, and search functions
+'''
 from global_dic import data
 from error import InputError, AccessError
 from utils import check_token, decode_token
 
 def clear():
+    '''
+    Function to reset user and channel entries in the data dictionary
+    '''
     data["users"].clear()
     data["channels"].clear()
 
 
 def users_all(token):
+    '''
+    Function which returns a list of all the users
+    '''
+    # Check if user's token is valid
     check = check_token(token)
     if check == False:
-        raise InputError
+        raise AccessError
     
+    # List of authorised users
     authorised_users = []
-
-    # Unable to iterate through multiple users.
-    # try:
     
+    # Gather user details and append list
     for user in data["users"]:
         authorised_users.append({
             "u_id": user["u_id"], 
@@ -25,28 +34,37 @@ def users_all(token):
             "last_name": user["last_name"]
         })
 
+    # Return list as dictionary
     return {"users": authorised_users}
 
-def admin_userpermission_change(token, u_id, permission_id):    
+def admin_userpermission_change(token, u_id, permission_id): 
+    '''
+    Function to alter a user's permission to an owner, or from an owner to a member
+    '''   
+
     # Check for valid token
     check = check_token(token)
     if check == False:
-        raise InputError
+        raise AccessError
     token_id = decode_token(token)
 
     # Check for self demotion/promotion
     if token_id == u_id:
         raise AccessError
+
     # Check for empty u_id
     if u_id == '':
         raise InputError
+
     # Check for invalid permission_id type
     if type(permission_id) == str:
         raise InputError
+
     # Check if permission_id's are valid inputs
     if permission_id != 1:
         if permission_id != 2:
             raise InputError
+
     # Check if permission_id is not empty
     if permission_id == None:
         raise InputError
@@ -84,22 +102,31 @@ def admin_userpermission_change(token, u_id, permission_id):
             for demotion_id in demotion["owner_members"]:
                 if demotion_id["u_id"] == u_id:
                     demotion["owner_members"].remove({"u_id": u_id})
-                    
+                  
     return 0
 
 def search(token, query_str):
-    
+    '''
+    Function to search for previous messages
+    '''
+    # Check for valid token
+    check = check_token(token)
+    if check == False:
+        raise AccessError
+
     # Check if query_str is not empty
     if query_str == None:
         raise InputError
 
     result = []
-
+    # Search for query in the channel's message history
     for channel in data["channels"]:
         for message in channel["messages"]:
             if query_str in message['message']:
                 result.append(message)
 
+    # Sort list based on time_created
     sorted(result, key=lambda message: message["time_created"], reverse=True)
 
+    # Return dictionary containing result list
     return {"messages": result}
