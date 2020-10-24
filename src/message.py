@@ -44,17 +44,18 @@ def message_send(token, channel_id, message):
 def message_remove(token, message_id):
     #Make sure token is valid
     check_token(token)
-    #Decode the token to user ID
+    # #Decode the token to user ID
     u_id = decode_token(token)
     #Check if message_id exist
     get_message(message_id)
     #Check if user_id belongs to the message_id
     if u_id != get_message_owner(message_id):
         raise AccessError(AccessError)
-    for channel in data['channels']:
-        for i in range(0, len(channel['messages'])):
-            if u_id == channel['messages'][i]['message_id']:
-                del channel['messages'][i]
+    for channel in data["channels"]:
+        for i in range(len(channel["messages"])):
+            if (channel["messages"][i]["message_id"] == message_id):
+                del channel["messages"][i]
+                return
 
 
 def message_edit(token, message_id, message):
@@ -73,7 +74,7 @@ def message_edit(token, message_id, message):
     if (len(message) == 0):
         message_remove(token, message_id)
         return {}
-    for channel in data['channels']:
-        for i in range(0, len(channel['messages'])):
-            if u_id == channel['messages'][i]['message_id']:
+    for channel in data["channels"]:
+        for i in range(len(channel["messages"])):
+            if (channel["messages"][i]["message_id"] == message_id):
                 channel['messages'][i]["message"] = message

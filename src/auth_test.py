@@ -3,6 +3,9 @@ import re
 from error import InputError, AccessError
 from auth import auth_register, auth_login, auth_logout
 from other import clear
+from utils import generate_token, decode_token
+from global_dic import data
+from auth_helper import hash_password
 
 ########################
 ######Test Login#######
@@ -476,3 +479,17 @@ def test_register_name_last_symbol():
         auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes-t")
     with pytest.raises(InputError):
         auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Test=")
+
+
+def test_logout_state():
+    clear()
+    t = auth_register('validemail@gmail.com', '123abc!@#', 'Hayden', 'Everest')
+    with pytest.raises(AccessError):
+        auth_logout(t['token'])
+
+
+def test_logout_s():
+    clear()
+    t = auth_register('validemail@gmail.com', '123abc!@#', 'Hayden', 'Everest')
+    auth_login('validemail@gmail.com', '123abc!@#')
+    assert (auth_logout(t['token'])["is_success"] == True)
