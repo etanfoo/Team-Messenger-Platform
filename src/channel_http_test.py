@@ -6,10 +6,9 @@ from subprocess import Popen, PIPE
 import signal
 from time import sleep
 from error import InputError, AccessError
-import pytest
 from channel import channel_details
 from channel_test import INVALID_U_ID, INVALID_CHANNEL_ID
-
+from utils import register_user, login_user, create_channel, invite_channel
 
 @pytest.fixture
 def url():
@@ -56,44 +55,6 @@ unauthorised_user = {
     "name_last": "Joe",
 }
 
-###################
-# Helper functions
-###################
-
-def register_user(url, user):
-    # Registers a new user
-    r = requests.post(f"{url}/auth/register", json = user)
-    return r.json()
-
-def login_user(url, user):
-    # Registers a new user
-    requests.post(f"{url}/auth/login", json = {
-        "email": user['email'], 
-        "password": user['password']
-    })
-
-def create_channel(url, token, name, is_public):
-    # Creates a new channel
-    new_channel = {
-        "token": token,
-        "name": name,
-        "is_public": is_public,
-    }
-    r = requests.post(f"{url}/channels/create", json = new_channel)
-    payload = r.json()
-    payload["name"] = new_channel["name"]
-    return payload
-
-def invite_channel(url, token, channel_id, u_id):
-    # Invites a user to a channel
-    invite = {
-        "token": token,
-        "channel_id": channel_id,
-        "u_id": u_id,
-    }
-    r = requests.post(f"{url}/channel/invite", json = invite)
-    return r.json()
-
 '''___________________________________'''
 def prepare_user(url, user):
     new_user = register_user(url, user)
@@ -113,7 +74,7 @@ def test_channel_invite_normal(url):
     # Create user_2
     user_2 = prepare_user(url, second_user)
     # user_1 invites user_2 to channel_1
-    requests.post(f"{url}/channel/invite", json={"token": user_1['token'], "channel_id": channel_1['channel_id'], "user": user_2['u_id']})
+    requests.post(f"{url}/channel/invite", json={"token": user_1['token'], "channel_id": channel_1['channel_id'], "u_id": user_2['u_id']})
     # grab details of channel 1
     details = requests.get(f"{url}/channel/details", params={"token": user_1['token'], "channel_id": channel_1['channel_id']}).json()
     
@@ -206,18 +167,19 @@ def test_channel_details_normal(url):
     # authorised_user should be a member
     found = False
     for member in details['all_members']:
-        if user_1['u_id'] == details['u_id']:
+        if user_1['u_id'] == member['u_id']:
             found = True
             break
     assert found == True
 
     # inviting new user to channel
-    invite_channel(url, user_1['token'], channel_1['channel_id'], user_2['u_id'])
+    requests.post(f"{url}/channel/invite", json={"token": user_1['token'], "channel_id": channel_1['channel_id'], "u_id": user_2['u_id']})
 
     details = requests.get(f"{url}/channel/details", params={"token": user_1['token'], "channel_id": channel_1['channel_id']}).json()
     
     found = False
-
+    # print(f"user_2 u_id = {user_2['u_id']}.")
+    # print(details['owner_members'])
     # checking new_user found in all members
     for member in details['all_members']:
         if user_2['u_id'] == member['u_id']:

@@ -178,7 +178,11 @@ def http_auth_register():
     Send the correct data to the functions.
     '''
     data = request.get_json()
+<<<<<<< HEAD
     return jsonify(auth_register(data['email'], data['password'], data['name_first'], data['name_last']))
+=======
+    return jsonify(auth_register(data['email'], str(data['password']), data['name_first'], data['name_last']))
+>>>>>>> 35bfa35a77d2d03d05ce0cc24e2c497bbe8cab68
 
 
 
@@ -220,20 +224,20 @@ def http_user_profile_sethandle():
 def http_message_send():
     data = request.get_json()
     return jsonify(
-        message_send(data['token'], data['channel_id'], data['message']))
+        message_send(data['token'], int(data['channel_id']), data['message']))
 
 
 @APP.route('/message/remove', methods=['DELETE'])
 def http_message_remove():
     data = request.get_json()
-    return jsonify(message_remove(data['token'], data['message_id']))
+    return jsonify(message_remove(data['token'], int(data['message_id'])))
 
 
 @APP.route('/message/edit', methods=['PUT'])
 def http_message_edit():
     data = request.get_json()
     return jsonify(
-        message_edit(data['token'], data['message_id'], data['message']))
+        message_edit(data['token'], int(data['message_id']), data['message']))
 
 
 if __name__ == "__main__":
