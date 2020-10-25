@@ -6,8 +6,8 @@ from subprocess import Popen, PIPE
 import signal
 from time import sleep
 from error import InputError, AccessError
-import pytest
 from utils import register_user_auth, login_user, user_details
+
 
 @pytest.fixture
 def url():
@@ -29,6 +29,7 @@ def url():
         server.kill()
         raise Exception("Couldn't get URL from local server")
 
+
 ###################
 # Global variables
 ###################
@@ -40,27 +41,36 @@ user = {
     "name_last": "Knight",
 }
 
+
 def test_login_email_nonexist(url):
     '''
     An email that does not exist in the database
     '''
-    payload = login_user(url, user_details("didntusethis@gmail.com", "123abcd!@#"))
+    payload = login_user(url,
+                         user_details("didntusethis@gmail.com", "123abcd!@#"))
     assert payload.status_code == 400
+
 
 def test_login_password(url):
     '''
     A incorrect password
     '''
-    payload = login_user(url, user_details("validEmail@gmail.com", "thisIsTheWrongPassword"))
+    payload = login_user(
+        url, user_details("validEmail@gmail.com", "thisIsTheWrongPassword"))
     assert payload.status_code == 400
+
 
 def test_login_email_limit(url):
     '''
     An email that exceed 254 characters
     '''
-    payload = login_user(url, user_details("atestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatest@gmail.com",
+    payload = login_user(
+        url,
+        user_details(
+            "atestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatest@gmail.com",
             "Test@12345"))
     assert payload.status_code == 400
+
 
 def test_login_email_first_letter(url):
     '''
@@ -88,7 +98,7 @@ def test_login_email_first_letter(url):
     payload = login_user(url, user_details("+atest@gmail.com", "Test@12345"))
     assert payload.status_code == 400
 
-    
+
 def test_login_email_space_trailing(url):
     '''
     Email addresses a whitespace inbetween
@@ -104,7 +114,7 @@ def test_login_email_space_trailing(url):
     payload = login_user(url, user_details("atest@gmail.c om", "Test@12345"))
     assert payload.status_code == 400
 
-    
+
 def test_login_email_username(url):
     '''
     Email addresses that contains a special symbol in the username section
@@ -129,6 +139,7 @@ def test_login_email_username(url):
     assert payload.status_code == 400
     payload = login_user(url, user_details("at_es@gmail.com", "Test@12345"))
     assert payload.status_code == 400
+
 
 def test_login_email_domain1(url):
     '''
@@ -163,11 +174,11 @@ def test_login_email_period(url):
     user["email"] = "dummy..test@gmail.com"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
-    
+
     user["email"] = "dummytest..@gmail.com"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
-   
+
 
 def test_register_localhost(url):
     '''
@@ -176,7 +187,7 @@ def test_register_localhost(url):
     user["email"] = "dummytest@localhost.com"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
-   
+
 
 def test_register_email(url):
     '''
@@ -185,11 +196,11 @@ def test_register_email(url):
     user["email"] = "dummy@test@gmail.com"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
-    
+
     user["email"] = "@dummytest@gmail.com"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
-   
+
     user["email"] = "dummytest@@gmail.com"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
@@ -241,6 +252,7 @@ def test_register_password_max(url):
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
 
+
 def test_register_password_min(url):
     '''
     Passwords that are less that 6 characters long
@@ -253,6 +265,7 @@ def test_register_password_min(url):
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
 
+
 def test_register_email_empty(url):
     '''
     Email that is empty
@@ -260,6 +273,7 @@ def test_register_email_empty(url):
     user["email"] = ""
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
+
 
 def test_register_password_empty(url):
     '''
@@ -269,6 +283,7 @@ def test_register_password_empty(url):
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
 
+
 def test_register_name_first_empty(url):
     '''
     First name that is empty
@@ -276,6 +291,7 @@ def test_register_name_first_empty(url):
     user["name_first"] = ""
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
+
 
 def test_register_name_last_empty(url):
     '''
@@ -291,15 +307,18 @@ def test_register_name_first_50(url):
     '''
     First name exceeds 50 characters
     '''
-    user["name_first"] = "ThisisaverylonglastnameThisisaverylonglastnameThisisaverylonglastname"
+    user[
+        "name_first"] = "ThisisaverylonglastnameThisisaverylonglastnameThisisaverylonglastname"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
+
 
 def test_register_name_last_50(url):
     '''
     Last name exceeds 50 characters
     '''
-    user["name_last"] = "ThisisaverylonglastnameThisisaverylonglastnameThisisaverylonglastname"
+    user[
+        "name_last"] = "ThisisaverylonglastnameThisisaverylonglastnameThisisaverylonglastname"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
 
@@ -311,15 +330,15 @@ def test_register_name_first_symbol(url):
     user["name_first"] = "Phil@"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
-    
+
     user["name_first"] = "Phi!l"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
- 
+
     user["name_first"] = "Ph#il"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
-    
+
     user["name_first"] = "P$hil"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
@@ -347,7 +366,7 @@ def test_register_name_first_symbol(url):
     user["name_first"] = "Ph-il"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
-    
+
     user["name_first"] = "P=hil"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
@@ -360,7 +379,7 @@ def test_register_name_last_symbol(url):
     user["name_last"] = "Kn!ight"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
-   
+
     user["name_last"] = "Knigh@t"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
@@ -368,7 +387,7 @@ def test_register_name_last_symbol(url):
     user["name_last"] = "Kni#ght"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
-    
+
     user["name_last"] = "K$night"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
@@ -388,20 +407,19 @@ def test_register_name_last_symbol(url):
     user["name_last"] = "Knigh*t"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
-        
+
     user["name_last"] = "Kn(ight"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
-    
+
     user["name_last"] = "K)night"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
-        
+
     user["name_last"] = "Kni-ght"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
-        
+
     user["name_last"] = "K=night"
     payload = register_user_auth(url, user)
     assert payload.status_code == 400
-        

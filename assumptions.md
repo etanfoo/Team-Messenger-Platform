@@ -98,3 +98,28 @@ CHANNELS TEST
 - Channel name is limited to 20 character including spaces
 - Channel name cannot be empty or blank spaces
 - The user that calls channels_create is automatically an owner and member
+
+---
+
+OTHER TEST
+
+---
+
+# users_all
+
+- user calling function must have valid token
+- Returns the u_ids of all users including the u_id of the person calling it
+
+# admin_userpermission_change
+
+- Owner cannot remove their own permission
+- Member cannot grant or remove other users permission changes
+- Owner must promote member to owner to then remove their own ownership
+- Permission id's include 1 and 2. 1 being owner, and 2 being member
+- Permission id's cannot be strings or empty
+- u_id of user to promote/demote must be filled with a valid token and cannot be empty
+
+# search
+
+- user calling function must have a valid token
+- seach query must be filled and cannot be None or NULL

@@ -112,6 +112,32 @@ def test_user_profile_setemail_normal():
 
     clear()
 
+# input error when email > 254 char
+def test_user_profile_setemail_input_error_email_too_long():
+    clear()
+
+    regular_user = register_user()
+
+    with pytest.raises(InputError):
+        user_profile_setemail(regular_user['token'], "long" * 100 + '@gmail.com')
+
+
+    clear()
+
+# inpuyt error when email == 0 char
+def test_user_profile_setemail_input_error_email_too_short():
+    clear()
+
+    regular_user = register_user()
+
+    with pytest.raises(InputError):
+        user_profile_setemail(regular_user['token'], "")
+
+
+    clear()
+
+
+
 
 def test_user_profile_setemail_input_error_invalid_email():
     clear()
@@ -125,7 +151,7 @@ def test_user_profile_setemail_input_error_invalid_email():
     clear()
 
 
-def test_user_profile_setemail_input_error_emaily_already_used():
+def test_user_profile_setemail_input_error_email_already_used():
     clear()
 
     regular_user = register_user()
