@@ -10,11 +10,8 @@ from channels import channels_list, channels_listall, channels_create
 from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
 from auth import auth_login, auth_logout, auth_register
 from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle
-<<<<<<< src/server.py
 from other import users_all, admin_userpermission_change, search
-=======
 from message import message_send, message_remove, message_edit
->>>>>>> src/server.py
 
 
 def defaultHandler(err):
@@ -182,11 +179,7 @@ def http_auth_register():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-<<<<<<< HEAD
-    return jsonify(auth_register(data['email'], data['password'], data['name_first'], data['name_last']))
-=======
     return jsonify(auth_register(data['email'], str(data['password']), data['name_first'], data['name_last']))
->>>>>>> 35bfa35a77d2d03d05ce0cc24e2c497bbe8cab68
 
 
 
