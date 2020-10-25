@@ -59,10 +59,6 @@ CHANNEL TEST
 
 ---
 
-# all functions
-
-- comparing u_id with token for iteration 1
-
 # channel_invite
 
 - invitee becomes apart of all_members, but not owner_members
@@ -70,8 +66,6 @@ CHANNEL TEST
 # channel_details
 
 # channel_messages
-
-- only passing through values that would result in input/acccess errors as sending messages not implemented yet for iteration 1
 
 # channel_leave
 
@@ -85,7 +79,7 @@ CHANNELS TEST
 
 # all functions
 
-- u_id == token for iteration 1
+- token is jwt encoded of user id
 
 # channels_list
 

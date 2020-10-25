@@ -133,8 +133,7 @@ def test_message_edit_not_exist():
     clear()
     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
-    channels_create(authorized_user['token'], "public_channel",
-                                  True)
+    channels_create(authorized_user['token'], "public_channel", True)
     with pytest.raises(InputError):
         message_edit(authorized_user['token'], 0, "a")
 
