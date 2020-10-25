@@ -67,6 +67,9 @@ def url():
 ###################
 
 def test_channel_invite_normal(url):
+    '''
+    Attempts to invite another user to a channel
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -99,6 +102,9 @@ def test_channel_invite_normal(url):
     assert count == 1
 
 def test_channel_invite_input_error(url):
+    '''
+    Attempts to prompt input error in different occasions
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -125,6 +131,9 @@ def test_channel_invite_input_error(url):
     assert payload.status_code == 400
     
 def test_channel_invite_access_error(url):
+    '''
+    Attempts to prompt Access Error
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -142,6 +151,9 @@ def test_channel_invite_access_error(url):
     assert payload.status_code == 400
 
 def test_channel_details_normal(url):
+    '''
+    Testing the normal functionality of grabbing details of a channel
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -197,6 +209,9 @@ def test_channel_details_normal(url):
     #####################################################################################
 
 def test_channel_details_input_error(url):
+    '''
+    Attempts to prompt input error using an Invalid Channel ID
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -211,6 +226,9 @@ def test_channel_details_input_error(url):
 
 
 def test_channel_details_access_error(url):
+    '''
+    Attempts to prompt Access Error by utilising an unauthurised user
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -224,7 +242,10 @@ def test_channel_details_access_error(url):
     assert payload.status_code == 400
 
 def test_channel_messages_normal(url):
- 
+    '''
+    Tests normal functionality of messages.
+    Send 100 messages and check if each of them is right.
+    '''
     # requests.delete(f"{url}/clear")
     regular_user = register_user(url, authorised_user)
     login_user(url, authorised_user)
@@ -251,7 +272,9 @@ def test_channel_messages_normal(url):
         index += 1
  
 def test_channel_messages_not_enough_messages_remaining(url):
- 
+    '''
+    Checks if there the right amount of messages left.
+    '''
     # requests.delete(f"{url}/clear")
     regular_user = register_user(url, authorised_user)
     login_user(url, authorised_user)
@@ -277,11 +300,9 @@ def test_channel_messages_not_enough_messages_remaining(url):
  
         index += 1
 def test_channel_messages_input_error(url):
-    # Cant do regular tests as no messages can be sent, according to piazza's instructors answer:
-
-    # "For iteration 1 it's not expected that you test every function to the full extent.
-    # Some functions may not be testable at all, and other functions may not be testable
-    # until further implementation is done in future iterations."
+    '''
+    Attempts to prompt Input Error with Invalid Channel ID
+    '''
 
     # Reset/clear data
     requests.delete(f"{url}/clear")
@@ -295,6 +316,9 @@ def test_channel_messages_input_error(url):
 
 
 def test_channel_messages_access_error(url):
+    '''
+    Attempts to prompt Access Error by utilising unauthorised user
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -308,6 +332,9 @@ def test_channel_messages_access_error(url):
     assert payload.status_code == 400
 
 def test_channel_leave_regular(url):
+    '''
+    Checks if a member that been invited can leave the channel.
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -335,6 +362,9 @@ def test_channel_leave_regular(url):
     #####################################################################################
 
 def test_channel_leave_input_error(url):
+    '''
+    Attempts to prompt Input Error with Invalid Channel ID
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -351,6 +381,9 @@ def test_channel_leave_input_error(url):
 
 
 def test_channel_leave_access_error(url):
+    '''
+    Attempts to prompt Access Error by utilising unauthorised user
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -364,6 +397,9 @@ def test_channel_leave_access_error(url):
     assert payload.status_code == 400
 
 def test_channel_join_input_error(url):
+    '''
+    Attempts to prompt Input Error with Invalid Channel ID
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -377,6 +413,9 @@ def test_channel_join_input_error(url):
     assert payload.status_code == 400
 
 def test_channel_join_acccess_error(url):
+    '''
+    Attempts to prompt Access Error by utilising unauthorised user
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -390,6 +429,9 @@ def test_channel_join_acccess_error(url):
     assert payload.status_code == 400
 
 def test_channel_join_normal(url):
+    '''
+    Tests if a user can join a Public Channel
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -413,6 +455,9 @@ def test_channel_join_normal(url):
     assert found == True
     
 def test_channel_addowner_input_error(url):
+    '''
+    Attempts to prompt an input error
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -433,6 +478,9 @@ def test_channel_addowner_input_error(url):
     assert payload.status_code == 400
 
 def test_channel_addowner_access_error(url):
+    '''
+    Attempts to prompt Access Error by utilising unauthorised user
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -446,6 +494,9 @@ def test_channel_addowner_access_error(url):
     assert payload.status_code == 400
 
 def test_channel_addowner_normal(url):
+    '''
+    Attempts to add a new owner to the channel.
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -468,6 +519,9 @@ def test_channel_addowner_normal(url):
     assert found == True
 
 def test_channel_removeowner_input_error(url):
+    '''
+    Attempts to prompt an input error.
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -486,6 +540,9 @@ def test_channel_removeowner_input_error(url):
     assert payload.status_code == 400
 
 def test_channel_removeowner_acces_error(url):
+    '''
+    Attempts to prompt Access Error by utilising unauthorised user
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -499,6 +556,9 @@ def test_channel_removeowner_acces_error(url):
     assert payload.status_code == 400
 
 def test_channel_removeowner_normal(url):
+    '''
+    Attempts to remove owner from channel.
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
