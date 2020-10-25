@@ -191,7 +191,7 @@ def test_channel_details_normal(url):
 
     #####################################################################################
     # regular channel details, should display correct information
-    details = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : channel_1['channel_id']})
+    details = requests.get(f"{url}/channel/details", params={"token": user_1['token'], "channel_id": channel_1['channel_id']}).json()
     
     assert details['name'] == "GoodThings"
 
@@ -214,7 +214,8 @@ def test_channel_details_normal(url):
     # inviting new user to channel
     invite_channel(url, user_1['token'], channel_1['channel_id'], user_2['u_id'])
 
-    details = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : channel_1['channel_id']})
+    details = requests.get(f"{url}/channel/details", params={"token": user_1['token'], "channel_id": channel_1['channel_id']}).json()
+    
     found = False
 
     # checking new_user found in all members
@@ -314,7 +315,7 @@ def test_channel_leave_regular(url):
 
     # new user leaving, should not be found as a part of all_members
     requests.post(f"{url}/channel/leave", json={user_2['token'], channel_1['channel_id']})
-    details = requests.get(f"{url}/channel/details", params={"token" : user_1['token'], "channel_id" : channel_1['channel_id']})
+    details = requests.get(f"{url}/channel/details", params={"token": user_1['token'], "channel_id": channel_1['channel_id']}).json()
 
     found = False
     for members in details['all_members']:
@@ -400,7 +401,7 @@ def test_channel_join_normal(url):
     user_2 = prepare_user(url, second_user)
     requests.post(f"{url}/channel/join", json={user_2['token'], public_channel['channel_id']})
 
-    details = requests.get(f"{url}/channel/details", params={"token" : user_1['token'], "channel_id" : public_channel['channel_id']})
+    details = requests.get(f"{url}/channel/details", params={"token": user_1['token'], "channel_id": channel_1['channel_id']}).json()
 
     found = False
     for member in details['all_members']:
@@ -455,7 +456,7 @@ def test_channel_addowner_normal(url):
 
     requests.post(f"{url}/channel/addowner", json={user_1['token'], channel_1['channel_id'], user_2['u_id']})
 
-    details = requests.get(f"{url}/channel/details", params={"token" : user_1['token'], "channel_id" : channel_1['channel_id']})
+    details = requests.get(f"{url}/channel/details", params={"token": user_1['token'], "channel_id": channel_1['channel_id']}).json()
 
     found = False
     for member in details['owner_members']:
@@ -508,7 +509,7 @@ def test_channel_removeowner_normal():
 
     requests.post(f"{url}/channel/addowner", json={user_1['token'], channel_1['channel_id'], user_2['u_id']})
     requests.post(f"{url}/channel/removeowner", json={user_1['token'], channel_1['channel_id'], user_2['u_id']})
-    details = requests.get(f"{url}/channel/details", params={"token" : user_1['token'], "channel_id" : channel_1['channel_id']})
+    details = requests.get(f"{url}/channel/details", params={"token": user_1['token'], "channel_id": channel_1['channel_id']}).json()
 
     found = False
     for member in details['owner_members']:
