@@ -9,6 +9,9 @@ import datetime
 
 
 def message_send(token, channel_id, message):
+    """
+    Function that sends a message to the provided channel_id
+    """
     #Check if message is valid
     valid_message(message)
     #Check if token is valid
@@ -42,6 +45,9 @@ def message_send(token, channel_id, message):
 
 
 def message_remove(token, message_id):
+    """
+    Function that removes message given message_id
+    """
     #Make sure token is valid
     check_token(token)
     # #Decode the token to user ID
@@ -59,6 +65,9 @@ def message_remove(token, message_id):
 
 
 def message_edit(token, message_id, message):
+    """
+    Function that edits the message
+    """
     #Message cannot be longer than 1000 characters
     valid_message(message)
     #Check if message_id exist

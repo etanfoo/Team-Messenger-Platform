@@ -25,6 +25,9 @@ def get_channel(message_id):
 
 
 def get_message_owner(message_id):
+    """
+    Get the user_id with the corresponding message_id
+    """
     for channel in data["channels"]:
         for message in channel["messages"]:
             if (message["message_id"] == message_id):
@@ -33,6 +36,9 @@ def get_message_owner(message_id):
 
 
 def valid_message(message):
+    """
+    Check if the message length is valid
+    """
     if (len(message) > 1000):
         raise InputError(
             description=
