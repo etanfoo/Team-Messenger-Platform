@@ -138,7 +138,7 @@ def test_user_profile_setemail_input_error_email_too_long(url):
     
     assert r.status_code == 400
 
-def test_user_profile_setemail_input_error_email_too_long(url):
+def test_user_profile_setemail_input_error_email_too_short(url):
     # requests.delete(f"{url}/clear")
 
     regular_user = register_user(url, authorised_user)
