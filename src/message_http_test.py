@@ -111,25 +111,3 @@ def test_message_edit_not_authorised(url):
     assert r.status_code == 400
 
 
-def test_message_edit_none(url):
-    user_1 = register_user(url, authorised_user)
-    channel_1 = create_channel(url, user_1["token"], "TSM Legend", True)   
-    message_1 = send_message_id(url, user_1["token"], channel_1["channel_id"], "hello")
-    edit_message(url, user_1["token"], message_1["message_id"], "")
-    r = requests.post(f"{url}/message/check/message", json = {"message_id": message_1["message_id"]})
-    assert r.status_code == 400
-
-
-def test_get_channel(url):
-    user_1 = register_user(url, authorised_user)
-    register_user(url, second_user)
-    channel_1 = create_channel(url, user_1["token"], "TSM Legend", True)
-    message_1 = send_message_id(url, user_1["token"], channel_1["channel_id"], "hello")
-    requests.post(f"{url}/message/check/channel", json = {"message_id": message_1["message_id"]})
-    r = requests.post(f"{url}/message/check/channel", json = {"message_id": 1})
-    assert r.status_code == 400
-
-
-def test_get_message_owner(url):
-    r = requests.post(f"{url}/message/check/owner", json = {"message_id": 1})
-    assert r.status_code == 400
