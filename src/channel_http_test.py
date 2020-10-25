@@ -6,9 +6,10 @@ from subprocess import Popen, PIPE
 import signal
 from time import sleep
 from error import InputError, AccessError
-from channel import channel_details
+
 from channel_test import INVALID_U_ID, INVALID_CHANNEL_ID
-from utils import register_user, login_user, create_channel, invite_channel
+from utils import (register_user, login_user, create_channel, 
+    invite_channel, authorised_user, second_user, unauthorised_user, prepare_user)
 
 @pytest.fixture
 def url():
@@ -34,32 +35,32 @@ def url():
 # Global variables
 ###################
 
-authorised_user = {
-    "email": "validEmail@gmail.com",
-    "password": "valid_password",
-    "name_first": "Phil",
-    "name_last": "Knight",
-}
+# authorised_user = {
+#     "email": "validEmail@gmail.com",
+#     "password": "valid_password",
+#     "name_first": "Phil",
+#     "name_last": "Knight",
+# }
 
-second_user = {
-    "email": "validEmail2@gmail.com",
-    "password": "valid_password2",
-    "name_first": "Donald",
-    "name_last": "Trump",
-}
+# second_user = {
+#     "email": "validEmail2@gmail.com",
+#     "password": "valid_password2",
+#     "name_first": "Donald",
+#     "name_last": "Trump",
+# }
 
-unauthorised_user = {
-    "email": "unauthorised@gmail.com",
-    "password": "ILoveSleep",
-    "name_first": "Sleepy",
-    "name_last": "Joe",
-}
+# unauthorised_user = {
+#     "email": "unauthorised@gmail.com",
+#     "password": "ILoveSleep",
+#     "name_first": "Sleepy",
+#     "name_last": "Joe",
+# }
 
-'''___________________________________'''
-def prepare_user(url, user):
-    new_user = register_user(url, user)
-    login_user(url, user)
-    return new_user
+# '''___________________________________'''
+# def prepare_user(url, user):
+#     new_user = register_user(url, user)
+#     login_user(url, user)
+#     return new_user
 
 ###################
 # channel/invite
@@ -77,8 +78,7 @@ def test_channel_invite_normal(url):
     requests.post(f"{url}/channel/invite", json={"token": user_1['token'], "channel_id": channel_1['channel_id'], "u_id": user_2['u_id']})
     # grab details of channel 1
     details = requests.get(f"{url}/channel/details", params={"token": user_1['token'], "channel_id": channel_1['channel_id']}).json()
-    
-    print(details)
+
     
 
     # check if you can find all members in all_members
@@ -108,19 +108,19 @@ def test_channel_invite_input_error(url):
     user_2 = prepare_user(url, second_user)
 
     # input error test, when channel_id does not refer to a valid channel
-    payload = requests.post(f"{url}/channel/invite", json={"token": user_1['token'], "channel_id": INVALID_CHANNEL_ID, "user": user_2['u_id']})
+    payload = requests.post(f"{url}/channel/invite", json={"token": user_1['token'], "channel_id": INVALID_CHANNEL_ID, "u_id": user_2['u_id']})
     
     assert payload.status_code == 400
     # input error test, when u_id does not refer to a valid id
-    payload = requests.post(f"{url}/channel/invite", json={"token": user_1['token'], "channel_id": channel_1['channel_id'], "user": INVALID_U_ID})
+    payload = requests.post(f"{url}/channel/invite", json={"token": user_1['token'], "channel_id": channel_1['channel_id'], "u_id": INVALID_U_ID})
     
     assert payload.status_code == 400
     # input error, when channel_id is not of the same data type as expected (integer)
-    payload = requests.post(f"{url}/channel/invite", json={"token": user_1['token'], "channel_id": "string_input", "user": user_2['u_id']})
+    payload = requests.post(f"{url}/channel/invite", json={"token": user_1['token'], "channel_id": "string_input", "u_id": user_2['u_id']})
     
     assert payload.status_code == 400
     # input error, when u_id is not of the same data type as expected (integer)
-    payload = requests.post(f"{url}/channel/invite", json={"token": user_1['token'], "channel_id": channel_1['channel_id'], "user": "string_input"})
+    payload = requests.post(f"{url}/channel/invite", json={"token": user_1['token'], "channel_id": channel_1['channel_id'], "u_id": "string_input"})
     
     assert payload.status_code == 400
     
@@ -137,7 +137,7 @@ def test_channel_invite_access_error(url):
     # Create user_3
     user_3 = prepare_user(url, unauthorised_user)
     # user_3 invites user_2 to channel_1
-    payload = requests.post(f"{url}/channel/invite", json={"token": user_3['token'], "channel_id": channel_1['channel_id'], "user": user_2['u_id']})
+    payload = requests.post(f"{url}/channel/invite", json={"token": user_3['token'], "channel_id": channel_1['channel_id'], "u_id": user_2['u_id']})
     
     assert payload.status_code == 400
 
@@ -208,12 +208,9 @@ def test_channel_details_input_error(url):
     
     assert payload.status_code == 400
     # input error test when channel_id is not of the same data type as expected (integer)
-    
-    payload = requests.get(f"{url}/channel/details", params = {"token" : user_1['token'], "channel_id" : "string_input"})
-    
-    assert payload.status_code == 400
 
-def test_channel_details_acces_error(url):
+
+def test_channel_details_access_error(url):
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -243,10 +240,7 @@ def test_channel_messages_input_error(url):
     payload = requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : INVALID_CHANNEL_ID, "start" : 0})
     
     assert payload.status_code == 400
-    # input error when channel_id is not of the same data type as expected (integer)    
-    payload = requests.get(f"{url}/channel/messages", params = {"token" : user_1['token'], "channel_id" : "string_input", "start" : 0})
-    
-    assert payload.status_code == 400
+
 
 def test_channel_messages_access_error(url):
     # Reset/clear data
@@ -273,10 +267,10 @@ def test_channel_leave_regular(url):
 
     # invite new user to channel
     user_2 = prepare_user(url, second_user)
-    invite_channel(url, user_1['token'], channel_1['channel_id'], user_2['u_id'])
+    requests.post(f"{url}/channel/invite", json={"token": user_1['token'], "channel_id": channel_1['channel_id'], "u_id": user_2['u_id']})
 
     # new user leaving, should not be found as a part of all_members
-    requests.post(f"{url}/channel/leave", json={user_2['token'], channel_1['channel_id']})
+    requests.post(f"{url}/channel/leave", json={'token' : user_2['token'], 'channel_id' : channel_1['channel_id']})
     details = requests.get(f"{url}/channel/details", params={"token": user_1['token'], "channel_id": channel_1['channel_id']}).json()
 
     found = False
@@ -297,18 +291,12 @@ def test_channel_leave_input_error(url):
 
     # input error when channel ID is not a valid channel
     user_2 = prepare_user(url, second_user)
-    invite_channel(url, user_1['token'], channel_1['channel_id'], user_2['u_id'])
+    requests.post(f"{url}/channel/invite", json={"token": user_1['token'], "channel_id": channel_1['channel_id'], "u_id": user_2['u_id']})
 
-    payload = requests.post(url, json={user_2['token'], INVALID_CHANNEL_ID})
+    payload = requests.post(f"{url}/channel/leave", json={'token' : user_2['token'], 'channel_id' : INVALID_CHANNEL_ID})
     
     assert payload.status_code == 400
-    # input error, when channel_id is not of the same data type as expected (integer)
-    user_3 = prepare_user(url, unauthorised_user)
-    invite_channel(url, user_1['token'], channel_1['channel_id'], user_3['u_id'])
 
-    payload = requests.post(url, json={user_3['token'], "string_input"})
-    
-    assert payload.status_code == 400
 
 def test_channel_leave_access_error(url):
     # Reset/clear data
@@ -319,7 +307,7 @@ def test_channel_leave_access_error(url):
 
     # Access error, when user is not a member of channel with channel_id
     user_3 = prepare_user(url, unauthorised_user)
-    payload = requests.post(f"{url}/channel/leave", json={user_3['token'], channel_1['channel_id']})
+    payload = requests.post(f"{url}/channel/leave", json={'token' : user_3['token'], 'channel_id' : channel_1['channel_id']})
     
     assert payload.status_code == 400
 
@@ -332,7 +320,7 @@ def test_channel_join_input_error(url):
     #####################################################################################
 
     # input error when channel ID is not a valid channel
-    payload = requests.post(f"{url}/channel/join", json={user_1['token'], INVALID_CHANNEL_ID})
+    payload = requests.post(f"{url}/channel/join", json={'token' : user_1['token'], 'channel_id' : INVALID_CHANNEL_ID})
     
     assert payload.status_code == 400
 
@@ -345,7 +333,7 @@ def test_channel_join_acccess_error(url):
 
     # Access error when channel_id refers to a channel that is private (when the authorised user is not an admin)
     user_2 = prepare_user(url, second_user)
-    payload = requests.post(f"{url}/channel/join", json={user_2['token'], private_channel['channel_id']})
+    payload = requests.post(f"{url}/channel/join", json={'token' : user_2['token'], 'channel_id' : private_channel['channel_id']})
     
     assert payload.status_code == 400
 
@@ -361,9 +349,9 @@ def test_channel_join_normal(url):
 
     # user joins channel
     user_2 = prepare_user(url, second_user)
-    requests.post(f"{url}/channel/join", json={user_2['token'], public_channel['channel_id']})
+    requests.post(f"{url}/channel/join", json={'token' : user_2['token'], 'channel_id' : public_channel['channel_id']})
 
-    details = requests.get(f"{url}/channel/details", params={"token": user_1['token'], "channel_id": channel_1['channel_id']}).json()
+    details = requests.get(f"{url}/channel/details", params={"token": user_1['token'], "channel_id": public_channel['channel_id']}).json()
 
     found = False
     for member in details['all_members']:
@@ -383,12 +371,12 @@ def test_channel_addowner_input_error(url):
 
     # input error when channel ID is not a valid channel
     user_2 = prepare_user(url, second_user)
-    payload = requests.post(f"{url}/channel/addowner", json={user_1['token'], INVALID_CHANNEL_ID, user_2['u_id']})
+    payload = requests.post(f"{url}/channel/addowner", json={'token' : user_1['token'], 'channel_id' : INVALID_CHANNEL_ID, 'u_id' : user_2['u_id']})
     
     assert payload.status_code == 400
 
     # input error when user with user id u_id is already an owner of the channel 
-    payload = requests.post(f"{url}/channel/addowner", json={user_1['token'], channel_1['channel_id'], user_1['u_id']})
+    payload = requests.post(f"{url}/channel/addowner", json={'token' : user_1['token'], 'channel_id' : channel_1['channel_id'], 'u_id' : user_1['u_id']})
     
     assert payload.status_code == 400
 
@@ -401,7 +389,7 @@ def test_channel_addowner_access_error(url):
 
     # access error when the authorised user is not an owner of the flockr, or an owner of this channel
     user_2 = prepare_user(url, second_user)
-    payload = requests.post(f"{url}/channel/addowner", json={user_2['token'], channel_1['channel_id'], user_2['u_id']})
+    payload = requests.post(f"{url}/channel/addowner", json={'token' : user_2['token'], 'channel_id' : channel_1['channel_id'], 'u_id' : user_2['u_id']})
     
     assert payload.status_code == 400
 
@@ -416,7 +404,7 @@ def test_channel_addowner_normal(url):
     # test adding owner to the channel
     user_2 = prepare_user(url, second_user)
 
-    requests.post(f"{url}/channel/addowner", json={user_1['token'], channel_1['channel_id'], user_2['u_id']})
+    requests.post(f"{url}/channel/addowner", json={'token' : user_1['token'], 'channel_id' : channel_1['channel_id'], 'u_id' : user_2['u_id']})
 
     details = requests.get(f"{url}/channel/details", params={"token": user_1['token'], "channel_id": channel_1['channel_id']}).json()
 
@@ -435,13 +423,13 @@ def test_channel_removeowner_input_error(url):
     channel_1 = create_channel(url, user_1['token'], "GoodThings", True)
 
     # input error when channel ID is not a valid channel
-    payload = requests.post(f"{url}/channel/removeowner", json={user_1['token'], INVALID_CHANNEL_ID, user_1['u_id']})
+    payload = requests.post(f"{url}/channel/removeowner", json={'token' : user_1['token'], 'channel_id' : INVALID_CHANNEL_ID, 'u_id' : user_1['u_id']})
     
     assert payload.status_code == 400
 
     # input error when user with user id u_id is not an owner of the channel
     user_2 = prepare_user(url, second_user)
-    payload = requests.post(f"{url}/channel/removeowner", json={user_1['token'], channel_1['channel_id'], user_2['u_id']})
+    payload = requests.post(f"{url}/channel/removeowner", json={'token' : user_1['token'], 'channel_id' : channel_1['channel_id'], 'u_id' : user_2['u_id']})
     
     assert payload.status_code == 400
 
@@ -454,11 +442,11 @@ def test_channel_removeowner_acces_error(url):
 
     # access error when the authorised user is not an owner of the flockr, or an owner of this channel 
     user_2 = prepare_user(url, second_user)
-    payload = requests.post(f"{url}/channel/removeowner", json={user_2['token'], channel_1['channel_id'], user_1['u_id']})
+    payload = requests.post(f"{url}/channel/removeowner", json={'token' : user_2['token'], 'channel_id' : channel_1['channel_id'], 'u_id' : user_1['u_id']})
     
     assert payload.status_code == 400
 
-def test_channel_removeowner_normal():
+def test_channel_removeowner_normal(url):
     # Reset/clear data
     requests.delete(f"{url}/clear")
     # Create user_1 and their channel
@@ -469,13 +457,14 @@ def test_channel_removeowner_normal():
     # test adding owner to the channel
     user_2 = prepare_user(url, second_user)
 
-    requests.post(f"{url}/channel/addowner", json={user_1['token'], channel_1['channel_id'], user_2['u_id']})
-    requests.post(f"{url}/channel/removeowner", json={user_1['token'], channel_1['channel_id'], user_2['u_id']})
+    requests.post(f"{url}/channel/addowner", json={'token' : user_1['token'], 'channel_id' : channel_1['channel_id'], 'u_id' : user_2['u_id']})
+    requests.post(f"{url}/channel/removeowner", json={'token' : user_1['token'], 'channel_id' : channel_1['channel_id'], 'u_id' : user_2['u_id']})
     details = requests.get(f"{url}/channel/details", params={"token": user_1['token'], "channel_id": channel_1['channel_id']}).json()
 
+    print(details)
     found = False
     for member in details['owner_members']:
-        if user_1['u_id'] == member['u_id']:
+        if user_2['u_id'] == member['u_id']:
             found = True
             break
     assert found == False
