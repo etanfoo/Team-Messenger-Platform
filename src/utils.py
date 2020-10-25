@@ -70,6 +70,10 @@ def login_user(url, user):
         "password": user['password']
     })
 
+def prepare_user(url, user):
+    new_user = register_user(url, user)
+    login_user(url, user)
+    return new_user
 
 def create_channel(url, token, name, is_public):
     # Creates a new channel
@@ -154,4 +158,11 @@ second_user = {
     "password": "valid_password2",
     "name_first": "Donald",
     "name_last": "Trump",
+}
+
+unauthorised_user = {
+    "email": "unauthorised@gmail.com",
+    "password": "ILoveSleep",
+    "name_first": "Sleepy",
+    "name_last": "Joe",
 }
