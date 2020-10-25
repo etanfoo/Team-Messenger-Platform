@@ -103,7 +103,7 @@ def admin_userpermission_change(token, u_id, permission_id):
                 if demotion_id["u_id"] == u_id:
                     demotion["owner_members"].remove({"u_id": u_id})
                   
-    return 0
+    return 0 
 
 def search(token, query_str):
     '''

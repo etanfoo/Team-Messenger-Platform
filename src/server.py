@@ -10,6 +10,7 @@ from channels import channels_list, channels_listall, channels_create
 from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
 from auth import auth_login, auth_logout, auth_register
 from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle
+from other import users_all, admin_userpermission_change, search
 
 
 def defaultHandler(err):
@@ -62,7 +63,7 @@ def http_channels_create():
     return dumps(channels_create(new_data["token"], new_data["name"], new_data["is_public"]))
 
 ###################
-# channel 
+# channel
 ###################
 
 # data is passed through the URL for GET methods
@@ -197,12 +198,39 @@ def http_user_profile_sethandle():
 
 
 
+####################
+# other functions
+####################
+@APP.route('/other/users/all', methods=['GET'])
+def http_users_all():
+    data = request.args
+    return jsonify(users_all(data['token']))
+
+@APP.route('/other/userpermission/change', methods=['POST'])
+def http_admin_userpermission_change():
+    data = request.get_json()
+    return jsonify(
+        admin_userpermission_change(data['token'], data['u_id'], data['permission_id'])
+    )
+
+@APP.route('/other/userpermission/remove', methods=['DELETE'])
+def http_admin_userpermission_remove():
+    data = request.get_json()
+    return jsonify(
+        admin_userpermission_change(data['token'], data['u_id'], data['permission_id'])
+    )
+
+@APP.route('/other/search', methods=['GET'])
+def http_search():
+    data = request.args
+    return jsonify(search(data['token'], data['query_str']))
+
+
+
+
 
 
 
 
 if __name__ == "__main__":
     APP.run(port=0) # Do not edit this port
-
-
-
