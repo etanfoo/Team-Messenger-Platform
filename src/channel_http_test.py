@@ -6,7 +6,6 @@ from subprocess import Popen, PIPE
 import signal
 from time import sleep
 from error import InputError, AccessError
-import pytest
 from channel import channel_details
 from channel_test import INVALID_U_ID, INVALID_CHANNEL_ID
 from utils import register_user, login_user, create_channel, invite_channel
