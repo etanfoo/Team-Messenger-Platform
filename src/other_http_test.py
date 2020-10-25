@@ -100,6 +100,36 @@ def test_users_all_multiple(url):
 admin_userpermission_change function tests
 '''
 
+def test_admin_permission_change_remove_single_self(url):
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+
+    # Create users 1 
+    user_1 = register_user(url, authorised_user)
+    login_user(url, authorised_user)
+
+    r = requests.delete(f"{url}/other/userpermission/remove", json={"token": user_1['token'], "u_id": user_1['u_id'], "permission_id": 2})
+
+    assert r.status_code == 400
+
+
+def test_admin_permission_change_invalid_other_deomotion(url):
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+
+    # Create users 1 and 2.
+    user_1 = register_user(url, authorised_user)
+    login_user(url, authorised_user)
+    user_2 = register_user(url, second_user)
+    login_user(url, second_user)
+    # Creating channel and inviting user 2
+    channel = create_channel(url, user_1['token'], "TSM Wins Worlds", True)
+    invite_channel(url, user_1['token'], channel['channel_id'], user_2['u_id'])
+
+    r = requests.delete(f"{url}/other/userpermission/remove", json={"token": user_2['token'], "u_id": user_1['u_id'], "permission_id": 2})
+    assert r.status_code == 400
+
+
 def test_admin_permission_change_empty_user_id(url):
     # Reset/clear data
     requests.delete(f"{url}/clear")
@@ -111,8 +141,44 @@ def test_admin_permission_change_empty_user_id(url):
 
     create_channel(url, user_1['token'], "TSM Wins Worlds", True)
     
-    r = requests.delete(f"{url}/other/userpermission/remove", params={"token": user_1['token'], "u_id": '', "permission_id": 2})
+    r = requests.delete(f"{url}/other/userpermission/remove", json={"token": user_1['token'], "u_id": '', "permission_id": 2})
     assert r.status_code == 400
+
+
+def test_admin_permission_change_invalid_string(url):
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+
+    # string permission
+    # Create users 1 and 2.
+    user_1 = register_user(url, authorised_user)
+    login_user(url, authorised_user)
+
+    channel = create_channel(url, user_1['token'], "TSM Wins Worlds", True)
+    
+    r = requests.post(f"{url}/other/userpermission/change", json={"token": user_1['token'], "u_id": user_1['u_id'], "permission_id": 'string_input'})
+    assert r.status_code == 400
+
+def test_admin_permission_change_invalid_integer(url):
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+
+    # string permission
+    # Create users 1 and 2.
+    user_1 = register_user(url, authorised_user)
+    login_user(url, authorised_user)
+
+    channel = create_channel(url, user_1['token'], "TSM Wins Worlds", True)
+    
+    r = requests.delete(f"{url}/other/userpermission/remove", json={"token": user_1['token'], "u_id": user_1['u_id'], "permission_id": -1})
+    assert r.status_code == 400
+
+    r = requests.delete(f"{url}/other/userpermission/remove", json={"token": user_1['token'], "u_id": user_1['u_id'], "permission_id": 0})
+    assert r.status_code == 400
+
+    r = requests.delete(f"{url}/other/userpermission/remove", json={"token": user_1['token'], "u_id": user_1['u_id'], "permission_id": 1})
+    assert r.status_code == 400
+
 
 def test_admin_permission_change_empty_permission(url):
     # Reset/clear data
@@ -128,7 +194,7 @@ def test_admin_permission_change_empty_permission(url):
 
     create_channel(url, user_1['token'], "TSM Wins Worlds", True)
     
-    r = requests.post(f"{url}/other/userpermission/change", params={"token": user_1['token'], "u_id": user_2['u_id'], "permission_id": None})
+    r = requests.post(f"{url}/other/userpermission/change", json={"token": user_1['token'], "u_id": user_2['u_id'], "permission_id": None})
     assert r.status_code == 400
 
 
@@ -146,13 +212,3 @@ def test_search_null(url):
 
     r = requests.get(f"{url}/other/search", params={"token": user_1['token'], "query_str": None})
     assert r.status_code == 400
-   
-
-
-
-def test_echo(url):
-    '''
-    A simple test to check echo
-    '''
-    resp = requests.get(url + 'echo', params={'data': 'hello'})
-    assert json.loads(resp.text) == {'data': 'hello'}
