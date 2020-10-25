@@ -223,7 +223,59 @@ def test_channel_details_access_error(url):
     
     assert payload.status_code == 400
 
-
+def test_channel_messages_normal(url):
+ 
+    # requests.delete(f"{url}/clear")
+    regular_user = register_user(url, authorised_user)
+    login_user(url, authorised_user)
+ 
+    channel = create_channel(url, regular_user['token'], 'new_channel', True)
+ 
+    # sending 100 simple messages, with latest message being 0 and oldest 99
+    for i in range(0, 100):
+        r = requests.post(f"{url}/message/send", json = {'token' : regular_user['token'], 'channel_id' : channel['channel_id'], 'message' : f"{99 - i}"})
+ 
+    r = requests.get(f"{url}/channel/messages", params = {'token' : regular_user['token'], 'channel_id' : channel['channel_id'], 'start' : 10})
+    payload = r.json()
+ 
+    # checking start and end keys
+    assert payload['start'] == 10
+    assert payload['end'] == 60
+ 
+    index = 0
+    # checking message contents
+    for j in range (10, 60):
+        assert payload['messages'][index]['u_id'] == regular_user['u_id']
+        assert payload['messages'][index]['message'] ==  f'{j}'
+ 
+        index += 1
+ 
+def test_channel_messages_not_enough_messages_remaining(url):
+ 
+    # requests.delete(f"{url}/clear")
+    regular_user = register_user(url, authorised_user)
+    login_user(url, authorised_user)
+ 
+    channel = create_channel(url, regular_user['token'], 'new_channel', True)
+ 
+    # sending 100 simple messages, with latest message being 0 and oldest 99
+    for i in range(0, 100):
+        r = requests.post(f"{url}/message/send", json = {'token' : regular_user['token'], 'channel_id' : channel['channel_id'], 'message' : f"{99 - i}"})
+ 
+    r = requests.get(f"{url}/channel/messages", params = {'token' : regular_user['token'], 'channel_id' : channel['channel_id'], 'start' : 70})
+    payload = r.json()
+    print(payload)
+    # checking start and end keys
+    assert payload['start'] == 70
+    assert payload['end'] == -1
+ 
+    index = 0
+    # checking message contents
+    for j in range (70, 100):
+        assert payload['messages'][index]['u_id'] == regular_user['u_id']
+        assert payload['messages'][index]['message'] ==  f'{j}'
+ 
+        index += 1
 def test_channel_messages_input_error(url):
     # Cant do regular tests as no messages can be sent, according to piazza's instructors answer:
 
