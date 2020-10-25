@@ -72,9 +72,9 @@ def test_users_all_multiple():
     ] 
 
 
-    '''
-    admin_userpermission_change function tests
-    '''
+'''
+admin_userpermission_change function tests
+'''
 
 
 def test_admin_permission_change_new():

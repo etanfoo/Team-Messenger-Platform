@@ -51,10 +51,12 @@ def remove_token(token):
     #Token does not exist
     raise AccessError(description="Token does not exist")
 
+
 def register_user(url, user):
     # Registers a new user
     r = requests.post(f"{url}/auth/register", json = user)
     return r.json()
+
 
 def register_user_auth(url, user):
     # Registers a new user
@@ -68,6 +70,7 @@ def login_user(url, user):
         "password": user['password']
     })
 
+
 def create_channel(url, token, name, is_public):
     # Creates a new channel
     new_channel = {
@@ -80,6 +83,7 @@ def create_channel(url, token, name, is_public):
     payload["name"] = name
     return payload
 
+
 def invite_channel(url, token, channel_id, u_id):
     # Invites a user to a channel
     invite = {
@@ -90,12 +94,49 @@ def invite_channel(url, token, channel_id, u_id):
     r = requests.post(f"{url}/channel/invite", json = invite)
     return r.json()
 
+
 def user_details(email, password):
     user_detail = {
         "email": email,
         "password": password
     }
     return user_detail
+
+
+def send_message(url, token, channel_id, message):
+    message_detail = {
+        "token": token, 
+        "channel_id": channel_id, 
+        "message": message
+    }
+    return requests.post(f"{url}/message/send", json = message_detail)
+
+def send_message_id(url, token, channel_id, message):
+    message_detail = {
+        "token": token, 
+        "channel_id": channel_id, 
+        "message": message
+    }
+    payload = requests.post(f"{url}/message/send", json = message_detail)
+    return payload.json()
+
+
+def remove_message(url, token, message_id):
+    message = {
+        "token": token, 
+        "message_id": message_id
+    }
+    return requests.delete(f"{url}/message/remove", json = message)
+
+
+def edit_message(url, token, message_id, message):
+    message = {
+        "token": token, 
+        "message_id": message_id,
+        "message": message
+    }
+    return requests.put(f"{url}/message/edit", json = message)
+
 
 ###################
 # Global variables
@@ -107,12 +148,10 @@ authorised_user = {
     "name_last": "Knight",
 }
 
+
 second_user = {
     "email": "validEmail2@gmail.com",
     "password": "valid_password2",
     "name_first": "Donald",
     "name_last": "Trump",
 }
-
-# if __name__ == "__main__":
-#     print(decode_token(generate_token("gilbert")))
