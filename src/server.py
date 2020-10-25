@@ -178,7 +178,7 @@ def http_auth_register():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return jsonify(dumps(auth_register(data['email'], data['password'], data['name_first'], data['name_last'])))
+    return jsonify(dumps(auth_register(data['email'], str(data['password']), data['name_first'], data['name_last'])))
 
 
 
