@@ -77,17 +77,31 @@ def channel_messages(token, channel_id, start):
     if (check_start(channel_id, start) == True):
         raise InputError
 
+    messages = []
+    # channel_id is the index based on order created so it will be corresponding list index in data
+    remaining_length = len(data['channels'][channel_id]['messages']) - start
+
+    # determining if there are >= 50 messages left to return, if not end point is -1
+    # setting last index variable for loop boundary
+    if remaining_length < 50:
+        end = -1
+        last_index = start + remaining_length
+    else:
+        end = start + 50
+        last_index = end
+
+    maximum_index = len(data['channels'][channel_id]['messages']) - 1
+
+    # looping through data structure and populating list with all messages required
+    for i in range(start, last_index):
+        messages.append(data['channels'][channel_id]['messages'][maximum_index - i])
+
+    # print(len(messages))
+    # print((messages))
     return {
-        'messages': [{
-            'message_id': 1,
-            'u_id': 1,
-            'message': 'Hello world',
-            'time_created': 1582426789,
-        }],
-        'start':
-        0,
-        'end':
-        50,
+        'messages': messages,
+        'start' : start,
+        'end' : end,
     }
 
 
@@ -159,10 +173,6 @@ def channel_addowner(token, channel_id, u_id):
 
 
 def channel_removeowner(token, channel_id, u_id):
-    # looping to see if channel_id is listed, if not, InputError
-    found = False
-    alreadyOwner = False
-    isAdmin = False
 
     matching_u_id = decode_token(token)
     if (check_channel(channel_id) == False):

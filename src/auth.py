@@ -62,7 +62,7 @@ def auth_register(email, password, name_first, name_last):
         "email": email,
         "first_name": name_first,
         "last_name": name_last,
-        "status": "inactive",
+        "state": "inactive",
         "password": password,
         'handle': name_first.lower() + name_last.lower()
     })
