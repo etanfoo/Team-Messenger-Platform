@@ -128,6 +128,26 @@ def test_user_profile_setemail_normal(url):
     
     assert payload['user']['email'] == "NewEmail@gmail.com"
 
+def test_user_profile_setemail_input_error_email_too_long(url):
+    # requests.delete(f"{url}/clear")
+
+    regular_user = register_user(url, authorised_user)
+    login_user(url, authorised_user)
+
+    r = requests.put(f"{url}/user/profile/setemail", json = {'token' : regular_user['token'], 'email' : "long" * 100 + '@gmail.com'})
+    
+    assert r.status_code == 400
+
+def test_user_profile_setemail_input_error_email_too_long(url):
+    # requests.delete(f"{url}/clear")
+
+    regular_user = register_user(url, authorised_user)
+    login_user(url, authorised_user)
+
+    r = requests.put(f"{url}/user/profile/setemail", json = {'token' : regular_user['token'], 'email' : ""})
+    
+    assert r.status_code == 400
+
 def test_user_profile_setemail_input_error_invalid_email(url):
     # requests.delete(f"{url}/clear")
 
