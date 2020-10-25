@@ -168,18 +168,19 @@ def test_channel_details_normal(url):
     # authorised_user should be a member
     found = False
     for member in details['all_members']:
-        if user_1['u_id'] == details['u_id']:
+        if user_1['u_id'] == member['u_id']:
             found = True
             break
     assert found == True
 
     # inviting new user to channel
-    invite_channel(url, user_1['token'], channel_1['channel_id'], user_2['u_id'])
+    requests.post(f"{url}/channel/invite", json={"token": user_1['token'], "channel_id": channel_1['channel_id'], "u_id": user_2['u_id']})
 
     details = requests.get(f"{url}/channel/details", params={"token": user_1['token'], "channel_id": channel_1['channel_id']}).json()
     
     found = False
-
+    # print(f"user_2 u_id = {user_2['u_id']}.")
+    # print(details['owner_members'])
     # checking new_user found in all members
     for member in details['all_members']:
         if user_2['u_id'] == member['u_id']:
