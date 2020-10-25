@@ -154,7 +154,7 @@ def test_admin_permission_change_invalid_string(url):
     user_1 = register_user(url, authorised_user)
     login_user(url, authorised_user)
 
-    channel = create_channel(url, user_1['token'], "TSM Wins Worlds", True)
+    create_channel(url, user_1['token'], "TSM Wins Worlds", True)
     
     r = requests.post(f"{url}/other/userpermission/change", json={"token": user_1['token'], "u_id": user_1['u_id'], "permission_id": 'string_input'})
     assert r.status_code == 400
@@ -168,7 +168,7 @@ def test_admin_permission_change_invalid_integer(url):
     user_1 = register_user(url, authorised_user)
     login_user(url, authorised_user)
 
-    channel = create_channel(url, user_1['token'], "TSM Wins Worlds", True)
+    create_channel(url, user_1['token'], "TSM Wins Worlds", True)
     
     r = requests.delete(f"{url}/other/userpermission/remove", json={"token": user_1['token'], "u_id": user_1['u_id'], "permission_id": -1})
     assert r.status_code == 400
