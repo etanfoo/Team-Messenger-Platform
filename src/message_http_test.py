@@ -80,7 +80,7 @@ def test_message_remove_id_no_exists(url):
 def test_message_edit_valid_message(url):
     user_1 = register_user(url, authorised_user)
     channel_1 = create_channel(url, user_1["token"], "TSM Legend", True)
-    channel_2 = create_channel(url, user_1["token"], "TSM WIN WORLDS", True)
+    create_channel(url, user_1["token"], "TSM WIN WORLDS", True)
     message_1 = send_message_id(url, user_1["token"], channel_1["channel_id"], "hello")
     message_2 = send_message_id(url, user_1["token"], channel_1["channel_id"], "hello yoo")
     edit_message(url, user_1["token"], message_2["message_id"], "a" * 10)
@@ -89,7 +89,7 @@ def test_message_edit_valid_message(url):
 
 def test_message_edit_not_exist(url):
     user_1 = register_user(url, authorised_user)
-    channel_1 = create_channel(url, user_1["token"], "TSM Legend", True)
+    create_channel(url, user_1["token"], "TSM Legend", True)
     r = edit_message(url, user_1["token"], 0, "a")
     assert r.status_code == 400
 
@@ -111,7 +111,7 @@ def test_message_edit_none(url):
 
 def test_get_channel(url):
     user_1 = register_user(url, authorised_user)
-    non_authorised_user = register_user(url, second_user)
+    register_user(url, second_user)
     channel_1 = create_channel(url, user_1["token"], "TSM Legend", True)
     message_1 = send_message_id(url, user_1["token"], channel_1["channel_id"], "hello")
     requests.post(f"{url}/message/check/channel", json = {"message_id": message_1["message_id"]})

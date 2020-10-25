@@ -7,10 +7,18 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from error import InputError, AccessError
 from channels import channels_list, channels_listall, channels_create
-from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
+from channel import (
+    channel_invite, 
+    channel_details, 
+    channel_messages, 
+    channel_leave, 
+    channel_join, 
+    channel_addowner, 
+    channel_removeowner
+)
 from auth import auth_login, auth_logout, auth_register
 from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle
-
+from other import clear
 
 def defaultHandler(err):
     response = err.get_response()
@@ -47,19 +55,19 @@ def http_channels_list():
     new_data = {
         "token": request.args.get("token")
     }
-    return dumps(channels_list(new_data["token"]))
+    return jsonify(channels_list(new_data["token"]))
 
 @APP.route("/channels/listall", methods = ["GET"])
 def http_channels_listall():
     new_data = {
         "token": request.args.get("token")
     }
-    return dumps(channels_listall(new_data["token"]))
+    return jsonify(channels_listall(new_data["token"]))
 
 @APP.route("/channels/create", methods = ["POST"])
 def http_channels_create():
     new_data = request.get_json()
-    return dumps(channels_create(new_data["token"], new_data["name"], new_data["is_public"]))
+    return jsonify(channels_create(new_data["token"], new_data["name"], new_data["is_public"]))
 
 ###################
 # channel 
@@ -75,7 +83,7 @@ def http_channel_invite():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return dumps(channel_invite(data['token'], data['channel_id'], data['u_id']))
+    return jsonify(channel_invite(data['token'], data['channel_id'], data['u_id']))
     
 
 @APP.route("/channel/details", methods = ["GET"])
@@ -88,7 +96,7 @@ def http_channel_details():
         'token': request.args.get('token'),
         'channel_id': request.args.get('channel_id'),
     }
-    return dumps(channel_details(data['token'], data['channel_id']))
+    return jsonify(channel_details(data['token'], data['channel_id']))
 
 @APP.route("/channel/messages", methods = ["GET"])
 def http_channel_messages():
@@ -101,7 +109,7 @@ def http_channel_messages():
         'channel_id': request.args.get('channel_id'),
         'start': request.args.get('start')
     }
-    return dumps(channel_messages(data['token'], data['channel_id'], data['start']))
+    return jsonify(channel_messages(data['token'], data['channel_id'], data['start']))
 
 @APP.route("/channel/leave", methods = ['POST'])
 def http_channel_leave():
@@ -110,7 +118,7 @@ def http_channel_leave():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return dumps(channel_leave(data['token'], data['channel_id']))
+    return jsonify(channel_leave(data['token'], data['channel_id']))
 
 @APP.route("/channel/join", methods = ["POST"])
 def http_channel_join():
@@ -119,7 +127,7 @@ def http_channel_join():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return dumps(channel_join(data['token'], data['channel_id']))
+    return jsonify(channel_join(data['token'], data['channel_id']))
 
 @APP.route("/channel/addowner", methods = ['POST'])
 def http_channel_addowner():
@@ -128,7 +136,7 @@ def http_channel_addowner():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return dumps(channel_addowner(data['token'], data['channel_id'], data['u_id']))
+    return jsonify(channel_addowner(data['token'], data['channel_id'], data['u_id']))
 
 @APP.route("/channel/removeowner", methods = ['POST'])
 def http_channel_removeowner():
@@ -137,7 +145,7 @@ def http_channel_removeowner():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return dumps(channel_removeowner(data['token'], data['channel_id'], data['u_id']))
+    return jsonify(channel_removeowner(data['token'], data['channel_id'], data['u_id']))
 
 ###################
 # auth 
@@ -149,7 +157,7 @@ def http_auth_login():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return dumps(auth_login(data['email'], data['password']))
+    return jsonify(auth_login(data['email'], data['password']))
 
 @APP.route("/auth/logout", methods = ['POST'])
 def http_auth_logout():
@@ -158,7 +166,7 @@ def http_auth_logout():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return dumps(auth_logout(data['token']))
+    return jsonify(auth_logout(data['token']))
     
 @APP.route("/auth/register", methods = ['POST'])
 def http_auth_register():
@@ -167,9 +175,7 @@ def http_auth_register():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return dumps(auth_register(data['email'], data['password'], data['name_first'], data['name_last']))
-
-
+    return jsonify(auth_register(data['email'], data['password'], data['name_first'], data['name_last']))
 
 ####################
 # User functions
@@ -195,10 +201,13 @@ def http_user_profile_sethandle():
     data = request.get_json()
     return jsonify(user_profile_sethandle(data['token'], data['handle_str']))
 
-
-
-
-
+####################
+# Clear function
+####################
+@APP.route('/clear', methods = ['DELETE'])
+def http_clear():
+    clear()
+    return jsonify({})
 
 
 if __name__ == "__main__":
