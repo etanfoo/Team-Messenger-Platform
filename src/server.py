@@ -79,8 +79,8 @@ def http_channel_invite():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return dumps(
-        channel_invite(data['token'], data['channel_id'], data['u_id']))
+    return jsonify(dumps(channel_invite(data['token'], int(data['channel_id']), int(data['u_id']))))
+    
 
 
 @APP.route("/channel/details", methods=["GET"])
@@ -93,7 +93,7 @@ def http_channel_details():
         'token': request.args.get('token'),
         'channel_id': request.args.get('channel_id'),
     }
-    return dumps(channel_details(data['token'], data['channel_id']))
+    return jsonify(dumps(channel_details(data['token'], int(data['channel_id']))))
 
 
 @APP.route("/channel/messages", methods=["GET"])
@@ -107,8 +107,7 @@ def http_channel_messages():
         'channel_id': request.args.get('channel_id'),
         'start': request.args.get('start')
     }
-    return dumps(
-        channel_messages(data['token'], data['channel_id'], data['start']))
+    return jsonify(dumps(channel_messages(data['token'], int(data['channel_id']), int(data['start']))))
 
 
 @APP.route("/channel/leave", methods=['POST'])
@@ -118,7 +117,7 @@ def http_channel_leave():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return dumps(channel_leave(data['token'], data['channel_id']))
+    return jsonify(dumps(channel_leave(data['token'], int(data['channel_id']))))
 
 
 @APP.route("/channel/join", methods=["POST"])
@@ -128,7 +127,7 @@ def http_channel_join():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return dumps(channel_join(data['token'], data['channel_id']))
+    return jsonify(dumps(channel_join(data['token'], int(data['channel_id']))))
 
 
 @APP.route("/channel/addowner", methods=['POST'])
@@ -138,8 +137,7 @@ def http_channel_addowner():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return dumps(
-        channel_addowner(data['token'], data['channel_id'], data['u_id']))
+    return jsonify(dumps(channel_addowner(data['token'], int(data['channel_id']), int(data['u_id']))))
 
 
 @APP.route("/channel/removeowner", methods=['POST'])
@@ -149,9 +147,7 @@ def http_channel_removeowner():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return dumps(
-        channel_removeowner(data['token'], data['channel_id'], data['u_id']))
-
+    return jsonify(dumps(channel_removeowner(data['token'], int(data['channel_id']), int(data['u_id']))))
 
 ###################
 # auth
@@ -163,7 +159,7 @@ def http_auth_login():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return dumps(auth_login(data['email'], data['password']))
+    return jsonify(dumps(auth_login(data['email'], data['password'])))
 
 
 @APP.route("/auth/logout", methods=['POST'])
@@ -173,19 +169,17 @@ def http_auth_logout():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return dumps(auth_logout(data['token']))
-
-
-@APP.route("/auth/register", methods=['POST'])
+    return jsonify(dumps(auth_logout(data['token'])))
+    
+@APP.route("/auth/register", methods = ['POST'])
 def http_auth_register():
     '''
     Grabs data from the server.
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return dumps(
-        auth_register(data['email'], data['password'], data['name_first'],
-                      data['name_last']))
+    return jsonify(dumps(auth_register(data['email'], data['password'], data['name_first'], data['name_last'])))
+
 
 
 ####################
