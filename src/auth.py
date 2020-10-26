@@ -5,7 +5,7 @@ import uuid
 import re
 from hashlib import sha256
 from appsecret import JWT_SECRET
-from auth_helper import validate_email, validate_password, hash_password, validate_name, check_email, logout_state
+from auth_helper import validate_email, validate_password, hash_password, validate_name, check_email
 
 
 def auth_login(email, password):
