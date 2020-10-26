@@ -53,7 +53,7 @@ def test_users_all_expected(url):
     user_1 = register_user(url, authorised_user)
     login_user(url, authorised_user)
 
-    data = requests.get(f"{url}/other/users/all",
+    data = requests.get(f"{url}/users/all",
                         params={"token": user_1['token']})
     payload = data.json()
 
@@ -78,7 +78,7 @@ def test_users_all_multiple(url):
     user_2 = register_user(url, second_user)
     login_user(url, second_user)
 
-    data = requests.get(f"{url}/other/users/all",
+    data = requests.get(f"{url}/users/all",
                         params={"token": user_1['token']})
     payload = data.json()
 
@@ -114,7 +114,7 @@ def test_admin_permission_change_remove_single_self(url):
     user_1 = register_user(url, authorised_user)
     login_user(url, authorised_user)
 
-    data = requests.delete(f"{url}/other/userpermission/remove",
+    data = requests.post(f"{url}/admin/userpermission/change",
                            json={
                                "token": user_1['token'],
                                "u_id": user_1['u_id'],
@@ -140,7 +140,7 @@ def test_admin_permission_change_invalid_other_deomotion(url):
     channel = create_channel(url, user_1['token'], "TSM Wins Worlds", True)
     invite_channel(url, user_1['token'], channel['channel_id'], user_2['u_id'])
 
-    data = requests.delete(f"{url}/other/userpermission/remove",
+    data = requests.post(f"{url}/admin/userpermission/change",
                            json={
                                "token": user_2['token'],
                                "u_id": user_1['u_id'],
@@ -163,7 +163,7 @@ def test_admin_permission_change_empty_user_id(url):
 
     create_channel(url, user_1['token'], "TSM Wins Worlds", True)
 
-    data = requests.delete(f"{url}/other/userpermission/remove",
+    data = requests.post(f"{url}/admin/userpermission/change",
                            json={
                                "token": user_1['token'],
                                "u_id": '',
@@ -186,7 +186,7 @@ def test_admin_permission_change_invalid_string(url):
 
     create_channel(url, user_1['token'], "TSM Wins Worlds", True)
 
-    data = requests.post(f"{url}/other/userpermission/change",
+    data = requests.post(f"{url}/admin/userpermission/change",
                          json={
                              "token": user_1['token'],
                              "u_id": user_1['u_id'],
@@ -209,7 +209,7 @@ def test_admin_permission_change_invalid_integer(url):
 
     create_channel(url, user_1['token'], "TSM Wins Worlds", True)
 
-    data = requests.delete(f"{url}/other/userpermission/remove",
+    data = requests.post(f"{url}/admin/userpermission/change",
                            json={
                                "token": user_1['token'],
                                "u_id": user_1['u_id'],
@@ -217,7 +217,7 @@ def test_admin_permission_change_invalid_integer(url):
                            })
     assert data.status_code == 400
 
-    data = requests.delete(f"{url}/other/userpermission/remove",
+    data = requests.post(f"{url}/admin/userpermission/change",
                            json={
                                "token": user_1['token'],
                                "u_id": user_1['u_id'],
@@ -225,7 +225,7 @@ def test_admin_permission_change_invalid_integer(url):
                            })
     assert data.status_code == 400
 
-    data = requests.delete(f"{url}/other/userpermission/remove",
+    data = requests.post(f"{url}/admin/userpermission/change",
                            json={
                                "token": user_1['token'],
                                "u_id": user_1['u_id'],
@@ -251,7 +251,7 @@ def test_admin_permission_change_empty_permission(url):
 
     create_channel(url, user_1['token'], "TSM Wins Worlds", True)
 
-    data = requests.post(f"{url}/other/userpermission/change",
+    data = requests.post(f"{url}/admin/userpermission/change",
                          json={
                              "token": user_1['token'],
                              "u_id": user_2['u_id'],
@@ -276,7 +276,7 @@ def test_search_null(url):
     user_1 = register_user(url, authorised_user)
     login_user(url, authorised_user)
 
-    data = requests.get(f"{url}/other/search",
+    data = requests.get(f"{url}/search",
                         params={
                             "token": user_1['token'],
                             "query_str": None

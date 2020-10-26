@@ -215,26 +215,21 @@ def http_user_profile_sethandle():
 ####################
 # other functions
 ####################
-@APP.route('/other/users/all', methods=['GET'])
+@APP.route('/users/all', methods=['GET'])
 def http_users_all():
     data = request.args
     return jsonify(users_all(data['token']))
 
-@APP.route('/other/userpermission/change', methods=['POST'])
+@APP.route('/admin/userpermission/change', methods=['POST'])
 def http_admin_userpermission_change():
     data = request.get_json()
     return jsonify(
         admin_userpermission_change(data['token'], data['u_id'], data['permission_id'])
     )
 
-@APP.route('/other/userpermission/remove', methods=['DELETE'])
-def http_admin_userpermission_remove():
-    data = request.get_json()
-    return jsonify(
-        admin_userpermission_change(data['token'], data['u_id'], data['permission_id'])
-    )
 
-@APP.route('/other/search', methods=['GET'])
+
+@APP.route('/search', methods=['GET'])
 def http_search():
     data = request.args
     return jsonify(search(data['token'], data['query_str']))
