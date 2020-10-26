@@ -82,7 +82,7 @@ def http_channel_invite():
     '''
     data = request.get_json()
     return jsonify(
-        channel_invite(data['token'], data['channel_id'], data['u_id']))
+        channel_invite(data['token'], int(data['channel_id']), data['u_id']))
 
 
 @APP.route("/channel/details", methods=["GET"])
@@ -91,10 +91,7 @@ def http_channel_details():
     Grabs data from the URL
     Sends selected data from the URL to the function
     '''
-    data = {
-        'token': request.args.get('token'),
-        'channel_id': request.args.get('channel_id'),
-    }
+    data = request.args
     return jsonify(channel_details(data['token'], int(data['channel_id'])))
 
 
@@ -104,11 +101,7 @@ def http_channel_messages():
     Grabs data from the URL
     Sends selected data from the URL to the function
     '''
-    data = {
-        'token': request.args.get('token'),
-        'channel_id': request.args.get('channel_id'),
-        'start': request.args.get('start')
-    }
+    data = request.args
     return jsonify(
         channel_messages(data['token'], int(data['channel_id']),
                          int(data['start'])))
@@ -121,7 +114,7 @@ def http_channel_leave():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return jsonify(channel_leave(data['token'], data['channel_id']))
+    return jsonify(channel_leave(data['token'], int(data['channel_id'])))
 
 
 @APP.route("/channel/join", methods=["POST"])
@@ -131,7 +124,7 @@ def http_channel_join():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return jsonify(channel_join(data['token'], data['channel_id']))
+    return jsonify(channel_join(data['token'], int(data['channel_id'])))
 
 
 @APP.route("/channel/addowner", methods=['POST'])
@@ -142,7 +135,7 @@ def http_channel_addowner():
     '''
     data = request.get_json()
     return jsonify(
-        channel_addowner(data['token'], data['channel_id'], data['u_id']))
+        channel_addowner(data['token'], int(data['channel_id']), data['u_id']))
 
 
 @APP.route("/channel/removeowner", methods=['POST'])
@@ -187,7 +180,7 @@ def http_auth_register():
     '''
     data = request.get_json()
     return jsonify(
-        auth_register(data['email'], str(data['password']), data['name_first'],
+        auth_register(data['email'], data['password'], data['name_first'],
                       data['name_last']))
 
 
