@@ -70,7 +70,7 @@ def test_users_all_multiple():
             "last_name": "Philip"
         }
     ] 
-
+    
 
 '''
 admin_userpermission_change function tests
@@ -273,7 +273,7 @@ def test_admin_permission_change_empty_user_id():
     #######################################################################################
 
     with pytest.raises(InputError):
-        admin_userpermission_change(authorised_user2['token'], '', 2)
+        admin_userpermission_change(authorised_user2['token'], None, 2)
 
 
 def test_admin_permission_change_invalid_string():

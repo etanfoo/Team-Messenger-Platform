@@ -18,9 +18,7 @@ def users_all(token):
     Function which returns a list of all the users
     '''
     # Check if user's token is valid
-    check = check_token(token)
-    if check == False:
-        raise AccessError
+    check_token(token)
     
     # List of authorised users
     authorised_users = []
@@ -43,9 +41,7 @@ def admin_userpermission_change(token, u_id, permission_id):
     '''   
 
     # Check for valid token
-    check = check_token(token)
-    if check == False:
-        raise AccessError
+    check_token(token)
     token_id = decode_token(token)
 
     # Check for self demotion/promotion
@@ -53,7 +49,7 @@ def admin_userpermission_change(token, u_id, permission_id):
         raise AccessError
 
     # Check for empty u_id
-    if u_id == '':
+    if u_id is None:
         raise InputError
 
     # Check for invalid permission_id type
@@ -66,7 +62,7 @@ def admin_userpermission_change(token, u_id, permission_id):
             raise InputError
 
     # Check if permission_id is not empty
-    if permission_id == None:
+    if permission_id is None:
         raise InputError
 
     # Check if u_id exists in the channel
@@ -110,12 +106,10 @@ def search(token, query_str):
     Function to search for previous messages
     '''
     # Check for valid token
-    check = check_token(token)
-    if check == False:
-        raise AccessError
+    check_token(token)
 
     # Check if query_str is not empty
-    if query_str == None:
+    if query_str is None:
         raise InputError
 
     result = []
