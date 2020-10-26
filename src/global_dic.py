@@ -14,7 +14,6 @@ data = {
 #             "email": "test@gmail.com",
 #             "first_name": "Test",
 #             "last_name": "Hu",
-#             "status": "active",
 #             "password": "test@12345",
 #         },
 #         {
@@ -22,7 +21,6 @@ data = {
 #             "email": "testDummy@gmail.com",
 #             "first_name": "Test",
 #             "last_name": "Hu",
-#             "status": "inactive",
 #             "password": "test@12345",
 #         },
 #     ],

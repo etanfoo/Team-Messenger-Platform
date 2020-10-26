@@ -612,4 +612,4 @@ def test_logout_s():
     account = auth_register('validemail@gmail.com', '123abc!@#', 'Hayden',
                             'Everest')
     auth_login('validemail@gmail.com', '123abc!@#')
-    assert (auth_logout(account['token'])["is_success"])
+    assert (auth_logout(account['token']))
