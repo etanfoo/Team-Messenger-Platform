@@ -1,6 +1,7 @@
+'''
+Channel
+'''
 from global_dic import data
-
-# import channel
 from error import InputError
 from utils import decode_token
 from channels_helper import valid_channel_name

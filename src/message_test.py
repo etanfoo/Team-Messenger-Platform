@@ -1,15 +1,19 @@
+'''
+Message Test
+'''
 import pytest
 from error import InputError, AccessError
-from auth import auth_register, auth_login
+from auth import auth_register
 from channel import channels_create
 from message import message_send, message_remove, message_edit
 from message_helper import get_channel, get_message_owner, get_message
 from other import clear
 
 
-#Test message send
-#Message above 1000
 def test_message_send_size():
+    '''
+    Message above 1000
+    '''
     clear()
     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
@@ -20,8 +24,10 @@ def test_message_send_size():
                      "x" * 1001)
 
 
-#Send message with invalid token
 def test_message_send_invalid_token():
+    '''
+    Send message with invalid token
+    '''
     clear()
     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
@@ -31,8 +37,10 @@ def test_message_send_invalid_token():
         message_send(1, new_channel['channel_id'], "hello")
 
 
-#Send message with invalid channel
 def test_message_send_invalid_channel():
+    '''
+    Send message with invalid channel
+    '''
     clear()
     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
@@ -40,8 +48,10 @@ def test_message_send_invalid_channel():
         message_send(authorized_user['token'], 1, "hello")
 
 
-#AccessError when: the authorized user has not joined the channel they are trying to post to
 def test_message_send_authorized():
+    '''
+    Message send by non authorized user
+    '''
     clear()
     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
@@ -55,8 +65,10 @@ def test_message_send_authorized():
                      "message")
 
 
-#Test message remove
 def test_message_remove_invalid_token():
+    '''
+    Removing message with invalid token
+    '''
     clear()
     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
@@ -69,8 +81,10 @@ def test_message_remove_invalid_token():
         message_remove(1, message_id)
 
 
-#InputError when any of:Message (based on ID) no longer exists
 def test_message_remove_id_no_exists():
+    '''
+    Removing message that does not exist
+    '''
     clear()
     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
@@ -79,6 +93,9 @@ def test_message_remove_id_no_exists():
 
 
 def test_message_remove_authorized():
+    '''
+    Remove message by unauthorized user
+    '''
     clear()
     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
@@ -100,17 +117,10 @@ def test_message_remove_authorized():
         message_remove(non_authorized_user['token'], message_id)
 
 
-#AccessError when none of the following are true
-
-#Message with message_id was sent by the authorised user making this request ||
-#The authorised user is an owner of this channel or the flockr
-
-
-#Test message edit
-# AccessError when none of the following are true:
-# Message with message_id was sent by the authorised user making this request
-# The authorised user is an owner of this channel or the flockr
 def test_message_edit_valid_message():
+    '''
+    Edit message greater than 1001 in length
+    '''
     clear()
     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
@@ -130,6 +140,9 @@ def test_message_edit_valid_message():
 
 
 def test_message_edit_not_exist():
+    '''
+    Message edit does not exist
+    '''
     clear()
     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
@@ -139,6 +152,9 @@ def test_message_edit_not_exist():
 
 
 def test_message_edit_not_authorised():
+    '''
+    Message edit by non authorized user
+    '''
     clear()
     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
@@ -155,6 +171,9 @@ def test_message_edit_not_authorised():
 
 
 def test_message_edit_none():
+    '''
+    Message edit none should delete the message
+    '''
     clear()
     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
@@ -169,6 +188,9 @@ def test_message_edit_none():
 
 
 def test_get_channel():
+    '''
+    Get the channel
+    '''
     clear()
     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
@@ -185,6 +207,9 @@ def test_get_channel():
 
 
 def test_get_message_owner():
+    '''
+    Get invalid owner
+    '''
     clear()
     with pytest.raises(InputError):
         get_message_owner(1)

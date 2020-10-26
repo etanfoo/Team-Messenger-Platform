@@ -1,11 +1,12 @@
+"""
+MESSAGE
+"""
+import datetime
 from error import InputError, AccessError
-import jwt
-from appsecret import JWT_SECRET
 from global_dic import data
 from utils import decode_token, check_token
-from message_helper import get_message, get_channel, get_message_owner, valid_message
+from message_helper import get_message, get_message_owner, valid_message
 from channel_helper import check_member_channel, check_channel
-import datetime
 
 
 def message_send(token, channel_id, message):
@@ -19,10 +20,10 @@ def message_send(token, channel_id, message):
     #Decode token
     u_id = decode_token(token)
     #Check if the channel exist
-    if (check_channel(channel_id) == False):
+    if check_channel(channel_id) is False:
         raise InputError
     #Check if the user is authorized in the channel
-    if (check_member_channel(channel_id, u_id) == False):
+    if check_member_channel(channel_id, u_id) is False:
         raise AccessError
     #Increment the message counter by 1
     data["message_count"] += 1
@@ -59,9 +60,10 @@ def message_remove(token, message_id):
         raise AccessError(AccessError)
     for channel in data["channels"]:
         for i in range(len(channel["messages"])):
-            if (channel["messages"][i]["message_id"] == message_id):
+            if channel["messages"][i]["message_id"] == message_id:
                 del channel["messages"][i]
                 return
+    return {}
 
 
 def message_edit(token, message_id, message):
@@ -80,10 +82,11 @@ def message_edit(token, message_id, message):
     if u_id != get_message_owner(message_id):
         raise AccessError(AccessError)
     #Remove message if the message size is 0
-    if (len(message) == 0):
+    if len(message) == 0:
         message_remove(token, message_id)
         return {}
     for channel in data["channels"]:
         for i in range(len(channel["messages"])):
-            if (channel["messages"][i]["message_id"] == message_id):
+            if channel["messages"][i]["message_id"] == message_id:
                 channel['messages'][i]["message"] = message
+    return {}

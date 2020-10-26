@@ -1,3 +1,6 @@
+'''
+Echo_HTTP_TEST
+'''
 import pytest
 import re
 from subprocess import Popen, PIPE
@@ -11,6 +14,9 @@ import json
 # so you don't need to.
 @pytest.fixture
 def url():
+    '''
+    Fixture to get the url of the server
+    '''
     url_re = re.compile(r' \* Running on ([^ ]*)')
     server = Popen(["python3", "src/server.py"], stderr=PIPE, stdout=PIPE)
     line = server.stderr.readline()
@@ -28,6 +34,7 @@ def url():
     else:
         server.kill()
         raise Exception("Couldn't get URL from local server")
+
 
 def test_echo(url):
     '''
