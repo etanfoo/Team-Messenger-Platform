@@ -8,14 +8,16 @@ from channels import channels_create
 from message import message_send
 from other import clear, users_all, admin_userpermission_change, search
 from error import InputError, AccessError
+
 '''
 users_all function tests
 '''
 
-
 def test_users_all_expected():
+    '''
+    Test if users_all returns expected output.
+    '''
     clear()
-    # Test if users_all returns expected output.
     # Adding users to the data dictionary
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
@@ -34,8 +36,10 @@ def test_users_all_expected():
 
 
 def test_users_all_multiple():
+    '''
+    Test if users_all returns expected output when multiple users.
+    '''
     clear()
-    # Test if users_all returns expected output when multiple users.
     # Adding users to the data dictionary
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Chicken", "Vlad")
@@ -75,9 +79,10 @@ admin_userpermission_change function tests
 
 
 def test_admin_permission_change_new():
+    '''
+    Test if admin+permission_change works as expected when adding a new owner
+    '''
     clear()
-
-    # Test if admin+permission_change works as expected when adding a new owner
     # Creating channel with admin user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philip", "Dickens")
@@ -113,9 +118,10 @@ def test_admin_permission_change_new():
 
 
 def test_admin_permission_change_remove():
+    '''
+    Test if admin+permission_change works as expected when removing an owner
+    '''
     clear()
-
-    # Test if admin+permission_change works as expected when removing an owner
     # Creating channel with admin user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philip", "Dickens")
@@ -166,9 +172,10 @@ def test_admin_permission_change_remove():
 
 
 def test_admin_permission_change_remove_single_self():
+    '''
+    If owner is the only admin, they cannot remove themself
+    '''
     clear()
-
-    # If owner is the only admin, they cannot remove themself
     # Creating channel with admin user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philip", "Dickens")
@@ -184,10 +191,11 @@ def test_admin_permission_change_remove_single_self():
 
 
 def test_admin_permission_change_remove_multiple_self():
+    '''
+    Test if admin_ermission_change works as expected when there are mulitple owners
+    If owner is the only admin, they cannot remove themself
+    '''
     clear()
-
-    # Test if admin_ermission_change works as expected when there are mulitple owners
-    # If owner is the only admin, they cannot remove themself
     # Creating channel with admin user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philip", "Dickens")
@@ -215,9 +223,10 @@ def test_admin_permission_change_remove_multiple_self():
 
 
 def test_admin_permission_change_invalid_self_promotion():
+    '''
+    AccessError if a member attempts to change owners
+    '''
     clear()
-
-    # AccessError if a member attempts to change owners
     # Creating channel with admin user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philip", "Dickens")
@@ -239,9 +248,10 @@ def test_admin_permission_change_invalid_self_promotion():
 
 
 def test_admin_permission_change_invalid_other_deomotion():
+    '''
+    AccessError if a member attempts to demote and owner to member
+    '''
     clear()
-
-    # AccessError if a member attempts to demote and owner to member
     # Creating channel with admin user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philip", "Dickens")
@@ -261,8 +271,10 @@ def test_admin_permission_change_invalid_other_deomotion():
 
 
 def test_admin_permission_change_invalid_user_id():
+    ''' 
+    InputError if user's u_id refers to an invalid user
+    '''
     clear()
-
     # InputError if user's u_id refers to an invalid user
     # Creating channel with admin user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
@@ -284,9 +296,10 @@ def test_admin_permission_change_invalid_user_id():
 
 
 def test_admin_permission_change_empty_user_id():
+    '''
+    InputError if user's u_id refers to an invalid user
+    '''
     clear()
-
-    # InputError if user's u_id refers to an invalid user
     # Creating channel with admin user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philip", "Dickens")
@@ -306,9 +319,10 @@ def test_admin_permission_change_empty_user_id():
 
 
 def test_admin_permission_change_invalid_string():
+    '''
+    InputError if user inputs invalid permission type (anything other than member (2) and owner (1))
+    '''
     clear()
-
-    # InputError if user inputs invalid permission type (anything other than member (2) and owner (1))
     # Creating channel with admin user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philip", "Dickens")
@@ -329,9 +343,10 @@ def test_admin_permission_change_invalid_string():
 
 
 def test_admin_permission_change_invalid_integer():
+    '''
+    InputError if user inputs invalid permission type (anything other than member (2) and owner (1))
+    '''
     clear()
-
-    # InputError if user inputs invalid permission type (anything other than member (2) and owner (1))
     # Creating channel with admin user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philip", "Dickens")
@@ -360,9 +375,10 @@ def test_admin_permission_change_invalid_integer():
 
 
 def test_admin_permission_change_empty_permission():
+    '''
+    InputError if user inputs invalid permission type (anything other than member and owner)
+    '''
     clear()
-
-    # InputError if user inputs invalid permission type (anything other than member and owner)
     # Creating channel with admin user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philip", "Dickens")
@@ -386,9 +402,10 @@ search function tests
 
 
 def test_search_expected():
+    '''
+    Test if user can find pevious message
+    '''
     clear()
-
-    # Test if user can find pevious message
     # Creating user, channel, and posting message
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philip", "Dickens")
@@ -412,9 +429,10 @@ def test_search_expected():
 
 
 def test_search_multiple():
+    '''
+    Test if user can find pevious messge when there is more than one message
+    '''
     clear()
-
-    # Test if user can find pevious messge when there is more than one message
     # Creating user, channel, and posting message
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philip", "Dickens")
@@ -442,9 +460,10 @@ def test_search_multiple():
 
 
 def test_search_different_user():
+    '''
+    Test if user can find pevious messge which another user sent
+    '''
     clear()
-
-    # Test if user can find pevious messge which another user sent
     # Creating user, channel, and posting message
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philip", "Dickens")
@@ -474,9 +493,10 @@ def test_search_different_user():
 
 
 def test_search_invalid_user():
+    '''
+    InputError if user's u_id refers to an invalid user
+    '''
     clear()
-
-    # InputError if user's u_id refers to an invalid user
     # Creating channel with admin user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philip", "Dickens")
@@ -492,8 +512,10 @@ def test_search_invalid_user():
 
 
 def test_search_null():
+    '''
+    InputError if search query_str is empty
+    '''
     clear()
-
     # InputError if search query_str is empty
     # Creating user, channel, and posting message
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
