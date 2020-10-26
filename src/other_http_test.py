@@ -43,6 +43,9 @@ users_all function tests
 
 
 def test_users_all_expected(url):
+    '''
+    Test if users_all works as expected when there is a single user
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
 
@@ -63,6 +66,9 @@ def test_users_all_expected(url):
 
 
 def test_users_all_multiple(url):
+    '''
+    Test if users_all works as expected when there are mutliple users
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
 
@@ -98,6 +104,9 @@ admin_userpermission_change function tests
 
 
 def test_admin_permission_change_remove_single_self(url):
+    '''
+    Error when user attempts to remove own owner permissions
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
 
@@ -116,6 +125,9 @@ def test_admin_permission_change_remove_single_self(url):
 
 
 def test_admin_permission_change_invalid_other_deomotion(url):
+    '''
+    Error when member attempts to remove an owner's permissions
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
 
@@ -138,6 +150,9 @@ def test_admin_permission_change_invalid_other_deomotion(url):
 
 
 def test_admin_permission_change_empty_user_id(url):
+    '''
+    Error when u_id is empty
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
 
@@ -158,6 +173,9 @@ def test_admin_permission_change_empty_user_id(url):
 
 
 def test_admin_permission_change_invalid_string(url):
+    '''
+    Error if permission_id is a string
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
 
@@ -178,6 +196,9 @@ def test_admin_permission_change_invalid_string(url):
 
 
 def test_admin_permission_change_invalid_integer(url):
+    '''
+    Error if permission_id is not 1 (owner) or 2 (member)
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
 
@@ -214,6 +235,9 @@ def test_admin_permission_change_invalid_integer(url):
 
 
 def test_admin_permission_change_empty_permission(url):
+    '''
+    Error if permission_id is empty
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
 
@@ -236,9 +260,14 @@ def test_admin_permission_change_empty_permission(url):
     assert data.status_code == 400
 
 
+'''
+search function tests
+'''
+
+
 def test_search_null(url):
     '''
-    search function tests
+    Error if search query is Null
     '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
