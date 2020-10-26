@@ -12,6 +12,7 @@ from auth import auth_login, auth_logout, auth_register
 from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle
 from other import users_all, admin_userpermission_change, search
 from message import message_send, message_remove, message_edit
+from other import clear
 
 
 def defaultHandler(err):
@@ -80,8 +81,8 @@ def http_channel_invite():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return jsonify(channel_invite(data['token'], data['channel_id'], data['u_id']))
-    
+    return jsonify(
+        channel_invite(data['token'], data['channel_id'], data['u_id']))
 
 
 @APP.route("/channel/details", methods=["GET"])
@@ -108,7 +109,9 @@ def http_channel_messages():
         'channel_id': request.args.get('channel_id'),
         'start': request.args.get('start')
     }
-    return jsonify(channel_messages(data['token'], int(data['channel_id']), int(data['start'])))
+    return jsonify(
+        channel_messages(data['token'], int(data['channel_id']),
+                         int(data['start'])))
 
 
 @APP.route("/channel/leave", methods=['POST'])
@@ -138,7 +141,8 @@ def http_channel_addowner():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return jsonify(channel_addowner(data['token'], data['channel_id'], data['u_id']))
+    return jsonify(
+        channel_addowner(data['token'], data['channel_id'], data['u_id']))
 
 
 @APP.route("/channel/removeowner", methods=['POST'])
@@ -148,7 +152,9 @@ def http_channel_removeowner():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return jsonify(channel_removeowner(data['token'], data['channel_id'], data['u_id']))
+    return jsonify(
+        channel_removeowner(data['token'], data['channel_id'], data['u_id']))
+
 
 ###################
 # auth
@@ -171,16 +177,18 @@ def http_auth_logout():
     '''
     data = request.get_json()
     return jsonify(auth_logout(data['token']))
-    
-@APP.route("/auth/register", methods = ['POST'])
+
+
+@APP.route("/auth/register", methods=['POST'])
 def http_auth_register():
     '''
     Grabs data from the server.
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return jsonify(auth_register(data['email'], str(data['password']), data['name_first'], data['name_last']))
-
+    return jsonify(
+        auth_register(data['email'], str(data['password']), data['name_first'],
+                      data['name_last']))
 
 
 ####################
@@ -210,7 +218,7 @@ def http_user_profile_setemail():
 def http_user_profile_sethandle():
     data = request.get_json()
     return jsonify(user_profile_sethandle(data['token'], data['handle_str']))
-    
+
 
 ####################
 # other functions
@@ -220,13 +228,13 @@ def http_users_all():
     data = request.args
     return jsonify(users_all(data['token']))
 
+
 @APP.route('/admin/userpermission/change', methods=['POST'])
 def http_admin_userpermission_change():
     data = request.get_json()
     return jsonify(
-        admin_userpermission_change(data['token'], data['u_id'], data['permission_id'])
-    )
-
+        admin_userpermission_change(data['token'], data['u_id'],
+                                    data['permission_id']))
 
 
 @APP.route('/search', methods=['GET'])
@@ -243,7 +251,7 @@ def http_message_send():
     data = request.get_json()
     return jsonify(
         message_send(data['token'], int(data['channel_id']), data['message']))
-        
+
 
 @APP.route('/message/remove', methods=['DELETE'])
 def http_message_remove():
@@ -258,5 +266,10 @@ def http_message_edit():
         message_edit(data['token'], int(data['message_id']), data['message']))
 
 
+@APP.route('./clear', methods=['DELETE'])
+def http_clear():
+    return jsonify(clear())
+
+
 if __name__ == "__main__":
-    APP.run(port=0) # Do not edit this port
+    APP.run(port=0)  # Do not edit this port

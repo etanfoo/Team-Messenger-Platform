@@ -4,7 +4,7 @@ Channel
 from channel_helper import check_channel, check_uid, check_member_channel, channel_details_helper, check_start, delete_member, delete_owner, add_user, check_owner, delete_user, add_owner
 from error import InputError, AccessError
 from global_dic import data
-from utils import decode_token
+from utils import decode_token, check_token
 
 
 def channel_invite(token, channel_id, u_id):
@@ -147,6 +147,7 @@ def channel_join(token, channel_id):
     if check_channel(channel_id) is False:
         raise InputError
 
+    check_token(token)
     # # if channel is private -> AccessError
     pub = False
 
