@@ -1,31 +1,23 @@
-import pytest
+'''
+Other_HTTP_TEST
+'''
 import re
 from subprocess import Popen, PIPE
 import signal
 from time import sleep
-import requests
-import json
-from error import InputError
 import pytest
-from utils import (
-    register_user, 
-    login_user, 
-    create_channel, 
-    invite_channel, 
-    authorised_user, 
-    second_user,
-    send_message,
-    send_message_id,
-    remove_message,
-    edit_message
-)
-
+import requests
+from utils import (register_user, login_user, create_channel, invite_channel,
+                   authorised_user, second_user)
 
 
 # Use this fixture to get the URL of the server. It starts the server for you,
 # so you don't need to.
 @pytest.fixture
 def url():
+    '''
+    Fixture to get the url of the server
+    '''
     url_re = re.compile(r' \* Running on ([^ ]*)')
     server = Popen(["python3", "src/server.py"], stderr=PIPE, stdout=PIPE)
     line = server.stderr.readline()
@@ -49,48 +41,52 @@ def url():
 users_all function tests
 '''
 
+
 def test_users_all_expected(url):
     # Reset/clear data
     requests.delete(f"{url}/clear")
-  
+
     # Create user_1 and their channel
     user_1 = register_user(url, authorised_user)
     login_user(url, authorised_user)
 
-    r = requests.get(f"{url}/other/users/all", params={"token": user_1['token']})
-    payload = r.json()
+    data = requests.get(f"{url}/other/users/all",
+                        params={"token": user_1['token']})
+    payload = data.json()
 
-    assert payload['users'] == [
-        {"u_id": user_1["u_id"], 
-        "email": "validEmail@gmail.com", 
-        "first_name": 'Phil', 
-        "last_name": "Knight"}
-    ]
+    assert payload['users'] == [{
+        "u_id": user_1["u_id"],
+        "email": "validEmail@gmail.com",
+        "first_name": 'Phil',
+        "last_name": "Knight"
+    }]
+
 
 def test_users_all_multiple(url):
     # Reset/clear data
     requests.delete(f"{url}/clear")
-  
+
     # Create user_1 and their channel
     user_1 = register_user(url, authorised_user)
     login_user(url, authorised_user)
     user_2 = register_user(url, second_user)
     login_user(url, second_user)
 
-    r = requests.get(f"{url}/other/users/all", params={"token": user_1['token']})
-    payload = r.json()
+    data = requests.get(f"{url}/other/users/all",
+                        params={"token": user_1['token']})
+    payload = data.json()
 
     assert payload['users'] == [
         {
-            "u_id": user_1["u_id"], 
-            "email": "validEmail@gmail.com", 
-            "first_name": 'Phil', 
+            "u_id": user_1["u_id"],
+            "email": "validEmail@gmail.com",
+            "first_name": 'Phil',
             "last_name": "Knight"
         },
         {
             "u_id": user_2["u_id"],
-            "email": "validEmail2@gmail.com", 
-            "first_name": 'Donald', 
+            "email": "validEmail2@gmail.com",
+            "first_name": 'Donald',
             "last_name": "Trump"
         },
     ]
@@ -100,17 +96,23 @@ def test_users_all_multiple(url):
 admin_userpermission_change function tests
 '''
 
+
 def test_admin_permission_change_remove_single_self(url):
     # Reset/clear data
     requests.delete(f"{url}/clear")
 
-    # Create users 1 
+    # Create users 1
     user_1 = register_user(url, authorised_user)
     login_user(url, authorised_user)
 
-    r = requests.delete(f"{url}/other/userpermission/remove", json={"token": user_1['token'], "u_id": user_1['u_id'], "permission_id": 2})
+    data = requests.delete(f"{url}/other/userpermission/remove",
+                           json={
+                               "token": user_1['token'],
+                               "u_id": user_1['u_id'],
+                               "permission_id": 2
+                           })
 
-    assert r.status_code == 400
+    assert data.status_code == 400
 
 
 def test_admin_permission_change_invalid_other_deomotion(url):
@@ -126,8 +128,13 @@ def test_admin_permission_change_invalid_other_deomotion(url):
     channel = create_channel(url, user_1['token'], "TSM Wins Worlds", True)
     invite_channel(url, user_1['token'], channel['channel_id'], user_2['u_id'])
 
-    r = requests.delete(f"{url}/other/userpermission/remove", json={"token": user_2['token'], "u_id": user_1['u_id'], "permission_id": 2})
-    assert r.status_code == 400
+    data = requests.delete(f"{url}/other/userpermission/remove",
+                           json={
+                               "token": user_2['token'],
+                               "u_id": user_1['u_id'],
+                               "permission_id": 2
+                           })
+    assert data.status_code == 400
 
 
 def test_admin_permission_change_empty_user_id(url):
@@ -140,9 +147,14 @@ def test_admin_permission_change_empty_user_id(url):
     login_user(url, authorised_user)
 
     create_channel(url, user_1['token'], "TSM Wins Worlds", True)
-    
-    r = requests.delete(f"{url}/other/userpermission/remove", json={"token": user_1['token'], "u_id": '', "permission_id": 2})
-    assert r.status_code == 400
+
+    data = requests.delete(f"{url}/other/userpermission/remove",
+                           json={
+                               "token": user_1['token'],
+                               "u_id": '',
+                               "permission_id": 2
+                           })
+    assert data.status_code == 400
 
 
 def test_admin_permission_change_invalid_string(url):
@@ -155,9 +167,15 @@ def test_admin_permission_change_invalid_string(url):
     login_user(url, authorised_user)
 
     create_channel(url, user_1['token'], "TSM Wins Worlds", True)
-    
-    r = requests.post(f"{url}/other/userpermission/change", json={"token": user_1['token'], "u_id": user_1['u_id'], "permission_id": 'string_input'})
-    assert r.status_code == 400
+
+    data = requests.post(f"{url}/other/userpermission/change",
+                         json={
+                             "token": user_1['token'],
+                             "u_id": user_1['u_id'],
+                             "permission_id": 'string_input'
+                         })
+    assert data.status_code == 400
+
 
 def test_admin_permission_change_invalid_integer(url):
     # Reset/clear data
@@ -169,15 +187,30 @@ def test_admin_permission_change_invalid_integer(url):
     login_user(url, authorised_user)
 
     create_channel(url, user_1['token'], "TSM Wins Worlds", True)
-    
-    r = requests.delete(f"{url}/other/userpermission/remove", json={"token": user_1['token'], "u_id": user_1['u_id'], "permission_id": -1})
-    assert r.status_code == 400
 
-    r = requests.delete(f"{url}/other/userpermission/remove", json={"token": user_1['token'], "u_id": user_1['u_id'], "permission_id": 0})
-    assert r.status_code == 400
+    data = requests.delete(f"{url}/other/userpermission/remove",
+                           json={
+                               "token": user_1['token'],
+                               "u_id": user_1['u_id'],
+                               "permission_id": -1
+                           })
+    assert data.status_code == 400
 
-    r = requests.delete(f"{url}/other/userpermission/remove", json={"token": user_1['token'], "u_id": user_1['u_id'], "permission_id": 1})
-    assert r.status_code == 400
+    data = requests.delete(f"{url}/other/userpermission/remove",
+                           json={
+                               "token": user_1['token'],
+                               "u_id": user_1['u_id'],
+                               "permission_id": 0
+                           })
+    assert data.status_code == 400
+
+    data = requests.delete(f"{url}/other/userpermission/remove",
+                           json={
+                               "token": user_1['token'],
+                               "u_id": user_1['u_id'],
+                               "permission_id": 1
+                           })
+    assert data.status_code == 400
 
 
 def test_admin_permission_change_empty_permission(url):
@@ -193,16 +226,20 @@ def test_admin_permission_change_empty_permission(url):
     login_user(url, second_user)
 
     create_channel(url, user_1['token'], "TSM Wins Worlds", True)
-    
-    r = requests.post(f"{url}/other/userpermission/change", json={"token": user_1['token'], "u_id": user_2['u_id'], "permission_id": None})
-    assert r.status_code == 400
 
+    data = requests.post(f"{url}/other/userpermission/change",
+                         json={
+                             "token": user_1['token'],
+                             "u_id": user_2['u_id'],
+                             "permission_id": None
+                         })
+    assert data.status_code == 400
 
-'''
-search function tests
-'''
 
 def test_search_null(url):
+    '''
+    search function tests
+    '''
     # Reset/clear data
     requests.delete(f"{url}/clear")
 
@@ -210,5 +247,9 @@ def test_search_null(url):
     user_1 = register_user(url, authorised_user)
     login_user(url, authorised_user)
 
-    r = requests.get(f"{url}/other/search", params={"token": user_1['token'], "query_str": None})
-    assert r.status_code == 400
+    data = requests.get(f"{url}/other/search",
+                        params={
+                            "token": user_1['token'],
+                            "query_str": None
+                        })
+    assert data.status_code == 400

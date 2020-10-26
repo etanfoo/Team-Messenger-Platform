@@ -20,7 +20,7 @@ def validate_email(email):
     #Email length must be more than 0
     if len(email) == 0:
         raise InputError(InputError)
-    if re.search(e_pattern, email) == None:
+    if re.search(e_pattern, email) is None:
         raise InputError(InputError)
 
 
@@ -47,7 +47,7 @@ def validate_name(name):
     '''
     if len(name) < 1 or len(name) > 50:
         raise InputError(InputError)
-    if re.search("^[a-zA-Z]+[a-zA-Z]$", name) == None:
+    if re.search("^[a-zA-Z]+[a-zA-Z]$", name) is None:
         raise InputError(InputError)
 
 

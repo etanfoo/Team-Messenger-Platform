@@ -1,8 +1,13 @@
+'''
+Channel Helper
+'''
 from global_dic import data
 
 
-#Check if channel exist
 def check_channel(channel_id):
+    '''
+    Check if channel exist
+    '''
     for channel in data['channels']:
         if channel_id == channel['channel_id']:
             return True
@@ -10,6 +15,9 @@ def check_channel(channel_id):
 
 
 def check_owner(channel_id, u_id_match):
+    '''
+    Check if channel owner is true
+    '''
     # loop through each channel
     for channel in data['channels']:
         # check channel_id exists
@@ -23,13 +31,18 @@ def check_owner(channel_id, u_id_match):
 
 
 def channel_details_helper(channel_id):
+    '''
+    Grab channel given by channel_id
+    '''
     for channel in data['channels']:
         if channel['channel_id'] == channel_id:
             return channel
 
 
-#Check if u_id is valid
 def check_uid(u_id):
+    '''
+    Check if u_id is valid
+    '''
     for user in data['users']:
         if u_id == user['u_id']:
             return True
@@ -37,14 +50,21 @@ def check_uid(u_id):
 
 
 def check_member_channel(channel_id, u_id):
+    '''
+    Check if member is part of that channel
+    '''
     for channel in data['channels']:
-        for member in channel['all_members']:
-            if u_id == member['u_id']:
-                return True
+        if channel['channel_id'] == channel_id:
+            for member in channel['all_members']:
+                if u_id == member['u_id']:
+                    return True
     return False
 
 
 def check_start(channel_id, start):
+    '''
+    Check Start
+    '''
     for channel in data['channels']:
         if channel_id == channel['channel_id']:
             if start > len(channel['messages']):
@@ -53,6 +73,9 @@ def check_start(channel_id, start):
 
 
 def delete_member(u_id):
+    '''
+    Delete member base on user id
+    '''
     for channel in data['channels']:
         for i in range(0, len(channel['all_members'])):
             if u_id == channel['all_members'][i]['u_id']:
@@ -60,6 +83,9 @@ def delete_member(u_id):
 
 
 def delete_owner(u_id):
+    '''
+    Delete owner base on user id
+    '''
     for channel in data['channels']:
         for i in range(0, len(channel['owner_members'])):
             if u_id == channel['owner_members'][i]['u_id']:
@@ -67,6 +93,9 @@ def delete_owner(u_id):
 
 
 def add_user(channel_id, u_id):
+    '''
+    Add user to the channel
+    '''
     for channel in data['channels']:
         if channel['channel_id'] == channel_id:
             new_user = {'u_id': u_id}
@@ -74,6 +103,9 @@ def add_user(channel_id, u_id):
 
 
 def add_owner(channel_id, uid):
+    '''
+    Add owner to the channel
+    '''
     for channel in data['channels']:
         if channel['channel_id'] == channel_id:
             new_owner = {'u_id': uid}
@@ -81,6 +113,9 @@ def add_owner(channel_id, uid):
 
 
 def delete_user(channel_id, u_id):
+    '''
+    Delete user from the channel
+    '''
     for channel in data['channels']:
         if channel['channel_id'] == channel_id:
             for member in channel['owner_members']:

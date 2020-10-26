@@ -1,3 +1,6 @@
+'''
+Message Helper
+'''
 from error import InputError, AccessError
 from global_dic import data
 

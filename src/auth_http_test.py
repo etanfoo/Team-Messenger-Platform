@@ -1,16 +1,20 @@
-import pytest
-import requests
-import json
+'''
+AUTH_HTTP
+'''
 import re
 from subprocess import Popen, PIPE
 import signal
 from time import sleep
-from error import InputError, AccessError
+import pytest
+import requests
 from utils import register_user_auth, login_user, user_details
 
 
 @pytest.fixture
 def url():
+    '''
+    Fixture to get the url of the server
+    '''
     url_re = re.compile(r' \* Running on ([^ ]*)')
     server = Popen(["python3", "src/server.py"], stderr=PIPE, stdout=PIPE)
     line = server.stderr.readline()
@@ -53,7 +57,7 @@ def test_login_email_nonexist(url):
 
 def test_login_password(url):
     '''
-    A incorrect password
+    An incorrect password
     '''
     payload = login_user(
         url, user_details("validEmail@gmail.com", "thisIsTheWrongPassword"))
@@ -65,16 +69,13 @@ def test_login_email_limit(url):
     An email that exceed 254 characters
     '''
     payload = login_user(
-        url,
-        user_details(
-            "atestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatestatest@gmail.com",
-            "Test@12345"))
+        url, user_details("a" * 255 + "@hotmail.com", "Test@12345"))
     assert payload.status_code == 400
 
 
 def test_login_email_first_letter(url):
     '''
-    Email addresses with first character not 
+    Email addresses with first character not
     being an ascii letter (a-z) or number (0-9)
     '''
     payload = login_user(url, user_details(".atest@gmail.com", "Test@12345"))
@@ -101,7 +102,7 @@ def test_login_email_first_letter(url):
 
 def test_login_email_space_trailing(url):
     '''
-    Email addresses a whitespace inbetween
+    Email addresses a whitespace in-between
     '''
     payload = login_user(url, user_details("atest@gmail.com ", "Test@12345"))
     assert payload.status_code == 400
