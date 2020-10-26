@@ -13,6 +13,7 @@ def message_send(token, channel_id, message):
     """
     Function that sends a message to the provided channel_id
     """
+    global data
     #Check if message is valid
     valid_message(message)
     #Check if token is valid
@@ -21,10 +22,10 @@ def message_send(token, channel_id, message):
     u_id = decode_token(token)
     #Check if the channel exist
     if check_channel(channel_id) is False:
-        raise InputError
+        raise InputError("Input 1")
     #Check if the user is authorized in the channel
     if check_member_channel(channel_id, u_id) is False:
-        raise AccessError
+        raise AccessError("Access 1")
     #Increment the message counter by 1
     data["message_count"] += 1
     #Append message to dictionary
@@ -49,6 +50,7 @@ def message_remove(token, message_id):
     """
     Function that removes message given message_id
     """
+    global data
     #Make sure token is valid
     check_token(token)
     # #Decode the token to user ID
@@ -57,7 +59,7 @@ def message_remove(token, message_id):
     get_message(message_id)
     #Check if user_id belongs to the message_id
     if u_id != get_message_owner(message_id):
-        raise AccessError(AccessError)
+        raise AccessError("Access 2")
     for channel in data["channels"]:
         for i in range(len(channel["messages"])):
             if channel["messages"][i]["message_id"] == message_id:
@@ -70,6 +72,7 @@ def message_edit(token, message_id, message):
     """
     Function that edits the message
     """
+    global data
     #Message cannot be longer than 1000 characters
     valid_message(message)
     #Check if message_id exist
@@ -80,7 +83,7 @@ def message_edit(token, message_id, message):
     u_id = decode_token(token)
     #Check if user is authorized to edit
     if u_id != get_message_owner(message_id):
-        raise AccessError(AccessError)
+        raise AccessError("Access 3")
     #Remove message if the message size is 0
     if len(message) == 0:
         message_remove(token, message_id)

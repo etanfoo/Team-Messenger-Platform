@@ -39,7 +39,7 @@ def check_token(token):
         if (data["users"][i]["token"] == token):
             return True
     #Token does not exist
-    raise AccessError(description="Token does not exist")
+    raise AccessError("Token does not exist")
 
 
 def remove_token(token):
@@ -49,7 +49,7 @@ def remove_token(token):
             del data["users"][i]["token"]
             return True
     #Token does not exist
-    raise AccessError(description="Token does not exist")
+    raise AccessError("Token does not exist")
 
 
 def register_user(url, user):

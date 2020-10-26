@@ -11,20 +11,21 @@ def channel_invite(token, channel_id, u_id):
     '''
     Invite user to channel
     '''
+    global data
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
-        raise InputError
+        raise InputError("Input 1")
 
     # looping to see if u_id is a valid user, if not, input error
     if check_uid(u_id) is False:
-        raise InputError
+        raise InputError("Input 2")
 
     matching_u_id = decode_token(token)
 
     # if user is not a member of channel with channel_id, access error
     # channel is already selected on channel with channel_id (from first for loop)
     if check_member_channel(channel_id, matching_u_id) is False:
-        raise AccessError
+        raise AccessError("Access 1")
 
     # no errors raised, add the user to channels all members
     add_user(channel_id, u_id)
@@ -34,15 +35,16 @@ def channel_details(token, channel_id):
     '''
     Grab channel details
     '''
+    global data
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
-        raise InputError
+        raise InputError("Input 3")
     matching_u_id = decode_token(token)
 
     # if user is not a member of channel with channel_id, access error
     # channel is already selected on channel with channel_id (from first for loop)
     if check_member_channel(channel_id, matching_u_id) is False:
-        raise AccessError
+        raise AccessError("Access 2")
 
     return channel_details_helper(channel_id)
 
@@ -69,20 +71,21 @@ def channel_messages(token, channel_id, start):
     '''
     Grab channel messages
     '''
+    global data
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
-        raise InputError
+        raise InputError("Input 4")
 
     # if user is not a member of channel with channel_id, access error
     # channel is already selected on channel with channel_id (from first for loop)
     # comparing token with u_id right now for iteration 1
     u_id = decode_token(token)
     if check_member_channel(channel_id, u_id) is False:
-        raise AccessError
+        raise AccessError("Access 3")
 
     # seeing if start is greater than total number of messages in the channel
     if check_start(channel_id, start) is True:
-        raise InputError
+        raise InputError("Input 5")
 
     messages = []
     # channel_id is the index based on order created so it will be corresponding list index in data
@@ -117,16 +120,18 @@ def channel_leave(token, channel_id):
     '''
     Leave channel
     '''
+    print(f"TYPE = {type(channel_id)}")
+    global data
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
-        raise InputError
+        raise InputError("Input 6")
 
     matching_u_id = decode_token(token)
 
     # if user is not a member of channel with channel_id, access error
     # channel is already selected on channel with channel_id (from first for loop)
     if check_member_channel(channel_id, matching_u_id) is False:
-        raise AccessError
+        raise AccessError("Access 4")
 
     # deleting member from channels all_members
     delete_member(matching_u_id, channel_id)
@@ -143,9 +148,10 @@ def channel_join(token, channel_id):
     Given a channel_id of a channel that the authorised user can join, 
     adds them to that channel
     '''
+    global data
     # looping to see if channel_id is listed, if not, InputError
     if check_channel(channel_id) is False:
-        raise InputError
+        raise InputError("Input 7")
 
     check_token(token)
     # # if channel is private -> AccessError
@@ -157,7 +163,7 @@ def channel_join(token, channel_id):
             pub = True
             break
     if pub is False:
-        raise AccessError
+        raise AccessError("Access 5")
 
     matching_u_id = decode_token(token)
 
@@ -171,17 +177,18 @@ def channel_addowner(token, channel_id, u_id):
     '''
     Add owner to channel
     '''
+    global data
     # looping to see if channel_id is listed, if not, InputError
     matching_u_id = decode_token(token)
     if check_channel(channel_id) is False:
-        raise InputError
+        raise InputError("Input 8")
     # check if that owner is already an owner
     if check_owner(channel_id, u_id) is True:
-        raise InputError
+        raise InputError("Input 9")
 
     # check if the requester is an owner of the channel
     if check_owner(channel_id, matching_u_id) is False:
-        raise AccessError
+        raise AccessError("Access 6")
 
     add_owner(channel_id, u_id)
 
@@ -190,16 +197,17 @@ def channel_removeowner(token, channel_id, u_id):
     '''
     Remove owner from channel
     '''
+    global data
     matching_u_id = decode_token(token)
     if check_channel(channel_id) is False:
-        raise InputError
+        raise InputError("Input 10")
     # check if that owner is already an owner
     if check_owner(channel_id, u_id) is False:
-        raise InputError
+        raise InputError("Input 11")
 
     # check if the requester is an owner of the channel
     if check_owner(channel_id, matching_u_id) is False:
-        raise AccessError
+        raise AccessError("Access 7")
 
     # find the dictionary in the owner list, and delete
     delete_user(channel_id, u_id)

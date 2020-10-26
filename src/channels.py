@@ -11,6 +11,7 @@ from channels_helper import valid_channel_name
 # channels function
 ###################
 def channels_list(token):
+    global data
     u_id = decode_token(token)
     authorized_channels = []
     # Loops through all channels
@@ -30,6 +31,7 @@ def channels_list(token):
 
 
 def channels_listall(token):
+    global data
     u_id = decode_token(token)
     authorized_channels = []
     # Loops through all channels
@@ -49,21 +51,31 @@ def channels_listall(token):
 
 
 def channels_create(token, name, is_public):
+    global data
     u_id = decode_token(token)
     # Name is over 20 characters long or empty or space => input error
     valid_channel_name(name)
     # The next available id
     available_id = len(data["channels"])
+    for user in data["users"]:
+        if token == user["token"]:
+            person = user
+            break
+
     # Form the data structure
     data["channels"].append({
         "name": name,
         "channel_id": available_id,
         "is_public": is_public,
         "owner_members": [{
-            "u_id": u_id
+            "u_id": u_id,
+            "name_first": person["first_name"],
+            "name_last": person["last_name"]
         }],
         "all_members": [{
-            "u_id": u_id
+            "u_id": u_id,
+            "name_first": person["first_name"],
+            "name_last": person["last_name"]
         }],
         "messages": [],
     })

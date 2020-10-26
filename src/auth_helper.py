@@ -16,12 +16,12 @@ def validate_email(email):
     e_pattern = "^(?!.*[.]{2})[a-zA-Z0-9][a-zA-Z0-9.]+@(?!localhost)[a-zA-Z0-9]+[.]+[a-zA-Z0-9]+$"
     #Email length less than 255
     if len(email) > 254:
-        raise InputError(InputError)
+        raise InputError("Input 1")
     #Email length must be more than 0
     if len(email) == 0:
-        raise InputError(InputError)
+        raise InputError("Input 2")
     if re.search(e_pattern, email) is None:
-        raise InputError(InputError)
+        raise InputError("Input 3")
 
 
 def validate_password(password):
@@ -29,9 +29,9 @@ def validate_password(password):
     Make sure password comply
     '''
     if len(password) < 6:
-        raise InputError(InputError)
+        raise InputError("Input 4")
     if len(password) > 18:
-        raise InputError(InputError)
+        raise InputError("Input 5")
 
 
 def hash_password(password):
@@ -46,9 +46,9 @@ def validate_name(name):
     Make sure name is valid
     '''
     if len(name) < 1 or len(name) > 50:
-        raise InputError(InputError)
+        raise InputError("Input 6")
     if re.search("^[a-zA-Z]+[a-zA-Z]$", name) is None:
-        raise InputError(InputError)
+        raise InputError("Input 7")
 
 
 def check_email(email):
@@ -69,5 +69,5 @@ def logout_state(token):
     for i in range(len(data["users"])):
         if data["users"][i]["u_id"] == user_id:
             if data["users"][i]['state'] != "active":
-                raise AccessError(AccessError)
+                raise AccessError("Access 1")
             data["users"][i]['state'] = "inactive"

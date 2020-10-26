@@ -9,12 +9,13 @@ from auth_helper import validate_email, validate_password, hash_password, valida
 
 
 def auth_login(email, password):
+    global data
     #Function to validate email
     validate_email(email)
     validate_password(password)
     #Input error if user not found
     if (check_email(email) == False):
-        raise InputError(InputError)
+        raise InputError("Input 1")
 
     for i in range(len(data["users"])):
         if (data["users"][i]["email"] == email):
@@ -26,7 +27,7 @@ def auth_login(email, password):
                 token = generate_token(u_id)
             #Check if hashed password match
             if (data["users"][i]["password"] != hash_password(password)):
-                raise InputError(InputError)
+                raise InputError("Input 2")
             else:
                 data["users"][i]["state"] = "active"
 
@@ -37,6 +38,7 @@ def auth_login(email, password):
 
 
 def auth_logout(token):
+    global data
     #Find token
     check_token(token)
     remove_token(token)
@@ -46,12 +48,13 @@ def auth_logout(token):
 
 
 def auth_register(email, password, name_first, name_last):
+    global data
     validate_email(email)
     validate_password(password)
     validate_name(name_first)
     validate_name(name_last)
     if (check_email(email) == True):
-        raise InputError(InputError)
+        raise InputError("Input 3")
     user_id = uuid.uuid4().hex
     user_token = generate_token(user_id)
     password = hash_password(password)

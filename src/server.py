@@ -146,7 +146,7 @@ def http_channel_removeowner():
     '''
     data = request.get_json()
     return jsonify(
-        channel_removeowner(data['token'], data['channel_id'], data['u_id']))
+        channel_removeowner(data['token'], int(data['channel_id']), data['u_id']))
 
 
 ###################
@@ -249,17 +249,17 @@ def http_message_send():
 @APP.route('/message/remove', methods=['DELETE'])
 def http_message_remove():
     data = request.get_json()
-    return jsonify(message_remove(data['token'], int(data['message_id'])))
+    return jsonify(message_remove(data['token'], data['message_id']))
 
 
 @APP.route('/message/edit', methods=['PUT'])
 def http_message_edit():
     data = request.get_json()
     return jsonify(
-        message_edit(data['token'], int(data['message_id']), data['message']))
+        message_edit(data['token'], data['message_id'], data['message']))
 
 
-@APP.route('./clear', methods=['DELETE'])
+@APP.route('/clear', methods=['DELETE'])
 def http_clear():
     return jsonify(clear())
 
