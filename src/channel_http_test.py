@@ -36,42 +36,6 @@ def url():
         raise Exception("Couldn't get URL from local server")
 
 
-###################
-# Global variables
-###################
-
-# authorised_user = {
-#     "email": "validEmail@gmail.com",
-#     "password": "valid_password",
-#     "name_first": "Phil",
-#     "name_last": "Knight",
-# }
-
-# second_user = {
-#     "email": "validEmail2@gmail.com",
-#     "password": "valid_password2",
-#     "name_first": "Donald",
-#     "name_last": "Trump",
-# }
-
-# unauthorised_user = {
-#     "email": "unauthorised@gmail.com",
-#     "password": "ILoveSleep",
-#     "name_first": "Sleepy",
-#     "name_last": "Joe",
-# }
-
-# '''___________________________________'''
-# def prepare_user(url, user):
-#     new_user = register_user(url, user)
-#     login_user(url, user)
-#     return new_user
-
-###################
-# channel/invite
-###################
-
-
 def test_channel_invite_normal(url):
     '''
     Attempts to invite another user to a channel
@@ -144,24 +108,6 @@ def test_channel_invite_input_error(url):
                                 "token": user_1['token'],
                                 "channel_id": channel_1['channel_id'],
                                 "u_id": INVALID_U_ID
-                            })
-
-    assert payload.status_code == 400
-    # input error, when channel_id is not of the same data type as expected (integer)
-    payload = requests.post(f"{url}/channel/invite",
-                            json={
-                                "token": user_1['token'],
-                                "channel_id": "string_input",
-                                "u_id": user_2['u_id']
-                            })
-
-    assert payload.status_code == 400
-    # input error, when u_id is not of the same data type as expected (integer)
-    payload = requests.post(f"{url}/channel/invite",
-                            json={
-                                "token": user_1['token'],
-                                "channel_id": channel_1['channel_id'],
-                                "u_id": "string_input"
                             })
 
     assert payload.status_code == 400
@@ -246,8 +192,7 @@ def test_channel_details_normal(url):
                            }).json()
 
     found = False
-    # print(f"user_2 u_id = {user_2['u_id']}.")
-    # print(details['owner_members'])
+
     # checking new_user found in all members
     for member in details['all_members']:
         if user_2['u_id'] == member['u_id']:
@@ -374,7 +319,7 @@ def test_channel_messages_not_enough_messages_remaining(url):
                             'start': 70
                         })
     payload = data.json()
-    print(payload)
+
     # checking start and end keys
     assert payload['start'] == 70
     assert payload['end'] == -1
@@ -774,7 +719,7 @@ def test_channel_removeowner_normal(url):
                                "channel_id": channel_1['channel_id']
                            }).json()
 
-    print(details)
+
     found = False
     for member in details['owner_members']:
         if user_2['u_id'] == member['u_id']:
