@@ -59,15 +59,3 @@ def check_email(email):
         if data["users"][i]["email"] == email:
             return True
     return False
-
-
-def logout_state(token):
-    '''
-    Change state when logging in and out
-    '''
-    user_id = decode_token(token)
-    for i in range(len(data["users"])):
-        if data["users"][i]["u_id"] == user_id:
-            if data["users"][i]['state'] != "active":
-                raise AccessError("Access 1")
-            data["users"][i]['state'] = "inactive"

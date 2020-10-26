@@ -598,10 +598,8 @@ def test_logout_state():
     State after logging out
     '''
     clear()
-    account = auth_register('validemail@gmail.com', '123abc!@#', 'Hayden',
-                            'Everest')
     with pytest.raises(AccessError):
-        auth_logout(account['token'])
+        auth_logout(1)
 
 
 def test_logout_s():
