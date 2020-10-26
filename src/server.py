@@ -166,7 +166,8 @@ def http_channel_removeowner():
     '''
     data = request.get_json()
     return jsonify(
-        channel_removeowner(data['token'], int(data['channel_id']), data['u_id']))
+        channel_removeowner(data['token'], int(data['channel_id']),
+                            data['u_id']))
 
 
 ###################
@@ -245,7 +246,6 @@ def http_user_profile_sethandle():
     '''
     Update the authorised user's handle (i.e. display name)
     '''
-
 
     data = request.get_json()
     return jsonify(user_profile_sethandle(data['token'], data['handle_str']))

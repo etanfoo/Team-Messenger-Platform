@@ -1,10 +1,10 @@
-from error import InputError, AccessError
+'''
+AUTH
+'''
+import uuid
+from error import InputError
 from global_dic import data
 from utils import generate_token, check_token, remove_token
-import uuid
-import re
-from hashlib import sha256
-from appsecret import JWT_SECRET
 from auth_helper import validate_email, validate_password, hash_password, validate_name, check_email, logout_state
 
 
@@ -15,11 +15,11 @@ def auth_login(email, password):
     validate_email(email)
     validate_password(password)
     #Input error if user not found
-    if (check_email(email) == False):
+    if check_email(email) == False:
         raise InputError(InputError)
 
     for i in range(len(data["users"])):
-        if (data["users"][i]["email"] == email):
+        if data["users"][i]["email"] == email:
             u_id = data['users'][i]['u_id']
             #Check if a token exist for that user
             if ('token' in data['users'][i]):
@@ -58,7 +58,7 @@ def auth_register(email, password, name_first, name_last):
     validate_password(password)
     validate_name(name_first)
     validate_name(name_last)
-    if (check_email(email) == True):
+    if check_email(email) == True:
         raise InputError(InputError)
     user_id = uuid.uuid4().hex
     user_token = generate_token(user_id)
