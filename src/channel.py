@@ -129,10 +129,10 @@ def channel_leave(token, channel_id):
         raise AccessError
 
     # deleting member from channels all_members
-    delete_member(matching_u_id)
+    delete_member(matching_u_id, channel_id)
 
     # deleting from owner_members if an owner
-    delete_owner(matching_u_id)
+    delete_owner(matching_u_id, channel_id)
 
 
 def channel_join(token, channel_id):

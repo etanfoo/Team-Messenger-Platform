@@ -72,24 +72,26 @@ def check_start(channel_id, start):
     return False
 
 
-def delete_member(u_id):
+def delete_member(u_id, channel_id):
     '''
     Delete member base on user id
     '''
     for channel in data['channels']:
-        for i in range(0, len(channel['all_members'])):
-            if u_id == channel['all_members'][i]['u_id']:
-                del channel['all_members'][i]
+        if channel['channel_id'] == channel_id:
+            for i in range(0, len(channel['all_members'])):
+                if u_id == channel['all_members'][i]['u_id']:
+                    del channel['all_members'][i]
 
 
-def delete_owner(u_id):
+def delete_owner(u_id, channel_id):
     '''
     Delete owner base on user id
     '''
     for channel in data['channels']:
-        for i in range(0, len(channel['owner_members'])):
-            if u_id == channel['owner_members'][i]['u_id']:
-                del channel['owner_members'][i]
+        if channel['channel_id'] == channel_id:
+            for i in range(0, len(channel['owner_members'])):
+                if u_id == channel['owner_members'][i]['u_id']:
+                    del channel['owner_members'][i]
 
 
 def add_user(channel_id, u_id):
