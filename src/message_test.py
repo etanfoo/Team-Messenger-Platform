@@ -4,7 +4,7 @@ Message Test
 import pytest
 from error import InputError, AccessError
 from auth import auth_register
-from channel import channels_create
+from channels import channels_create
 from message import message_send, message_remove, message_edit
 from message_helper import get_channel, get_message_owner, get_message
 from other import clear
