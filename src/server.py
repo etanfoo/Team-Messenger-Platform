@@ -48,18 +48,38 @@ def echo():
 ###################
 @APP.route("/channels/list", methods=["GET"])
 def http_channels_list():
+    ''' 
+    Loops through the list of channels and each member in that channel,
+    checking if the current user is part of that channel. If so, add
+    the channel details to the authorized_channels list. 
+    
+    Return: a list of channels the user is part of
+    '''
+
     new_data = {"token": request.args.get("token")}
     return jsonify(channels_list(new_data["token"]))
 
 
 @APP.route("/channels/listall", methods=["GET"])
 def http_channels_listall():
+    ''' 
+    Adds all public channels and loops through the list private 
+    of channels, checking if the current user is part of that channel. If so, add
+    the channel details to the authorized_channels list. 
+
+    Return: a list of all public channels and any private channels the user is part of
+    '''
+
     new_data = {"token": request.args.get("token")}
     return jsonify(channels_listall(new_data["token"]))
 
 
 @APP.route("/channels/create", methods=["POST"])
 def http_channels_create():
+    ''' 
+    Create a public/private channel with a given name, and add the current user’s details to “owner_members” and “all_members”
+    Return: the channel_id
+    '''
     new_data = request.get_json()
     return jsonify(
         channels_create(new_data["token"], new_data["name"],
@@ -82,7 +102,7 @@ def http_channel_invite():
     '''
     data = request.get_json()
     return jsonify(
-        channel_invite(data['token'], data['channel_id'], data['u_id']))
+        channel_invite(data['token'], int(data['channel_id']), data['u_id']))
 
 
 @APP.route("/channel/details", methods=["GET"])
@@ -114,7 +134,7 @@ def http_channel_leave():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return jsonify(channel_leave(data['token'], data['channel_id']))
+    return jsonify(channel_leave(data['token'], int(data['channel_id'])))
 
 
 @APP.route("/channel/join", methods=["POST"])
@@ -124,7 +144,7 @@ def http_channel_join():
     Send the correct data to the functions.
     '''
     data = request.get_json()
-    return jsonify(channel_join(data['token'], data['channel_id']))
+    return jsonify(channel_join(data['token'], int(data['channel_id'])))
 
 
 @APP.route("/channel/addowner", methods=['POST'])
@@ -135,7 +155,7 @@ def http_channel_addowner():
     '''
     data = request.get_json()
     return jsonify(
-        channel_addowner(data['token'], data['channel_id'], data['u_id']))
+        channel_addowner(data['token'], int(data['channel_id']), data['u_id']))
 
 
 @APP.route("/channel/removeowner", methods=['POST'])
@@ -146,7 +166,7 @@ def http_channel_removeowner():
     '''
     data = request.get_json()
     return jsonify(
-        channel_removeowner(data['token'], data['channel_id'], data['u_id']))
+        channel_removeowner(data['token'], int(data['channel_id']), data['u_id']))
 
 
 ###################
@@ -189,12 +209,21 @@ def http_auth_register():
 ####################
 @APP.route('/user/profile', methods=['GET'])
 def http_user_profile():
+    '''
+    For a valid user, returns information about their email, 
+    first name, last name, and handle
+    '''
+
     data = request.args
     return jsonify(user_profile(data['token'], data['u_id']))
 
 
 @APP.route('/user/profile/setname', methods=['PUT'])
 def http_user_profile_setname():
+    '''
+    Update the authorised user's first and last name
+    '''
+
     data = request.get_json()
     return jsonify(
         user_profile_setname(data['token'], data['name_first'],
@@ -203,12 +232,21 @@ def http_user_profile_setname():
 
 @APP.route('/user/profile/setemail', methods=['PUT'])
 def http_user_profile_setemail():
+    '''
+    Update the authorised user's email address
+    '''
+
     data = request.get_json()
     return jsonify(user_profile_setemail(data['token'], data['email']))
 
 
 @APP.route('/user/profile/sethandle', methods=['PUT'])
 def http_user_profile_sethandle():
+    '''
+    Update the authorised user's handle (i.e. display name)
+    '''
+
+
     data = request.get_json()
     return jsonify(user_profile_sethandle(data['token'], data['handle_str']))
 
@@ -218,12 +256,20 @@ def http_user_profile_sethandle():
 ####################
 @APP.route('/users/all', methods=['GET'])
 def http_users_all():
+    '''
+    Returns a list of all users and their associated details
+    '''
+
     data = request.args
     return jsonify(users_all(data['token']))
 
 
 @APP.route('/admin/userpermission/change', methods=['POST'])
 def http_admin_userpermission_change():
+    '''
+    Given a User by their user ID, set their permissions to new permissions described by permission_id
+    '''
+
     data = request.get_json()
     return jsonify(
         admin_userpermission_change(data['token'], data['u_id'],
@@ -232,6 +278,10 @@ def http_admin_userpermission_change():
 
 @APP.route('/search', methods=['GET'])
 def http_search():
+    '''
+    Given a query string, return a collection of messages in all of the channels that the user has joined that match the query
+    '''
+
     data = request.args
     return jsonify(search(data['token'], data['query_str']))
 
@@ -241,19 +291,31 @@ def http_search():
 ###################
 @APP.route('/message/send', methods=['POST'])
 def http_message_send():
+    ''' 
+    Send a message from authorised_user to the channel specified by channel_id
+    '''
+
     data = request.get_json()
     return jsonify(
-        message_send(data['token'], data['channel_id'], data['message']))
+        message_send(data['token'], int(data['channel_id']), data['message']))
 
 
 @APP.route('/message/remove', methods=['DELETE'])
 def http_message_remove():
+    ''' 
+    Given a message_id for a message, this message is removed from the channel
+    '''
+
     data = request.get_json()
     return jsonify(message_remove(data['token'], data['message_id']))
 
 
 @APP.route('/message/edit', methods=['PUT'])
 def http_message_edit():
+    ''' 
+    Given a message, update it's text with new text. If the new message is an empty string, the message is deleted.
+    '''
+
     data = request.get_json()
     return jsonify(
         message_edit(data['token'], data['message_id'], data['message']))
@@ -261,6 +323,10 @@ def http_message_edit():
 
 @APP.route('/clear', methods=['DELETE'])
 def http_clear():
+    ''' 
+    Resets the internal data of the application to it's initial state
+    '''
+
     return jsonify(clear())
 
 
