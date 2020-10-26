@@ -60,8 +60,9 @@ def test_users_all_expected(url):
     assert payload['users'] == [{
         "u_id": user_1["u_id"],
         "email": "validEmail@gmail.com",
-        "first_name": 'Phil',
-        "last_name": "Knight"
+        "name_first": 'Phil',
+        "name_last": "Knight",
+        'handle_str' : 'philknight'
     }]
 
 
@@ -86,14 +87,16 @@ def test_users_all_multiple(url):
         {
             "u_id": user_1["u_id"],
             "email": "validEmail@gmail.com",
-            "first_name": 'Phil',
-            "last_name": "Knight"
+            "name_first": 'Phil',
+            "name_last": "Knight",
+            'handle_str' : 'philknight'
         },
         {
             "u_id": user_2["u_id"],
             "email": "validEmail2@gmail.com",
-            "first_name": 'Donald',
-            "last_name": "Trump"
+            "name_first": 'Donald',
+            "name_last": "Trump",
+            'handle_str' : 'donaldtrump'
         },
     ]
 

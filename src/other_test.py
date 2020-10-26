@@ -30,8 +30,9 @@ def test_users_all_expected():
     assert users_all_expected['users'] == [{
         "u_id": authorised_user["u_id"],
         "email": "validEmail@gmail.com",
-        "first_name": 'Philgee',
-        "last_name": "Vlad"
+        "name_first": 'Philgee',
+        "name_last": "Vlad",
+        'handle_str' : 'philgeevlad'
     }]
 
 
@@ -58,18 +59,21 @@ def test_users_all_multiple():
     assert users_all_expected['users'] == [{
         "u_id": authorised_user["u_id"],
         "email": "validEmail@gmail.com",
-        "first_name": 'Chicken',
-        "last_name": "Vlad"
+        "name_first": 'Chicken',
+        "name_last": "Vlad",
+        'handle_str' : 'chickenvlad'
     }, {
         "u_id": authorised_user2["u_id"],
         "email": "validEmail2@gmail.com",
-        "first_name": 'Philip',
-        "last_name": "Denver"
+        "name_first": 'Philip',
+        "name_last": "Denver",
+        'handle_str' : 'philipdenver'
     }, {
         "u_id": authorised_user3["u_id"],
         "email": "validEmail3@gmail.com",
-        "first_name": 'Zac',
-        "last_name": "Philip"
+        "name_first": 'Zac',
+        "name_last": "Philip",
+        'handle_str' : 'zacphilip'
     }]
 
 

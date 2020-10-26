@@ -28,8 +28,9 @@ def users_all(token):
         authorised_users.append({
             "u_id": user["u_id"], 
             "email": user["email"], 
-            "first_name": user["first_name"], 
-            "last_name": user["last_name"]
+            "name_first": user["first_name"], 
+            "name_last": user["last_name"],
+            'handle_str' : user['handle']
         })
 
     # Return list as dictionary
