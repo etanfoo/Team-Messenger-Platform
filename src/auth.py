@@ -9,7 +9,9 @@ from auth_helper import validate_email, validate_password, hash_password, valida
 
 
 def auth_login(email, password):
-    #Function to validate email
+    '''
+    Function to validate email
+    '''
     validate_email(email)
     validate_password(password)
     #Input error if user not found
@@ -37,7 +39,9 @@ def auth_login(email, password):
 
 
 def auth_logout(token):
-    #Find token
+    '''
+    Function to logout
+    '''
     check_token(token)
     remove_token(token)
     logout_state(token)
@@ -47,6 +51,9 @@ def auth_logout(token):
 
 
 def auth_register(email, password, name_first, name_last):
+    '''
+    Function to register user
+    '''
     validate_email(email)
     validate_password(password)
     validate_name(name_first)
