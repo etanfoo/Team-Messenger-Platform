@@ -13,18 +13,20 @@ def channel_invite(token, channel_id, u_id):
     '''
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
-        raise InputError
+        raise InputError("Input error 1")
 
     # looping to see if u_id is a valid user, if not, input error
     if check_uid(u_id) is False:
-        raise InputError
+        print(u_id)
+        print(data)
+        raise InputError("Input error 2")
 
     matching_u_id = decode_token(token)
 
     # if user is not a member of channel with channel_id, access error
     # channel is already selected on channel with channel_id (from first for loop)
     if check_member_channel(channel_id, matching_u_id) is False:
-        raise AccessError
+        raise AccessError("You must be a member of the channel to view its details")
 
     # no errors raised, add the user to channels all members
     add_user(channel_id, u_id)
@@ -36,13 +38,13 @@ def channel_details(token, channel_id):
     '''
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
-        raise InputError
+        raise InputError("Input error channel_id not listed")
     matching_u_id = decode_token(token)
 
     # if user is not a member of channel with channel_id, access error
     # channel is already selected on channel with channel_id (from first for loop)
     if check_member_channel(channel_id, matching_u_id) is False:
-        raise AccessError
+        raise AccessError("You must be a member of the channel to view its details")
 
     return channel_details_helper(channel_id)
 
@@ -145,7 +147,7 @@ def channel_join(token, channel_id):
     '''
     # looping to see if channel_id is listed, if not, InputError
     if check_channel(channel_id) is False:
-        raise InputError
+        raise InputError("Channel_id is no valid")
 
     check_token(token)
     # # if channel is private -> AccessError
