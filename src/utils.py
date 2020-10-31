@@ -3,7 +3,16 @@ import jwt
 from appsecret import JWT_SECRET
 from error import AccessError
 from global_dic import data
+import datetime
 import requests
+
+
+def get_current_timestamp(delay=0):
+    '''
+    Return current time + delay as a unix timestamp
+    '''
+    current_time = datetime.now()
+    return int(current_time.timestamp() + delay)
 
 
 def generate_token(user_id):
@@ -54,26 +63,29 @@ def remove_token(token):
 
 def register_user(url, user):
     # Registers a new user
-    r = requests.post(f"{url}/auth/register", json = user)
+    r = requests.post(f"{url}/auth/register", json=user)
     return r.json()
 
 
 def register_user_auth(url, user):
     # Registers a new user
-    return requests.post(f"{url}/auth/register", json = user)
-    
+    return requests.post(f"{url}/auth/register", json=user)
+
 
 def login_user(url, user):
     # Registers a new user
-    return requests.post(f"{url}/auth/login", json = {
-        "email": user['email'], 
-        "password": user['password']
-    })
+    return requests.post(f"{url}/auth/login",
+                         json={
+                             "email": user['email'],
+                             "password": user['password']
+                         })
+
 
 def prepare_user(url, user):
     new_user = register_user(url, user)
     login_user(url, user)
     return new_user
+
 
 def create_channel(url, token, name, is_public):
     # Creates a new channel
@@ -82,7 +94,7 @@ def create_channel(url, token, name, is_public):
         "name": name,
         "is_public": is_public,
     }
-    r = requests.post(f"{url}/channels/create", json = new_channel)
+    r = requests.post(f"{url}/channels/create", json=new_channel)
     payload = r.json()
     payload["name"] = name
     return payload
@@ -95,51 +107,42 @@ def invite_channel(url, token, channel_id, u_id):
         "channel_id": channel_id,
         "u_id": u_id,
     }
-    r = requests.post(f"{url}/channel/invite", json = invite)
+    r = requests.post(f"{url}/channel/invite", json=invite)
     return r.json()
 
 
 def user_details(email, password):
-    user_detail = {
-        "email": email,
-        "password": password
-    }
+    user_detail = {"email": email, "password": password}
     return user_detail
 
 
 def send_message(url, token, channel_id, message):
     message_detail = {
-        "token": token, 
-        "channel_id": channel_id, 
+        "token": token,
+        "channel_id": channel_id,
         "message": message
     }
-    return requests.post(f"{url}/message/send", json = message_detail)
+    return requests.post(f"{url}/message/send", json=message_detail)
+
 
 def send_message_id(url, token, channel_id, message):
     message_detail = {
-        "token": token, 
-        "channel_id": channel_id, 
+        "token": token,
+        "channel_id": channel_id,
         "message": message
     }
-    payload = requests.post(f"{url}/message/send", json = message_detail)
+    payload = requests.post(f"{url}/message/send", json=message_detail)
     return payload.json()
 
 
 def remove_message(url, token, message_id):
-    message = {
-        "token": token, 
-        "message_id": message_id
-    }
-    return requests.delete(f"{url}/message/remove", json = message)
+    message = {"token": token, "message_id": message_id}
+    return requests.delete(f"{url}/message/remove", json=message)
 
 
 def edit_message(url, token, message_id, message):
-    message = {
-        "token": token, 
-        "message_id": message_id,
-        "message": message
-    }
-    return requests.put(f"{url}/message/edit", json = message)
+    message = {"token": token, "message_id": message_id, "message": message}
+    return requests.put(f"{url}/message/edit", json=message)
 
 
 ###################
@@ -151,7 +154,6 @@ authorised_user = {
     "name_first": "Phil",
     "name_last": "Knight",
 }
-
 
 second_user = {
     "email": "validEmail2@gmail.com",

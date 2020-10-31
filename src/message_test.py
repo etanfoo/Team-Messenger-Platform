@@ -2,6 +2,7 @@
 Message Test
 '''
 import pytest
+from time import sleep
 from error import InputError, AccessError
 from auth import auth_register
 from channels import channels_create
@@ -213,3 +214,23 @@ def test_get_message_owner():
     clear()
     with pytest.raises(InputError):
         get_message_owner(1)
+
+
+#sendlater
+
+
+def test_sendlater_invalid_token():
+    '''
+    Check that an access error is raised when sendlater is given an invalid token
+    '''
+
+    pass
+
+
+#react
+
+#unreact
+
+#pin
+
+#unpin

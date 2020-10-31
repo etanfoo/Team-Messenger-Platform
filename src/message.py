@@ -7,6 +7,7 @@ from global_dic import data
 from utils import decode_token, check_token
 from message_helper import get_message, get_message_owner, valid_message
 from channel_helper import check_member_channel, check_channel
+from utils import get_current_timestamp
 
 
 def message_send(token, channel_id, message):
@@ -31,14 +32,10 @@ def message_send(token, channel_id, message):
     for channel in data["channels"]:
         if channel["channel_id"] == channel_id:
             channel["messages"].append({
-                "u_id":
-                u_id,
-                "message_id":
-                data["message_count"],
-                "message":
-                message,
-                "time_created":
-                datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                "u_id": u_id,
+                "message_id": data["message_count"],
+                "message": message,
+                "time_created": get_current_timestamp,
             })
     return {
         'message_id': data["message_count"],
