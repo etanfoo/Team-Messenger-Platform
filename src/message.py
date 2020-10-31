@@ -4,7 +4,7 @@ MESSAGE
 import datetime
 from error import InputError, AccessError
 from global_dic import data
-from utils import decode_token, check_token
+from utils import decode_token, check_token, get_current_timestamp
 from message_helper import get_message, get_message_owner, valid_message
 from channel_helper import check_member_channel, check_channel
 
@@ -13,32 +13,29 @@ def message_send(token, channel_id, message):
     """
     Function that sends a message to the provided channel_id
     """
+    global data
     #Check if message is valid
     valid_message(message)
-    #Check if token is valid
-    check_token(token)
+    # #Check if token is valid
+    # check_token(token)
     #Decode token
     u_id = decode_token(token)
     #Check if the channel exist
     if check_channel(channel_id) is False:
-        raise InputError
+        raise InputError("Input error")
     #Check if the user is authorized in the channel
     if check_member_channel(channel_id, u_id) is False:
-        raise AccessError
+        raise AccessError("Access error")
     #Increment the message counter by 1
     data["message_count"] += 1
     #Append message to dictionary
     for channel in data["channels"]:
         if channel["channel_id"] == channel_id:
             channel["messages"].append({
-                "u_id":
-                u_id,
-                "message_id":
-                data["message_count"],
-                "message":
-                message,
-                "time_created":
-                datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                "u_id": u_id,
+                "message_id": data["message_count"],
+                "message": message,
+                "time_created": get_current_timestamp()
             })
     return {
         'message_id': data["message_count"],

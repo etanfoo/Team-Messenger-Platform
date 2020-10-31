@@ -42,9 +42,18 @@ def auth_logout(token):
     '''
     Function to logout
     '''
-    check_token(token)
+    # check_token(token)
+    success = False
+    for i in range(len(data["users"])):
+        #Find token
+        if (data["users"][i]["token"] == token):
+            success = True
+            return True
+
+    if not success:
+        return {'is_success': False }
+    # logout_state(token)
     remove_token(token)
-    logout_state(token)
     return {
         'is_success': True,
     }
