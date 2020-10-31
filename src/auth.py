@@ -63,13 +63,14 @@ def auth_register(email, password, name_first, name_last):
     '''
     Function to register user
     '''
+    global data
     validate_email(email)
     validate_password(password)
     validate_name(name_first)
     validate_name(name_last)
     if check_email(email) == True:
         raise InputError(InputError)
-    user_id = uuid.uuid4().hex
+    user_id = len(data["users"])
     user_token = generate_token(user_id)
     password = hash_password(password)
     data["users"].append({

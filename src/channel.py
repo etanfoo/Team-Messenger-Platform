@@ -11,14 +11,15 @@ def channel_invite(token, channel_id, u_id):
     '''
     Invite user to channel
     '''
+    # print(f"{u_id} + Test")
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
         raise InputError("Input error 1")
 
     # looping to see if u_id is a valid user, if not, input error
     if check_uid(u_id) is False:
-        print(u_id)
-        print(data)
+        # print(f"{u_id} + Test")
+        # print(data)
         raise InputError("Input error 2")
 
     matching_u_id = decode_token(token)
