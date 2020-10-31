@@ -35,7 +35,7 @@ def message_send(token, channel_id, message):
                 "u_id": u_id,
                 "message_id": data["message_count"],
                 "message": message,
-                "time_created": get_current_timestamp,
+                "time_created": get_current_timestamp(),
             })
     return {
         'message_id': data["message_count"],
