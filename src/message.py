@@ -17,7 +17,7 @@ def message_send(token, channel_id, message):
     #Check if message is valid
     valid_message(message)
     # #Check if token is valid
-    # check_token(token)
+    check_token(token)
     #Decode token
     u_id = decode_token(token)
     #Check if the channel exist

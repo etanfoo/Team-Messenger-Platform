@@ -50,6 +50,12 @@ def check_token(token):
     #Token does not exist
     raise AccessError("Token does not exist")
 
+def check_user_in_channel(u_id):
+    for user in data['users']:
+        if user['u_id'] == u_id:
+            return True
+    return False
+
 
 def remove_token(token):
     global data

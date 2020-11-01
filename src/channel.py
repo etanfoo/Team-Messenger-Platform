@@ -4,13 +4,16 @@ Channel
 from channel_helper import check_channel, check_uid, check_member_channel, channel_details_helper, check_start, delete_member, delete_owner, add_user, check_owner, delete_user, add_owner
 from error import InputError, AccessError
 from global_dic import data
-from utils import decode_token, check_token
+from utils import decode_token, check_token, check_user_in_channel
 
 
 def channel_invite(token, channel_id, u_id):
     '''
     Invite user to channel
     '''
+
+    check_token(token)
+
     # print(f"{u_id} + Test")
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
@@ -21,6 +24,7 @@ def channel_invite(token, channel_id, u_id):
         # print(f"{u_id} + Test")
         # print(data)
         raise InputError("Input error 2")
+
 
     matching_u_id = decode_token(token)
 
@@ -37,6 +41,8 @@ def channel_details(token, channel_id):
     '''
     Grab channel details
     '''
+    check_token(token)
+
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
         raise InputError("Input error channel_id not listed")
@@ -72,6 +78,8 @@ def channel_messages(token, channel_id, start):
     '''
     Grab channel messages
     '''
+    check_token(token)
+
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
         raise InputError
@@ -120,6 +128,8 @@ def channel_leave(token, channel_id):
     '''
     Leave channel
     '''
+    check_token(token)
+
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
         raise InputError
@@ -174,6 +184,8 @@ def channel_addowner(token, channel_id, u_id):
     '''
     Add owner to channel
     '''
+    check_token(token)
+
     # looping to see if channel_id is listed, if not, InputError
     matching_u_id = decode_token(token)
     if check_channel(channel_id) is False:
@@ -193,6 +205,8 @@ def channel_removeowner(token, channel_id, u_id):
     '''
     Remove owner from channel
     '''
+    check_token(token)
+    
     matching_u_id = decode_token(token)
     if check_channel(channel_id) is False:
         raise InputError

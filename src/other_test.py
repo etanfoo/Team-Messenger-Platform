@@ -3,7 +3,7 @@ Tests for other.py. Testing functions users_all, admin_userpermission_change, an
 '''
 import pytest
 from auth import auth_login, auth_register
-from channel import channel_invite, channel_details
+from channel import channel_invite, channel_details, channel_join
 from channels import channels_create
 from message import message_send
 from other import clear, users_all, admin_userpermission_change, search
@@ -477,8 +477,10 @@ def test_search_different_user():
 
     authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password",
                                      "Tara", "Simons")
+    
     auth_login("validEmail2@gmail.com", "valid_password")
 
+    channel_join(authorised_user2['token'], channel['channel_id'])
     #######################################################################################
     # Send messages in channel
     message_send(authorised_user['token'], channel['channel_id'], 'Old')
@@ -496,39 +498,4 @@ def test_search_different_user():
     assert found == 1
 
 
-def test_search_invalid_user():
-    '''
-    InputError if user's u_id refers to an invalid user
-    '''
-    clear()
-    # Creating channel with admin user
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
-                                    "Philip", "Dickens")
-    channels_create(authorised_user['token'], "new_channel", True)
 
-    #######################################################################################
-
-    unauthorised_user = auth_register("invalidEmail2@gmail.com",
-                                      "invalid_password", "In", "Valid")
-
-    with pytest.raises(AccessError):
-        search(unauthorised_user['u_id'], 'Hello')
-
-
-def test_search_null():
-    '''
-    InputError if search query_str is empty
-    '''
-    clear()
-    # InputError if search query_str is empty
-    # Creating user, channel, and posting message
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
-                                    "Philip", "Dickens")
-    auth_login("validEmail@gmail.com", "valid_password")
-
-    channels_create(authorised_user['token'], "new_channel", True)
-
-    #######################################################################################
-
-    with pytest.raises(InputError):
-        search(authorised_user['token'], None)

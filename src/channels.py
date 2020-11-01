@@ -3,7 +3,7 @@ Channel
 '''
 from global_dic import data
 from error import InputError
-from utils import decode_token
+from utils import decode_token, check_token
 from channels_helper import valid_channel_name
 
 
@@ -18,6 +18,7 @@ def channels_list(token):
     
     Return: a list of channels the user is part of
     '''
+    check_token(token)
 
     u_id = decode_token(token)
     authorized_channels = []
@@ -45,22 +46,29 @@ def channels_listall(token):
 
     Return: a list of all public channels and any private channels the user is part of
     '''
+    check_token(token)
 
     u_id = decode_token(token)
     authorized_channels = []
     # Loops through all channels
     for channels in data["channels"]:
-        # Loops through all members of that channel
-        for members in channels["all_members"]:
-            # Checks if the channel is public or user is part of this channel
-            if channels["is_public"] == True or members["u_id"] == u_id:
-                # Add details to the authorised_channels list
-                authorized_channels.append({
-                    "channel_id": channels["channel_id"],
-                    "name": channels["name"]
-                })
-                # Prevent duplicates by breaking out of the loop once details have been added
-                break
+        if channels['is_public'] == True:
+            authorized_channels.append({
+                "channel_id": channels["channel_id"],
+                "name": channels["name"]
+            })
+        else:
+            # Loops through all members of that channel
+            for members in channels["all_members"]:
+                # Checks if the channel is public or user is part of this channel
+                if members["u_id"] == u_id:
+                    # Add details to the authorised_channels list
+                    authorized_channels.append({
+                        "channel_id": channels["channel_id"],
+                        "name": channels["name"]
+                    })
+                    # Prevent duplicates by breaking out of the loop once details have been added
+                    break
     return {'channels': authorized_channels}
 
 
@@ -69,6 +77,7 @@ def channels_create(token, name, is_public):
     Create a public/private channel with a given name, and add the current user’s details to “owner_members” and “all_members”
     Return: the channel_id
     '''
+    check_token(token)
     
     u_id = decode_token(token)
     # Name is over 20 characters long or empty or space => input error

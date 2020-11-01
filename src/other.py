@@ -4,6 +4,7 @@ other.py contains the clear, users_all, admin_permission_change, and search func
 from global_dic import data
 from error import InputError, AccessError
 from utils import check_token, decode_token
+from channels import channels_list
 
 def clear():
     '''
@@ -106,19 +107,24 @@ def search(token, query_str):
     '''
     Function to search for previous messages
     '''
-    # Check for valid token
-    check_token(token)
 
-    # Check if query_str is not empty
-    if query_str is None:
-        raise InputError
+    user_channels = []
+    
+    user_u_id = decode_token(token)
+
+    for channel in data['channels']:
+        for member in channel['all_members']:
+            if member['u_id'] == user_u_id:
+                user_channels.append(channel)
 
     result = []
+
     # Search for query in the channel's message history
-    for channel in data["channels"]:
+    for channel in user_channels:
         for message in channel["messages"]:
             if query_str in message['message']:
                 result.append(message)
+    
 
     # Sort list based on time_created
     sorted(result, key=lambda message: message["time_created"], reverse=True)
