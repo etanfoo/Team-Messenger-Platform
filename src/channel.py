@@ -25,13 +25,13 @@ def channel_invite(token, channel_id, u_id):
         # print(data)
         raise InputError("Input error 2")
 
-
     matching_u_id = decode_token(token)
 
     # if user is not a member of channel with channel_id, access error
     # channel is already selected on channel with channel_id (from first for loop)
     if check_member_channel(channel_id, matching_u_id) is False:
-        raise AccessError("You must be a member of the channel to view its details")
+        raise AccessError(
+            "You must be a member of the channel to view its details")
 
     # no errors raised, add the user to channels all members
     add_user(channel_id, u_id)
@@ -51,7 +51,8 @@ def channel_details(token, channel_id):
     # if user is not a member of channel with channel_id, access error
     # channel is already selected on channel with channel_id (from first for loop)
     if check_member_channel(channel_id, matching_u_id) is False:
-        raise AccessError("You must be a member of the channel to view its details")
+        raise AccessError(
+            "You must be a member of the channel to view its details")
 
     return channel_details_helper(channel_id)
 
@@ -206,7 +207,7 @@ def channel_removeowner(token, channel_id, u_id):
     Remove owner from channel
     '''
     check_token(token)
-    
+
     matching_u_id = decode_token(token)
     if check_channel(channel_id) is False:
         raise InputError
