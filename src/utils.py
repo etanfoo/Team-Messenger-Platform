@@ -4,6 +4,8 @@ from appsecret import JWT_SECRET
 from error import AccessError
 from global_dic import data
 import requests
+import random
+import string
 
 INVALID_TOKEN = -1000
 
@@ -156,6 +158,17 @@ def edit_message(url, token, message_id, message):
         "message": message
     }
     return requests.put(f"{url}/message/edit", json = message)
+
+def random_string(length):
+    letters = string.ascii_lowercase
+    random_string = ''.join(random.choice(letters) for i in range(length))
+
+    return random_string
+
+def get_user_from_token(token):
+    for user in data['users']:
+        if user['token'] == token:
+            return user
 
 
 ###################
