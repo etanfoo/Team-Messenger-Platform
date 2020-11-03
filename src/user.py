@@ -3,7 +3,9 @@ from auth import auth_login, auth_register, auth_register
 from error import InputError
 import uuid
 import re
-from utils import check_token
+from utils import check_token, random_string, get_user_from_token
+import urllib.request
+from PIL import Image
 
 def valid_u_id_check(u_id):
     '''
@@ -39,6 +41,7 @@ def user_profile(token, u_id):
                     'name_first': user['first_name'],
                     'name_last': user['last_name'],
                     'handle_str': user['handle'],
+                    'profile_img_url': user['profile_img_url']
                  },
             }
 
@@ -134,4 +137,36 @@ def user_profile_sethandle(token, handle_str):
     }
 
 def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
-    pass
+    '''
+    Given a URL of an image on the internet, crops the image within bounds 
+    (x_start, y_start) and (x_end, y_end). Position (0,0) is the top left.
+    '''
+    check_token(token)
+    global data
+    # grabbing file type by spliting and checking if it is valid
+    file_type = img_url.rsplit('.', 1)[1].lower()
+    if not file_type in ['jpg', 'jpeg']:
+        raise InputError("Wrong file type, must be .jpg or .jpeg")
+
+    if x_end < x_start or y_end < y_start:
+        raise InputError("Wrong dimensions")
+
+    # storing image in file
+    file_name = f'{random_string(10)}.{file_type}'
+    urllib.request.urlretrieve(img_url, file_name)
+
+    image = Image.open(file_name)
+
+    # cropping image and saving it back to file
+    cropped_image = image.crop(x_start, y_start, x_end, y_end)
+    cropped_image.save(file_name) 
+
+    # storing cropped image in global data variable as accesible url
+    user = get_user_from_token(token)
+
+    user['profile_img_url'] == f'/imgurl/{file_name}'
+
+    return {}
+
+
+  
