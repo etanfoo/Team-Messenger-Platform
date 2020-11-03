@@ -1,5 +1,5 @@
 import pytest
-from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle
+from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle, user_profile_uploadphoto
 from auth import auth_login, auth_register, auth_register
 from other import clear
 from error import InputError
@@ -221,3 +221,39 @@ def test_user_profile_sethandle_input_error_already_used():
         user_profile_sethandle(new_user['token'], "IYKYK")
 
     clear()
+
+
+def test_user_profile_uploadphoto_input_error_http_status():
+    clear()
+
+    regular_user = register_user()
+    
+    with pytest.raises(InputError):
+        user_profile_uploadphoto(regular_user['token'], 'not_a_url_lmao', 0, 0, 200, 200)
+
+
+def test_user_profile_uploadphoto_input_error_invalid_dimensions():
+    clear()
+
+    regular_user = register_user()
+    
+    with pytest.raises(InputError):
+        user_profile_uploadphoto(regular_user['token'], 'https://i.imgur.com/b27q1.jpg', 0, 0, 10000, 10000)
+
+
+def test_user_profile_uploadphoto_input_error_not_JPG():
+    clear()
+
+    regular_user = register_user()
+    
+    with pytest.raises(InputError):
+        user_profile_uploadphoto(regular_user['token'], 'https://i.imgur.com/UO6M4.png', 0, 0, 10000, 100)
+
+    
+def test_user_profile_uploadphoto_normal():
+    regular_user = register_user()
+
+    user_profile_uploadphoto(regular_user['token'], 'https://i.imgur.com/b27q1.jpg', 0, 0, 200, 200)
+    profile = user_profile(regular_user['token'], regular_user['u_id'])
+
+    assert profile['profile_img_url'] == 'https://i.imgur.com/b27q1.jpg'
