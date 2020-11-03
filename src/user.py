@@ -84,6 +84,7 @@ def user_profile_setemail(token, email):
     Update the authorised user's email address
     '''
 
+    check_token(token)
 
     # using the same email pattern as auth_login
     emailPattern = "^(?!.*[.]{2})[a-zA-Z0-9][a-zA-Z0-9.]+@(?!localhost)[a-zA-Z0-9]+[.]+[a-zA-Z0-9]+$"
@@ -113,6 +114,7 @@ def user_profile_sethandle(token, handle_str):
     Update the authorised user's handle (i.e. display name)
     '''
 
+    check_token(token)
 
     if len(handle_str) < 3 or len(handle_str) > 20:
         raise InputError
@@ -130,3 +132,6 @@ def user_profile_sethandle(token, handle_str):
 
     return {
     }
+
+def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
+    pass
