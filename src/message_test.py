@@ -282,37 +282,38 @@ def test_sendlater_invalid_token():
 #         channel_messages(authorized_user['token'], new_channel['channel_id'],
 #                          0)['messages']) == 1
 
+
 # #react
-# def test_message_react_normal():
-#     '''Test that legal user react a message'''
-#     clear()
-#     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
-#                                     "Philgee", "Vlad")
-#     new_channel = channels_create(authorized_user['token'], "public_channel",
-#                                   True)
-#     message = message_send(authorized_user['token'], new_channel['channel_id'],
-#                            "abcd")
-#     message_react(authorized_user['token'], message['message_id'], 1)
-#     message_specific = get_message(message['message_id'])
+def test_message_react_normal():
+    '''Test that legal user react a message'''
+    clear()
+    authorized_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
+    new_channel = channels_create(authorized_user['token'], "public_channel",
+                                  True)
+    message = message_send(authorized_user['token'], new_channel['channel_id'],
+                           "abcd")
+    message_react(authorized_user['token'], message['message_id'], 1)
+    message_specific = get_message(message['message_id'])
+    assert message_specific['reacts'] == [{
+        'react_id': 1,
+        'u_ids': [authorized_user['u_id']],
+        'is_this_user_reacted': True
+    }]
 
-#     assert message_specific['reacts'] == [{
-#         'react_id': 1,
-#         'u_ids': [authorized_user['u_id']],
-#         'is_this_user_reacted': True
-#     }]
 
-# def test_message_already_reacted():
-#     '''Test that if a user react to a message that has already been reacted'''
-#     clear()
-#     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
-#                                     "Philgee", "Vlad")
-#     new_channel = channels_create(authorized_user['token'], "public_channel",
-#                                   True)
-#     message = message_send(authorized_user['token'], new_channel['channel_id'],
-#                            "abcd")
-#     message_react(authorized_user['token'], message['message_id'], 1)
-#     with pytest.raises(InputError):
-#         message_react(authorized_user['token'], message['message_id'], 1)
+def test_message_already_reacted():
+    '''Test that if a user react to a message that has already been reacted'''
+    clear()
+    authorized_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
+    new_channel = channels_create(authorized_user['token'], "public_channel",
+                                  True)
+    message = message_send(authorized_user['token'], new_channel['channel_id'],
+                           "abcd")
+    message_react(authorized_user['token'], message['message_id'], 1)
+    with pytest.raises(InputError):
+        message_react(authorized_user['token'], message['message_id'], 1)
 
 
 def test_message_invalid_react_id():
@@ -360,34 +361,36 @@ def test_message_invalid_react_id():
 #         'u_ids': []
 #     }]
 
-# def test_message_unreact_invalid_react_id():
-#     '''Test that a legal user unreact a message but with invalid react_id'''
-#     clear()
-#     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
-#                                     "Philgee", "Vlad")
-#     new_channel = channels_create(authorized_user['token'], "public_channel",
-#                                   True)
-#     message = message_send(authorized_user['token'], new_channel['channel_id'],
-#                            "abcd")
-#     message_react(authorized_user['token'], message['message_id'], 1)
-#     with pytest.raises(InputError):
-#         message_unreact(authorized_user['token'], message['message_id'], 0)
+
+def test_message_unreact_invalid_react_id():
+    '''Test that a legal user unreact a message but with invalid react_id'''
+    clear()
+    authorized_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
+    new_channel = channels_create(authorized_user['token'], "public_channel",
+                                  True)
+    message = message_send(authorized_user['token'], new_channel['channel_id'],
+                           "abcd")
+    message_react(authorized_user['token'], message['message_id'], 1)
+    with pytest.raises(InputError):
+        message_unreact(authorized_user['token'], message['message_id'], 0)
+
 
 # #MIGHT BE WRONG
-# def test_message_unreact_user_not_in_channel():
-#     ''''Test that if a user try to unreact a message when he is not in that channel'''
-#     clear()
-#     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
-#                                     "Philgee", "Vlad")
-#     unauthorized_user = auth_register("validEmail2@gmail.com",
-#                                       "valid_password", "Philgee", "Vlad")
-#     new_channel = channels_create(authorized_user['token'], "public_channel",
-#                                   True)
-#     message = message_send(authorized_user['token'], new_channel['channel_id'],
-#                            "abcd")
-#     message_react(authorized_user['token'], message['message_id'], 1)
-#     with pytest.raises(InputError):
-#         message_unreact(unauthorized_user['token'], message['message_id'], 1)
+def test_message_unreact_user_not_in_channel():
+    ''''Test that if a user try to unreact a message when he is not in that channel'''
+    clear()
+    authorized_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
+    unauthorized_user = auth_register("validEmail2@gmail.com",
+                                      "valid_password", "Philgee", "Vlad")
+    new_channel = channels_create(authorized_user['token'], "public_channel",
+                                  True)
+    message = message_send(authorized_user['token'], new_channel['channel_id'],
+                           "abcd")
+    message_react(authorized_user['token'], message['message_id'], 1)
+    with pytest.raises(InputError):
+        message_unreact(unauthorized_user['token'], message['message_id'], 1)
 
 
 def test_message_unreact_no_reacts():
@@ -403,33 +406,36 @@ def test_message_unreact_no_reacts():
         message_unreact(authorized_user['token'], message['message_id'], 1)
 
 
-# def test_message_unreact_user_not_react():
-#     '''Test that if a user try to unreact a messaage which is not his/her reaction'''
-#     clear()
-#     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
-#                                     "Philgee", "Vlad")
-#     unauthorized_user = auth_register("validEmail2@gmail.com",
-#                                       "valid_password", "Philgee", "Vlad")
-#     new_channel = channels_create(authorized_user['token'], "public_channel",
-#                                   True)
-#     channel_invite(authorized_user['token'], new_channel['channel_id'],
-#                    unauthorized_user['user_id'])
-#     with pytest.raises(InputError):
-#         message_unreact(unauthorized_user['token'], message['message_id'], 1)
+def test_message_unreact_user_not_react():
+    '''Test that if a user try to unreact a messaage which is not his/her reaction'''
+    clear()
+    authorized_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
+    unauthorized_user = auth_register("validEmail2@gmail.com",
+                                      "valid_password", "Philgee", "Vlad")
+    new_channel = channels_create(authorized_user['token'], "public_channel",
+                                  True)
+    channel_invite(authorized_user['token'], new_channel['channel_id'],
+                   unauthorized_user['u_id'])
+    message = message_send(authorized_user['token'], new_channel['channel_id'],
+                           "abcd")
+    with pytest.raises(InputError):
+        message_unreact(unauthorized_user['token'], message['message_id'], 1)
+
 
 # #pin
-# def test_message_pin_normal():
-#     '''Test pin on message'''
-#     clear()
-#     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
-#                                     "Philgee", "Vlad")
-#     new_channel = channels_create(authorized_user['token'], "public_channel",
-#                                   True)
-#     message = message_send(authorized_user['token'], new_channel['channel_id'],
-#                            "abcd")
-#     message_pin(authorized_user['token'], message['message_id'])
-#     message_specific = get_message(message['message_id'])
-#     assert message_specific['is_pinned']
+def test_message_pin_normal():
+    '''Test pin on message'''
+    clear()
+    authorized_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
+    new_channel = channels_create(authorized_user['token'], "public_channel",
+                                  True)
+    message = message_send(authorized_user['token'], new_channel['channel_id'],
+                           "abcd")
+    message_pin(authorized_user['token'], message['message_id'])
+    message_specific = get_message(message['message_id'])
+    assert message_specific['is_pinned']
 
 
 def test_message_pin_invalid_message_id():
@@ -443,32 +449,34 @@ def test_message_pin_invalid_message_id():
         message_pin(authorized_user['token'], -1)
 
 
-# def test_message_pin_not_member():
-#     '''Test that try to pin a message by a user who ise not a member'''
-#     clear()
-#     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
-#                                     "Philgee", "Vlad")
-#     unauthorized_user = auth_register("validEmail2@gmail.com",
-#                                       "valid_password", "Philgee", "Vlad")
-#     new_channel = channels_create(authorized_user['token'], "public_channel",
-#                                   True)
-#     message = message_send(authorized_user['token'], new_channel['channel_id'],
-#                            "abcd")
-#     with pytest.raises(AccessError):
-#         message_pin(unauthorized_user['token'], message['message_id'])
+def test_message_pin_not_member():
+    '''Test that try to pin a message by a user who ise not a member'''
+    clear()
+    authorized_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
+    unauthorized_user = auth_register("validEmail2@gmail.com",
+                                      "valid_password", "Philgee", "Vlad")
+    new_channel = channels_create(authorized_user['token'], "public_channel",
+                                  True)
+    message = message_send(authorized_user['token'], new_channel['channel_id'],
+                           "abcd")
+    with pytest.raises(AccessError):
+        message_pin(unauthorized_user['token'], message['message_id'])
 
-# def test_message_already_pinned():
-#     '''Test that try to pin a message that has already been pinned'''
-#     clear()
-#     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
-#                                     "Philgee", "Vlad")
-#     new_channel = channels_create(authorized_user['token'], "public_channel",
-#                                   True)
-#     message = message_send(authorized_user['token'], new_channel['channel_id'],
-#                            "abcd")
-#     message_pin(authorized_user['token'], message['message_id'])
-#     with pytest.raises(AccessError):
-#         message_pin(authorized_user['token'], message['message_id'])
+
+def test_message_already_pinned():
+    '''Test that try to pin a message that has already been pinned'''
+    clear()
+    authorized_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
+    new_channel = channels_create(authorized_user['token'], "public_channel",
+                                  True)
+    message = message_send(authorized_user['token'], new_channel['channel_id'],
+                           "abcd")
+    message_pin(authorized_user['token'], message['message_id'])
+    with pytest.raises(InputError):
+        message_pin(authorized_user['token'], message['message_id'])
+
 
 # def test_message_pin_not_owner():
 #     '''Test that try to pin a  message but not the owner'''
@@ -480,22 +488,25 @@ def test_message_pin_invalid_message_id():
 #     new_channel = channels_create(authorized_user['token'], "public_channel",
 #                                   True)
 #     channel_invite(authorized_user['token'], new_channel['channel_id'],
-#                    unauthorized_user['user_id'])
+#                    unauthorized_user['u_id'])
+#     message = message_send(authorized_user['token'], new_channel['channel_id'],
+#                            "abcd")
 #     with pytest.raises(InputError):
 #         message_pin(unauthorized_user['token'], message['message_id'])
 
+
 # #unpin
-# def test_message_unpin_normal():
-#     '''Test unpin on message'''
-#     clear()
-#     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
-#                                     "Philgee", "Vlad")
-#     new_channel = channels_create(authorized_user['token'], "public_channel",
-#                                   True)
-#     message = message_send(authorized_user['token'], new_channel['channel_id'],
-#                            "abcd")
-#     message_specific = get_message(message['message_id'])
-#     assert not message_specific['is_pinned']
+def test_message_unpin_normal():
+    '''Test unpin on message'''
+    clear()
+    authorized_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
+    new_channel = channels_create(authorized_user['token'], "public_channel",
+                                  True)
+    message = message_send(authorized_user['token'], new_channel['channel_id'],
+                           "abcd")
+    message_specific = get_message(message['message_id'])
+    assert not message_specific['is_pinned']
 
 
 def test_message_unpin_invalid_message_id():
@@ -509,32 +520,34 @@ def test_message_unpin_invalid_message_id():
         message_unpin(authorized_user['token'], -1)
 
 
-# def test_message_unpin_not_member():
-#     '''Test that try to unpin a message by a user who is not a member'''
-#     clear()
-#     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
-#                                     "Philgee", "Vlad")
-#     unauthorized_user = auth_register("validEmail2@gmail.com",
-#                                       "valid_password", "Philgee", "Vlad")
-#     new_channel = channels_create(authorized_user['token'], "public_channel",
-#                                   True)
-#     message = message_send(authorized_user['token'], new_channel['channel_id'],
-#                            "abcd")
-#     message_pin(authorized_user['token'], message['message_id'])
-#     with pytest.raises(AccessError):
-#         message_unpin(unauthorized_user['token'], message['message_id'])
+def test_message_unpin_not_member():
+    '''Test that try to unpin a message by a user who is not a member'''
+    clear()
+    authorized_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
+    unauthorized_user = auth_register("validEmail2@gmail.com",
+                                      "valid_password", "Philgee", "Vlad")
+    new_channel = channels_create(authorized_user['token'], "public_channel",
+                                  True)
+    message = message_send(authorized_user['token'], new_channel['channel_id'],
+                           "abcd")
+    message_pin(authorized_user['token'], message['message_id'])
+    with pytest.raises(AccessError):
+        message_unpin(unauthorized_user['token'], message['message_id'])
 
-# def test_message_already_unpinned():
-#     '''Test that try to unpin a message that has already been unpin'''
-#     clear()
-#     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
-#                                     "Philgee", "Vlad")
-#     new_channel = channels_create(authorized_user['token'], "public_channel",
-#                                   True)
-#     message = message_send(authorized_user['token'], new_channel['channel_id'],
-#                            "abcd")
-#     with pytest.raises(AccessError):
-#         message_unpin(authorized_user['token'], message['message_id'])
+
+def test_message_already_unpinned():
+    '''Test that try to unpin a message that has already been unpin'''
+    clear()
+    authorized_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
+    new_channel = channels_create(authorized_user['token'], "public_channel",
+                                  True)
+    message = message_send(authorized_user['token'], new_channel['channel_id'],
+                           "abcd")
+    with pytest.raises(InputError):
+        message_unpin(authorized_user['token'], message['message_id'])
+
 
 # def test_message_unpin_not_owner():
 #     '''Test that try to unpin a  message but not the owner'''

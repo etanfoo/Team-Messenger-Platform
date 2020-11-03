@@ -35,10 +35,21 @@ def message_send(token, channel_id, message):
     for channel in data["channels"]:
         if channel["channel_id"] == channel_id:
             channel["messages"].append({
-                "u_id": u_id,
-                "message_id": data["message_count"],
-                "message": message,
-                "time_created": get_current_timestamp()
+                'u_id':
+                u_id,
+                'message_id':
+                data["message_count"],
+                'time_created':
+                get_current_timestamp(),
+                'message':
+                message,
+                'reacts': [{
+                    'react_id': 1,
+                    'u_ids': [],
+                    'is_this_user_reacted': True
+                }],
+                'is_pinned':
+                False
             })
     return {
         'message_id': data["message_count"],
@@ -119,12 +130,13 @@ def message_react(token, message_id, react_id):
         react_id: int
     returns empty dictionary
     '''
-    u_id = check_token(token)
+    check_token(token)
+    u_id = decode_token(token)
     message = get_message(message_id)
     if react_id not in VALID_REACTS:
         raise InputError(description='Invalid react id')
-    if not check_member_channel(message_id, u_id):
-        raise InputError(description='User is not in channel')
+    # if not check_member_channel(message_id, u_id):
+    #     raise InputError(description='User is not in channel')
     for react in message['reacts']:
         if react['react_id'] == react_id:
             if u_id in react['u_ids']:
@@ -142,13 +154,14 @@ def message_unreact(token, message_id, react_id):
         react_id: int
     returns empty dictionary
     '''
-    u_id = check_token(token)
+    check_token(token)
+    u_id = decode_token(token)
     message = get_message(message_id)
 
     if react_id not in VALID_REACTS:
         raise InputError(description='Invalid react id')
-    if not check_member_channel(message_id, u_id):
-        raise InputError(description='User is not in channel')
+    # if not check_member_channel(message_id, u_id):
+    #     raise InputError(description='User is not in channel')
     for react in message['reacts']:
         if react['react_id'] == react_id:
             if u_id in react['u_ids']:
@@ -162,10 +175,10 @@ def message_pin(token, message_id):
     '''
     Pins a message in a channel
     '''
-    u_id = check_token(token)
+    check_token(token)
+    u_id = decode_token(token)
     channel_specific = get_channel(message_id)
     message_specific = get_message(message_id)
-
     if u_id not in channel_specific['all_members'] and not check_owner(
             u_id, channel_specific['channel_id']):
         raise AccessError(
@@ -191,7 +204,8 @@ def message_unpin(token, message_id):
     '''
     Unpins a message in a channel
     '''
-    u_id = check_token(token)
+    check_token(token)
+    u_id = decode_token(token)
     channel_specific = get_channel(message_id)
     message_specific = get_message(message_id)
     if u_id not in channel_specific['all_members'] and not check_owner(
@@ -218,7 +232,8 @@ def message_sendlater(token, channel_id, message, time_sent):
     sends a message at a given time_sent, where time_sent is a unix timestamp
     greater than the current time.
     '''
-    u_id = check_token(token)
+    check_token(token)
+    u_id = decode_token(token)
     if not check_channel(channel_id):
         raise InputError(description="No channel exists with that ID")
     if not check_member_channel(channel_id, u_id):
