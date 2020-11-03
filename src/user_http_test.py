@@ -261,7 +261,7 @@ def test_user_profile_uploadphoto_input_error_invalid_dimensions(url):
     login_user(url, authorised_user)
 
     r = requests.put(f"{url}/user/profile/uploadphoto", json = {'token' : regular_user['token'], 
-        'img_url' : 'https://i.imgur.com/b27q1.jpg', 'x_start' : 0, 'y_start' : 0, 'x_end' : 10000, 'y_end' : 10000})
+        'img_url' : 'https://i.imgur.com/b27q1.jpg', 'x_start' : 500, 'y_start' : 500, 'x_end' : 0, 'y_end' : 0})
 
     assert r.status_code == 400
 
@@ -281,8 +281,3 @@ def test_user_profile_uploadphoto_normal(url):
 
     requests.put(f"{url}/user/profile/uploadphoto", json = {'token' : regular_user['token'], 
         'img_url' : 'https://i.imgur.com/b27q1.jpg', 'x_start' : 0, 'y_start' : 0, 'x_end' : 200, 'y_end' : 200})
-
-    r = requests.get(f"{url}/user/profile", params = {'token' : regular_user['token'], 'u_id' : regular_user['u_id']})
-    payload = r.json()
-
-    assert payload['profile_img_url'] == 'https://i.imgur.com/b27q1.jpg'
