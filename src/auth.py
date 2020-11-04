@@ -86,7 +86,8 @@ def auth_register(email, password, name_first, name_last):
         "last_name": name_last,
         "state": "inactive",
         "password": password,
-        'handle': handle
+        'handle': handle,
+        'profile_img_url': ''
     })
     return {
         'u_id': user_id,
