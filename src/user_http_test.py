@@ -250,7 +250,7 @@ def test_user_profile_uploadphoto_input_error_http_status(url):
     regular_user = register_user(url, authorised_user)
     login_user(url, authorised_user)
 
-    r = requests.put(f"{url}/user/profile/uploadphoto", json = {'token' : regular_user['token'], 
+    r = requests.post(f"{url}/user/profile/uploadphoto", json = {'token' : regular_user['token'], 
         'img_url' : 'not_a_url_lmao', 'x_start' : 0, 'y_start' : 0, 'x_end' : 200, 'y_end' : 200})
 
     assert r.status_code == 400
@@ -260,7 +260,7 @@ def test_user_profile_uploadphoto_input_error_invalid_dimensions(url):
     regular_user = register_user(url, authorised_user)
     login_user(url, authorised_user)
 
-    r = requests.put(f"{url}/user/profile/uploadphoto", json = {'token' : regular_user['token'], 
+    r = requests.post(f"{url}/user/profile/uploadphoto", json = {'token' : regular_user['token'], 
         'img_url' : 'https://i.imgur.com/b27q1.jpg', 'x_start' : 500, 'y_start' : 500, 'x_end' : 0, 'y_end' : 0})
 
     assert r.status_code == 400
@@ -269,8 +269,8 @@ def test_user_profile_uploadphoto_input_error_not_JPG(url):
     regular_user = register_user(url, authorised_user)
     login_user(url, authorised_user)
 
-    r = requests.put(f"{url}/user/profile/uploadphoto", json = {'token' : regular_user['token'], 
-        'img_url' : 'https://i.imgur.com/UO6M4.png', 'x_start' : 0, 'y_start' : 0, 'x_end' : 10000, 'y_end' : 10000})
+    r = requests.post(f"{url}/user/profile/uploadphoto", json = {'token' : regular_user['token'], 
+        'img_url' : 'https://i.imgur.com/UO6M4.png', 'x_start' : 0, 'y_start' : 0, 'x_end' : 200, 'y_end' : 200})
 
     assert r.status_code == 400
 
@@ -279,5 +279,5 @@ def test_user_profile_uploadphoto_normal(url):
     regular_user = register_user(url, authorised_user)
     login_user(url, authorised_user)
 
-    requests.put(f"{url}/user/profile/uploadphoto", json = {'token' : regular_user['token'], 
+    requests.post(f"{url}/user/profile/uploadphoto", json = {'token' : regular_user['token'], 
         'img_url' : 'https://i.imgur.com/b27q1.jpg', 'x_start' : 0, 'y_start' : 0, 'x_end' : 200, 'y_end' : 200})
