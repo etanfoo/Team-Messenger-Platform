@@ -6,12 +6,12 @@ and posted by the user who begun the standup/
 
 def standup_start(token, channel_id, length):
  
-    return 0
+    return {'time_finish': 'time_finish'}
 
 
 def standup_active(token, channel_id):
 
-    return 0
+    return {'is_active': 'is_active', 'time_finish': 'time_finish'}
 
 
 def standup_send(token, channel_id, message):
