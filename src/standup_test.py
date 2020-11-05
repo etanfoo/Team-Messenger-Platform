@@ -87,6 +87,23 @@ def test_standup_empty():
     check_messages = channel_messages(authorised_user['token'], channel['channel_id'], 0)
     assert len(check_messages['messages']) == 0
 
+def test_standup_negative():
+    '''
+    test if standup length is a valid number
+    '''
+    clear()
+
+    # creating user and channel
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
+    auth_login("validEmail@gmail.com", "valid_password")
+
+    channel = channels_create(authorised_user['token'], "new_channel", True)
+
+    standup_start(authorised_user['token'], channel['channel_id'], 1)
+    
+    # error as standup length is too short
+    with pytest.raises(InputError):
+        standup_start(authorised_user['token'], channel['channel_id'], -1)
 
 '''
 standup_active
@@ -178,7 +195,6 @@ def test_send_invalid_inactive():
     # check standup is not active
     active_test = standup_active(authorised_user['token'], channel['channel_id'])
     assert active_test['is_active'] == 'is_active' 
-    # !!!!!!!!!!!!!!!!!!!!!!!! IS THIS BLACKBOX?, UNSURE WHAT TO RETURN !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     # error as standup is inactive
     with pytest.raises(InputError):
