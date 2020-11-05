@@ -6,7 +6,7 @@ from error import InputError
 from global_dic import data
 from utils import generate_token, check_token, remove_token
 from auth_helper import validate_email, validate_password, hash_password, validate_name, check_email, logout_state, change_handle
-
+from flask import request as Flask_request
 
 def auth_login(email, password):
     '''
@@ -87,8 +87,9 @@ def auth_register(email, password, name_first, name_last):
         "state": "inactive",
         "password": password,
         'handle': handle,
-        'profile_img_url': ''
+        'profile_img_url' : ''
     })
+
     return {
         'u_id': user_id,
         'token': user_token,

@@ -100,12 +100,14 @@ def channels_create(token, name, is_public):
         "owner_members": [{
             "u_id": u_id,
             "name_first": person["first_name"],
-            "name_last": person["last_name"]
+            "name_last": person["last_name"],
+            'profile_img_url': person['profile_img_url']
         }],
         "all_members": [{
             "u_id": u_id,
             "name_first": person["first_name"],
-            "name_last": person["last_name"]
+            "name_last": person["last_name"],
+            'profile_img_url': person['profile_img_url']
         }],
         "messages": [],
     })
