@@ -265,6 +265,17 @@ def test_user_profile_uploadphoto_input_error_invalid_dimensions(url):
 
     assert r.status_code == 400
 
+
+def test_user_profile_uploadphoto_input_error_out_of_bounds_dimensions(url):
+    regular_user = register_user(url, authorised_user)
+    login_user(url, authorised_user)
+
+    r = requests.post(f"{url}/user/profile/uploadphoto", json = {'token' : regular_user['token'], 
+        'img_url' : 'https://i.imgur.com/b27q1.jpg', 'x_start' : 0, 'y_start' : 0, 'x_end' : 10000, 'y_end' : 10000})
+
+    assert r.status_code == 400
+
+
 def test_user_profile_uploadphoto_input_error_not_JPG(url): 
     regular_user = register_user(url, authorised_user)
     login_user(url, authorised_user)
