@@ -6,6 +6,7 @@ import re
 from utils import check_token, random_string, get_user_from_token
 import urllib.request
 from PIL import Image
+from flask import request as Flask_request
 
 def valid_u_id_check(u_id):
     '''
@@ -141,10 +142,15 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
     Given a URL of an image on the internet, crops the image within bounds 
     (x_start, y_start) and (x_end, y_end). Position (0,0) is the top left.
     '''
+
     check_token(token)
-    global data
+
     # grabbing file type by spliting and checking if it is valid
-    file_type = img_url.rsplit('.', 1)[1].lower()
+    try:
+        file_type = img_url.rsplit('.', 1)[1].lower()
+    except:
+        raise InputError("Wrong file type, must be .jpg or .jpeg")
+
     if not file_type in ['jpg', 'jpeg']:
         raise InputError("Wrong file type, must be .jpg or .jpeg")
 
@@ -158,15 +164,19 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
     image = Image.open(file_name)
 
     # cropping image and saving it back to file
-    cropped_image = image.crop(x_start, y_start, x_end, y_end)
+    try:
+        cropped_image = image.crop((x_start, y_start, x_end, y_end))
+    except:
+        raise InputError("Dimensions not within range")
+
     cropped_image.save(file_name) 
 
     # storing cropped image in global data variable as accesible url
     user = get_user_from_token(token)
+    print(f'THIS IS THE URL {Flask_request.url_root}images/{file_name}')
 
-    user['profile_img_url'] == f'/imgurl/{file_name}'
-
+    user['profile_img_url'] = f'{Flask_request.url_root}images/{file_name}'
+    print(F'THIS IS THE GLOBAL DATA{data}')
     return {}
-
 
   
