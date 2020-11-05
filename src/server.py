@@ -3,7 +3,7 @@ Importing required modules and functions to run the server
 '''
 import sys
 from json import dumps
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from error import InputError, AccessError
 from channels import channels_list, channels_listall, channels_create
@@ -250,6 +250,9 @@ def http_user_profile_sethandle():
     data = request.get_json()
     return jsonify(user_profile_sethandle(data['token'], data['handle_str']))
 
+@APP.route("/images/<filename>", methods=["GET"])
+def send_js(filename):
+	return send_from_directory('../', filename)
 
 @APP.route('/user/profile/uploadphoto', methods=['POST'])
 def http_user_profile_uploadphoto():
