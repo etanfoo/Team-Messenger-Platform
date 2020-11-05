@@ -117,3 +117,11 @@ OTHER TEST
 
 - user calling function must have a valid token
 - seach query must be filled and cannot be None or NULL
+
+---
+
+USER TEST
+
+---
+# user_profile_uploadphoto
+- a user will have no default picture and will just be an empty string ''
