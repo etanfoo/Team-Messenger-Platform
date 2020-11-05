@@ -43,6 +43,10 @@ def echo():
     return dumps({'data': data})
 
 
+@APP.route("/images/<filename>", methods=["GET"])
+def send_js(filename):
+	return send_from_directory('../', filename)
+    
 ###################
 # channels
 ###################
@@ -250,9 +254,9 @@ def http_user_profile_sethandle():
     data = request.get_json()
     return jsonify(user_profile_sethandle(data['token'], data['handle_str']))
 
-@APP.route("/images/<filename>", methods=["GET"])
-def send_js(filename):
-	return send_from_directory('../', filename)
+# @APP.route("/images/<filename>", methods=["GET"])
+# def send_js(filename):
+# 	return send_from_directory('../', filename)
 
 @APP.route('/user/profile/uploadphoto', methods=['POST'])
 def http_user_profile_uploadphoto():
