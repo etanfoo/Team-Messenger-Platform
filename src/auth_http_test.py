@@ -7,7 +7,7 @@ import signal
 from time import sleep
 import pytest
 import requests
-from utils import register_user_auth, login_user, user_details
+from utils import register_user_auth, login_user, user_details, passwordreset_request
 
 
 @pytest.fixture
@@ -423,4 +423,35 @@ def test_register_name_last_symbol(url):
 
     user["name_last"] = "K=night"
     payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
+def test_request_invalid_emails(url):
+    '''
+    The emails are invalid or not in the database
+    '''    
+    payload = passwordreset_request(url, "INVALID_EMAIL@gmail.com")
+    assert payload.status_code == 400
+
+    payload = passwordreset_request(url, "ThisIsNotAEmail")
+    assert payload.status_code == 400
+
+def test_request_integers()
+    '''
+    The email is invalid as it is integers
+    '''
+    payload = passwordreset_request(url, 2118)
+    assert payload.status_code == 400
+
+def test_request_empty()
+    '''
+    No email provided
+    '''
+    payload = passwordreset_request(url, "")
+    assert payload.status_code == 400
+
+def test_request_white_spaces()
+    '''
+    Email provided are white spaces
+    '''
+    payload = passwordreset_request(url, "      ")
     assert payload.status_code == 400

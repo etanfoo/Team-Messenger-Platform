@@ -4,9 +4,15 @@ AUTH
 import uuid
 from error import InputError
 from global_dic import data
-from utils import generate_token, check_token, remove_token
-from auth_helper import validate_email, validate_password, hash_password, validate_name, check_email, logout_state, change_handle
-
+from utils import generate_token, check_token, remove_token, generate_secret_code
+from auth_helper import (
+    validate_email, 
+    validate_password, 
+    hash_password, 
+    validate_name, 
+    check_email,  
+    change_handle
+)
 
 def auth_login(email, password):
     '''
@@ -52,7 +58,6 @@ def auth_logout(token):
 
     if not success:
         return {'is_success': False }
-    # logout_state(token)
     remove_token(token)
     return {
         'is_success': True,
@@ -86,9 +91,24 @@ def auth_register(email, password, name_first, name_last):
         "last_name": name_last,
         "state": "inactive",
         "password": password,
-        'handle': handle
+        'handle': handle,
+        "secret_code": 0
     })
     return {
         'u_id': user_id,
         'token': user_token,
     }
+
+def auth_passwordreset_request(email):
+    if check_email(email) == False:
+        raise InputError("Unknown or invalid email")
+    global data
+    # create the screte code 
+    code = generate_secret_code()
+    for user in data["users"]:
+        if email == user["email"]:
+            user["secret_code"] = code
+            return code
+
+    # send code to email????   
+

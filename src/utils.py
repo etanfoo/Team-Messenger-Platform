@@ -4,6 +4,8 @@ from appsecret import JWT_SECRET
 from error import AccessError
 from global_dic import data
 import requests
+import string
+import random
 
 INVALID_TOKEN = -1000
 
@@ -156,6 +158,13 @@ def edit_message(url, token, message_id, message):
         "message": message
     }
     return requests.put(f"{url}/message/edit", json = message)
+
+# Generate a code consisting of a mitxture upper/lower/integers
+def generate_secret_code(size=12, chars = string.ascii_uppercase + string.ascii_lowercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
+def passwordreset_request(url, email):
+    requests.post(f"{url}auth/passwordreset/request", json = email)
 
 
 ###################

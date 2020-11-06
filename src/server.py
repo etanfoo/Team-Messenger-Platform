@@ -5,10 +5,11 @@ import sys
 from json import dumps
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask_mail import Mail, Message
 from error import InputError, AccessError
 from channels import channels_list, channels_listall, channels_create
 from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
-from auth import auth_login, auth_logout, auth_register
+from auth import auth_login, auth_logout, auth_register, auth_passwordreset_request
 from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle
 from other import users_all, admin_userpermission_change, search
 from message import message_send, message_remove, message_edit
@@ -29,6 +30,7 @@ def defaultHandler(err):
 
 APP = Flask(__name__)
 CORS(APP)
+mail = Mail(APP)
 
 APP.config['TRAP_HTTP_EXCEPTIONS'] = True
 APP.register_error_handler(Exception, defaultHandler)
@@ -204,6 +206,18 @@ def http_auth_register():
         auth_register(data['email'], data['password'], data['name_first'],
                       data['name_last']))
 
+@APP.route("/auth/passwordreset/request", methods=['POST'])
+def http_auth_passwordreset_request():
+    data = request.get_json()
+    code = auth_passwordreset_request(data["email"])
+    msg = Message(
+        code,
+        sender = "thu15grapegroup5@gmail.com",
+        recipients = ["terence.j.huang@student.unsw.edu.au"]
+    )
+    mail.send(msg)
+    return jsonify({})
+
 
 ####################
 # User functions
@@ -326,9 +340,8 @@ def http_clear():
     ''' 
     Resets the internal data of the application to it's initial state
     '''
-
     return jsonify(clear())
 
 
 if __name__ == "__main__":
-    APP.run(port=0)  # Do not edit this port
+    APP.run(port=0, debug=1)  # Do not edit this port

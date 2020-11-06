@@ -532,3 +532,24 @@ def test_register_name_last_50():
             "ThisisaverylonglastnameThisisaverylonglastnameThisisaverylonglastname"
         )
 
+def test_request_invalid_emails()
+    clear()
+    with pytest.raises(InputError):
+        auth_passwordreset_request("INVALID_EMAIL@gmail.com")
+    with pytest.raises(InputError):
+        auth_passwordreset_request("ThisIsNotAEmail")    
+
+def test_request_integers()
+    clear()
+    with pytest.raises(InputError):
+        auth_passwordreset_request(2118)
+
+def test_request_empty()
+    clear()
+    with pytest.raises(InputError):
+        auth_passwordreset_request("")
+
+def test_request_white_spaces()
+    clear()
+    with pytest.raises(InputError):
+        auth_passwordreset_request("     ")
