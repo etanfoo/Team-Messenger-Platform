@@ -132,11 +132,12 @@ def message_react(token, message_id, react_id):
     '''
     check_token(token)
     u_id = decode_token(token)
+    channel_id = get_channel(message_id)
     message = get_message(message_id)
+    if not check_member_channel(channel_id['channel_id'], u_id):
+        raise AccessError(description='User is not in channel')
     if react_id not in VALID_REACTS:
         raise InputError(description='Invalid react id')
-    # if not check_member_channel(message_id, u_id):
-    #     raise InputError(description='User is not in channel')
     for react in message['reacts']:
         if react['react_id'] == react_id:
             if u_id in react['u_ids']:
@@ -157,11 +158,11 @@ def message_unreact(token, message_id, react_id):
     check_token(token)
     u_id = decode_token(token)
     message = get_message(message_id)
-
+    channel_id = get_channel(message_id)
     if react_id not in VALID_REACTS:
         raise InputError(description='Invalid react id')
-    # if not check_member_channel(message_id, u_id):
-    #     raise InputError(description='User is not in channel')
+    if not check_member_channel(channel_id['channel_id'], u_id):
+        raise AccessError(description='User is not in channel')
     for react in message['reacts']:
         if react['react_id'] == react_id:
             if u_id in react['u_ids']:
@@ -261,6 +262,6 @@ def sendlater_end(channel_id, message):
     add a messsage to a channels list of message after a delay.
     '''
     global data
-    for channel in data['channels']:
-        if channel['channel_id'] == channel_id:
-            channel['channel_id'].insert(0, message)
+    for channel in data["channels"]:
+        if channel["channel_id"] == channel_id:
+            channel["messages"].append(message)
