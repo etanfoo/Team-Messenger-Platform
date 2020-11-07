@@ -2,9 +2,11 @@
 AUTH_TEST
 '''
 import pytest
+from global_dic import data
 from error import InputError, AccessError
-from auth import auth_register, auth_login, auth_logout
+from auth import auth_register, auth_login, auth_logout, auth_passwordreset_request, auth_passwordreset_reset
 from other import clear
+
 
 ########################
 ######Test Login#######
@@ -532,24 +534,43 @@ def test_register_name_last_50():
             "ThisisaverylonglastnameThisisaverylonglastnameThisisaverylonglastname"
         )
 
-def test_request_invalid_emails()
+def test_request_invalid_emails():
     clear()
     with pytest.raises(InputError):
         auth_passwordreset_request("INVALID_EMAIL@gmail.com")
     with pytest.raises(InputError):
         auth_passwordreset_request("ThisIsNotAEmail")    
 
-def test_request_integers()
+def test_request_integers():
     clear()
     with pytest.raises(InputError):
         auth_passwordreset_request(2118)
 
-def test_request_empty()
+def test_request_empty():
     clear()
     with pytest.raises(InputError):
         auth_passwordreset_request("")
 
-def test_request_white_spaces()
+def test_request_white_spaces():
     clear()
     with pytest.raises(InputError):
         auth_passwordreset_request("     ")
+
+# test cases for auth_passwordreset_reset
+
+# test function with invalid reset_code
+def test_reset_invalid_reset_code():
+    clear()    
+    # must register user into 'data' in global_dic.py
+    auth_register('smiles@gmail.com', 'ILoveCars', 'Head', 'Huncho')
+    # submit request for reset
+    auth_passwordreset_request('smiles@gmail.com')
+    with pytest.raises(InputError):
+        auth_passwordreset_reset("Invalid_Reset_Code", "ILoveCars")
+
+def test_reset_invalid_password_long():
+    clear()    
+    auth_register('smiles@gmail.com', 'ILoveCars', 'Head', 'Huncho')
+    auth_passwordreset_request('smiles@gmail.com')
+    with pytest.raises(InputError):
+        auth_passwordreset_reset("Invalid_Reset_Code", "MeLove")

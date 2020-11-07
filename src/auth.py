@@ -131,4 +131,4 @@ def auth_passwordreset_reset(reset_code, new_password):
     validate_password(new_password)
 
     # by this point all input error has passed and time to set the password for the user
-    user['password'] == new_password
+    user['password'] = new_password
