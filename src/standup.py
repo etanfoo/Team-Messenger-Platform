@@ -112,10 +112,10 @@ def standup_send(token, channel_id, message):
     if check_standup['is_active'] == False:
         raise InputError("Input error as standup is not active")
 
+    #Increment the message counter by 1
+    data["message_count"] += 1
+
     # add messages to standup
-
-    # standup['channel_id']['message'].append(f'{handle}: {message}')
-
     for channel in data["channels"]:
         if channel["channel_id"] == channel_id:
             for standups in channel["standup"]:

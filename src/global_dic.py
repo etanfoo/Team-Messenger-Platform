@@ -89,6 +89,7 @@ data = {
 #                        1582426789,
 #                       "messages": [
 #                           {
+#                               !!!!!!!!!!!!!!!!!! RETURN A STRING !!!!!!!!!!!!!!!!!!
 #                               "message_id": 1,
 #                               "message": "Hello world",
 #                               "handle_str": "hauntering_j",

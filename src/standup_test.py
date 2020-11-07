@@ -10,7 +10,7 @@ from auth import auth_login, auth_register
 from channel import channel_invite, channel_messages
 from channels import channels_create
 from message import message_send
-
+ 
 '''
 standup_start tests
 '''
@@ -64,6 +64,7 @@ def test_start_expected():
     assert type_check == True
 
     assert 'time_finish' in standup_result.keys()
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! POTETNIAL ERROR HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     key_check = isinstance(standup_result, int)
     assert key_check == True
 
