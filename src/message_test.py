@@ -409,7 +409,7 @@ def test_message_unreact_no_reacts():
 
 
 def test_message_unreact_user_not_react():
-    '''Test that if a user try to unreact a messaage which is not his/her reaction'''
+    '''Test that if a user try to unreact a message which is not his/her reaction'''
     clear()
     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
