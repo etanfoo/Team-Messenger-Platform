@@ -5,6 +5,15 @@ from error import AccessError
 from global_dic import data
 import requests
 
+INVALID_TOKEN = -1000
+
+def get_current_timestamp(delay=0):
+    '''
+    Return current time + delay as a unix timestamp
+    '''
+    current_time = datetime.now()
+    return int(current_time.timestamp() + delay)
+
 
 def generate_token(user_id):
     '''
@@ -39,17 +48,24 @@ def check_token(token):
         if (data["users"][i]["token"] == token):
             return True
     #Token does not exist
-    raise AccessError(description="Token does not exist")
+    raise AccessError("Token does not exist")
+
+def check_user_in_channel(u_id):
+    for user in data['users']:
+        if user['u_id'] == u_id:
+            return True
+    return False
 
 
 def remove_token(token):
+    global data
     for i in range(len(data["users"])):
         #Find token
         if (data["users"][i]["token"] == token):
-            del data["users"][i]["token"]
+            data["users"][i]["token"] = INVALID_TOKEN
             return True
     #Token does not exist
-    raise AccessError(description="Token does not exist")
+    raise AccessError("Token does not exist")
 
 
 def register_user(url, user):

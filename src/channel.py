@@ -4,27 +4,34 @@ Channel
 from channel_helper import check_channel, check_uid, check_member_channel, channel_details_helper, check_start, delete_member, delete_owner, add_user, check_owner, delete_user, add_owner
 from error import InputError, AccessError
 from global_dic import data
-from utils import decode_token, check_token
+from utils import decode_token, check_token, check_user_in_channel
 
 
 def channel_invite(token, channel_id, u_id):
     '''
     Invite user to channel
     '''
+
+    check_token(token)
+
+    # print(f"{u_id} + Test")
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
-        raise InputError
+        raise InputError("Input error 1")
 
     # looping to see if u_id is a valid user, if not, input error
     if check_uid(u_id) is False:
-        raise InputError
+        # print(f"{u_id} + Test")
+        # print(data)
+        raise InputError("Input error 2")
 
     matching_u_id = decode_token(token)
 
     # if user is not a member of channel with channel_id, access error
     # channel is already selected on channel with channel_id (from first for loop)
     if check_member_channel(channel_id, matching_u_id) is False:
-        raise AccessError
+        raise AccessError(
+            "You must be a member of the channel to view its details")
 
     # no errors raised, add the user to channels all members
     add_user(channel_id, u_id)
@@ -34,15 +41,18 @@ def channel_details(token, channel_id):
     '''
     Grab channel details
     '''
+    check_token(token)
+
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
-        raise InputError
+        raise InputError("Input error channel_id not listed")
     matching_u_id = decode_token(token)
 
     # if user is not a member of channel with channel_id, access error
     # channel is already selected on channel with channel_id (from first for loop)
     if check_member_channel(channel_id, matching_u_id) is False:
-        raise AccessError
+        raise AccessError(
+            "You must be a member of the channel to view its details")
 
     return channel_details_helper(channel_id)
 
@@ -69,6 +79,8 @@ def channel_messages(token, channel_id, start):
     '''
     Grab channel messages
     '''
+    check_token(token)
+
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
         raise InputError
@@ -117,6 +129,8 @@ def channel_leave(token, channel_id):
     '''
     Leave channel
     '''
+    check_token(token)
+
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
         raise InputError
@@ -145,7 +159,7 @@ def channel_join(token, channel_id):
     '''
     # looping to see if channel_id is listed, if not, InputError
     if check_channel(channel_id) is False:
-        raise InputError
+        raise InputError("Channel_id is no valid")
 
     check_token(token)
     # # if channel is private -> AccessError
@@ -171,6 +185,8 @@ def channel_addowner(token, channel_id, u_id):
     '''
     Add owner to channel
     '''
+    check_token(token)
+
     # looping to see if channel_id is listed, if not, InputError
     matching_u_id = decode_token(token)
     if check_channel(channel_id) is False:
@@ -190,6 +206,8 @@ def channel_removeowner(token, channel_id, u_id):
     '''
     Remove owner from channel
     '''
+    check_token(token)
+
     matching_u_id = decode_token(token)
     if check_channel(channel_id) is False:
         raise InputError

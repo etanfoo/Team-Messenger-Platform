@@ -3,6 +3,7 @@ from auth import auth_login, auth_register, auth_register
 from error import InputError
 import uuid
 import re
+from utils import check_token
 
 def valid_u_id_check(u_id):
     '''
@@ -25,6 +26,7 @@ def user_profile(token, u_id):
     '''
     
     valid_u_id_check(u_id)
+    check_token(token)
 
     # looping until we match the u_id in the global data structure
     for user in data['users']:
@@ -45,6 +47,8 @@ def user_profile_setname(token, name_first, name_last):
     '''
     Update the authorised user's first and last name
     '''
+    check_token(token)
+
     # input error checking
     if len(name_first) < 1 or len(name_first) > 50:
         raise InputError
@@ -58,6 +62,19 @@ def user_profile_setname(token, name_first, name_last):
         if token == user['token']:
             user['first_name'] = name_first
             user['last_name'] = name_last
+            break
+
+    # changing user name in the channels they are part of
+    for channel in data['channels']:
+        for member in channel['all_members']:
+            if user['u_id'] == member['u_id']:
+                member['name_first'] = name_first
+                member['name_last'] = name_last
+        for member in channel['owner_members']:
+            if user['u_id'] == member['u_id']:
+                member['name_first'] = name_first
+                member['name_last'] = name_last
+    
 
     return {
     }

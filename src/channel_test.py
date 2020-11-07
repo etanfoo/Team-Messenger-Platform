@@ -515,7 +515,7 @@ def test_channel_removeowner_input_error():
     clear()
 
 
-def test_channel_removeowner_acces_error():
+def test_channel_removeowner_access_error():
     clear()
 
     authorised_user = register_and_login()

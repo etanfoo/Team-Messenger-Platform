@@ -102,7 +102,7 @@ def http_channel_invite():
     '''
     data = request.get_json()
     return jsonify(
-        channel_invite(data['token'], int(data['channel_id']), data['u_id']))
+        channel_invite(data['token'], int(data['channel_id']), int(data['u_id'])))
 
 
 @APP.route("/channel/details", methods=["GET"])
@@ -155,7 +155,7 @@ def http_channel_addowner():
     '''
     data = request.get_json()
     return jsonify(
-        channel_addowner(data['token'], int(data['channel_id']), data['u_id']))
+        channel_addowner(data['token'], int(data['channel_id']), int(data['u_id'])))
 
 
 @APP.route("/channel/removeowner", methods=['POST'])
@@ -167,7 +167,7 @@ def http_channel_removeowner():
     data = request.get_json()
     return jsonify(
         channel_removeowner(data['token'], int(data['channel_id']),
-                            data['u_id']))
+                            int(data['u_id'])))
 
 
 ###################
@@ -216,7 +216,7 @@ def http_user_profile():
     '''
 
     data = request.args
-    return jsonify(user_profile(data['token'], data['u_id']))
+    return jsonify(user_profile(data['token'], int(data['u_id'])))
 
 
 @APP.route('/user/profile/setname', methods=['PUT'])
@@ -272,7 +272,7 @@ def http_admin_userpermission_change():
 
     data = request.get_json()
     return jsonify(
-        admin_userpermission_change(data['token'], data['u_id'],
+        admin_userpermission_change(data['token'], int(data['u_id']),
                                     data['permission_id']))
 
 

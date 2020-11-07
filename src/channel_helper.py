@@ -36,7 +36,12 @@ def channel_details_helper(channel_id):
     '''
     for channel in data['channels']:
         if channel['channel_id'] == channel_id:
-            return channel
+            return { 
+                "name": channel["name"],
+                "owner_members": channel["owner_members"], 
+                "all_members": channel["all_members"]
+                }
+
 
 
 def check_uid(u_id):
@@ -98,9 +103,16 @@ def add_user(channel_id, u_id):
     '''
     Add user to the channel
     '''
+    global data
+    for user in data["users"]:
+        if u_id == user["u_id"]:
+            new_user = {
+                'u_id': user["u_id"],
+                "name_first": user["first_name"], 
+                "name_last": user["last_name"]
+            }
     for channel in data['channels']:
         if channel['channel_id'] == channel_id:
-            new_user = {'u_id': u_id}
             channel['all_members'].append(new_user)
 
 

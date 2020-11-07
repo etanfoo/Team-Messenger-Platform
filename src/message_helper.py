@@ -44,6 +44,5 @@ def valid_message(message):
     """
     if (len(message) > 1000):
         raise InputError(
-            description=
             'Your message should be less than 1000 characters and at least 1 character'
         )

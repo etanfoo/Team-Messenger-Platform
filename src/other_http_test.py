@@ -152,7 +152,7 @@ def test_admin_permission_change_invalid_other_deomotion(url):
     assert data.status_code == 400
 
 
-def test_admin_permission_change_empty_user_id(url):
+def test_admin_permission_change_invalid_user_id(url):
     '''
     Error when u_id is empty
     '''
@@ -169,7 +169,7 @@ def test_admin_permission_change_empty_user_id(url):
     data = requests.post(f"{url}/admin/userpermission/change",
                            json={
                                "token": user_1['token'],
-                               "u_id": '',
+                               "u_id": '999999',
                                "permission_id": 2
                            })
     assert data.status_code == 400
