@@ -347,7 +347,7 @@ def test_message_react_user_not_in_channel():
 
 #unreact
 def test_message_unreact_norm():
-    '''Test that a legal user unreact a piece of message'''
+    '''Test that a legal user unreact on a piece of message'''
     clear()
     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
