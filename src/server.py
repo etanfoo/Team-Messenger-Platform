@@ -5,7 +5,6 @@ import sys
 from json import dumps
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from flask_mail import Mail, Message
 from error import InputError, AccessError
 from channels import channels_list, channels_listall, channels_create
 from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
@@ -27,10 +26,11 @@ def defaultHandler(err):
     response.content_type = 'application/json'
     return response
 
+# mail = Mail()
 
 APP = Flask(__name__)
 CORS(APP)
-mail = Mail(APP)
+# mail.init_app(APP)
 
 APP.config['TRAP_HTTP_EXCEPTIONS'] = True
 APP.register_error_handler(Exception, defaultHandler)
@@ -209,13 +209,8 @@ def http_auth_register():
 @APP.route("/auth/passwordreset/request", methods=['POST'])
 def http_auth_passwordreset_request():
     data = request.get_json()
-    code = auth_passwordreset_request(data["email"])
-    msg = Message(
-        code,
-        sender = "thu15grapegroup5@gmail.com",
-        recipients = ["terence.j.huang@student.unsw.edu.au"]
-    )
-    mail.send(msg)
+    auth_passwordreset_request(data["email"])
+    
     return jsonify({})
 
 
@@ -344,4 +339,4 @@ def http_clear():
 
 
 if __name__ == "__main__":
-    APP.run(port=0, debug=1)  # Do not edit this port
+    APP.run(port=0)  # Do not edit this port

@@ -4,7 +4,7 @@ AUTH
 import uuid
 from error import InputError
 from global_dic import data
-from utils import generate_token, check_token, remove_token, generate_secret_code
+from utils import generate_token, check_token, remove_token, generate_secret_code, send_email
 from auth_helper import (
     validate_email, 
     validate_password, 
@@ -106,9 +106,10 @@ def auth_passwordreset_request(email):
     # create the screte code 
     code = generate_secret_code()
     for user in data["users"]:
+        # Adds the secret code to corresponding user
         if email == user["email"]:
             user["secret_code"] = code
-            return code
-
-    # send code to email????   
+            break
+    # Sends the email 
+    send_email(email, code)
 
