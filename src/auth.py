@@ -113,3 +113,22 @@ def auth_passwordreset_request(email):
     # Sends the email 
     send_email(email, code)
 
+def auth_passwordreset_reset(reset_code, new_password):
+    # input error
+    # reset_code is not a valid reset code 
+    valid_code = False
+    # loop through data users and find a user to match reset code
+    for user in data['users']:
+        if user['secret_code'] == reset_code:
+            valid_code = True
+            break
+    # checks if the code is valid
+    if valid_code == False:
+        raise InputError("Invalid Reset Code")
+
+    # input error
+    # Password entered is not a valid password
+    validate_password(new_password)
+
+    # by this point all input error has passed and time to set the password for the user
+    user['password'] == new_password
