@@ -165,7 +165,7 @@ def generate_secret_code(size=12, chars = string.ascii_uppercase + string.ascii_
     return ''.join(random.choice(chars) for _ in range(size))
 
 def passwordreset_request(url, email):
-    requests.post(f"{url}/auth/passwordreset/request", json = email)
+    return requests.post(f"{url}/auth/passwordreset/request", json = email)
 
 def send_email(email, code):
     with smtplib.SMTP('smtp.gmail.com', 587) as smtp:

@@ -100,8 +100,12 @@ def auth_register(email, password, name_first, name_last):
     }
 
 def auth_passwordreset_request(email):
+    print("ejiofwejofi")
+    # validate_email(email)
     if check_email(email) == False:
+        print("YOOOOOOOOOO")
         raise InputError("Unknown or invalid email")
+    print("YEYEYEUY")
     global data
     # create the screte code 
     code = generate_secret_code()

@@ -3,7 +3,7 @@ AUTH_TEST
 '''
 import pytest
 from error import InputError, AccessError
-from auth import auth_register, auth_login, auth_logout
+from auth import auth_register, auth_login, auth_logout, auth_passwordreset_request
 from other import clear
 
 ########################
@@ -532,24 +532,24 @@ def test_register_name_last_50():
             "ThisisaverylonglastnameThisisaverylonglastnameThisisaverylonglastname"
         )
 
-def test_request_invalid_emails()
+def test_request_invalid_emails():
     clear()
     with pytest.raises(InputError):
         auth_passwordreset_request("INVALID_EMAIL@gmail.com")
     with pytest.raises(InputError):
         auth_passwordreset_request("ThisIsNotAEmail")    
 
-def test_request_integers()
+def test_request_integers():
     clear()
     with pytest.raises(InputError):
         auth_passwordreset_request(2118)
 
-def test_request_empty()
+def test_request_empty():
     clear()
     with pytest.raises(InputError):
         auth_passwordreset_request("")
 
-def test_request_white_spaces()
+def test_request_white_spaces():
     clear()
     with pytest.raises(InputError):
         auth_passwordreset_request("     ")
