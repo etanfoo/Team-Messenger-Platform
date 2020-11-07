@@ -8,7 +8,8 @@ from time import sleep
 import pytest
 import requests
 from utils import register_user_auth, login_user, user_details, passwordreset_request
-
+from utils import (register_user, login_user, create_channel, authorised_user,
+                   second_user, unauthorised_user, prepare_user)
 
 @pytest.fixture
 def url():
@@ -435,23 +436,49 @@ def test_request_invalid_emails(url):
     payload = passwordreset_request(url, "ThisIsNotAEmail")
     assert payload.status_code == 400
 
-def test_request_integers()
+def test_request_integers(url):
     '''
     The email is invalid as it is integers
     '''
     payload = passwordreset_request(url, 2118)
     assert payload.status_code == 400
 
-def test_request_empty()
+def test_request_empty(url):
     '''
     No email provided
     '''
     payload = passwordreset_request(url, "")
     assert payload.status_code == 400
 
-def test_request_white_spaces()
+def test_request_white_spaces(url):
     '''
     Email provided are white spaces
     '''
     payload = passwordreset_request(url, "      ")
+    assert payload.status_code == 400
+
+def test_reset_invalid_code(url):
+    '''
+    invalid token passed
+    '''
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+    # Create user_1 and their channel   
+    user_1 = prepare_user(url, authorised_user)
+    # request for password change    
+    requests.post(f"{url}/auth/passwordreset/request", json = {'email' : authorised_user['email']})
+    # test whether the reset code is wrong
+    payload = requests.post(f"{url}/auth/passwordreset/reset", json = {'reset_code' : 'ILoveTrains', 'new_password' : authorised_user['password']})
+    assert payload.status_code == 400
+
+def test_reset_invalid_password(url):
+    '''
+    invalid password
+    '''
+    # Reset/clear data
+    requests.delete(f"{url}/clear")
+    # Create user_1 and their channel   
+    user_1 = prepare_user(url, authorised_user)
+    # tests whether the reset password is invalid
+    payload = requests.post(f"{url}/auth/passwordreset/reset", json = {'reset_code' : 0, 'new_password' : 'Cow'})
     assert payload.status_code == 400

@@ -571,6 +571,5 @@ def test_reset_invalid_reset_code():
 def test_reset_invalid_password_long():
     clear()    
     auth_register('smiles@gmail.com', 'ILoveCars', 'Head', 'Huncho')
-    auth_passwordreset_request('smiles@gmail.com')
     with pytest.raises(InputError):
-        auth_passwordreset_reset("Invalid_Reset_Code", "MeLove")
+        auth_passwordreset_reset(0, "Cow")
