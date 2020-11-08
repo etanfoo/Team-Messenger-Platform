@@ -61,24 +61,11 @@ def check_email(email):
             return True
     return False
 
-
-def logout_state(token):
-    '''
-    Change state when logging in and out
-    '''
-    user_id = decode_token(token)
-    for i in range(len(data["users"])):
-        if data["users"][i]["u_id"] == user_id:
-            if data["users"][i]['state'] != "active":
-                raise AccessError("AccessError")
-            data["users"][i]['state'] = "inactive"
-
 def check_unique_handle(handle):
     # checking if handle is already in use
     for user in data['users']:
         if handle == user['handle']:
             return False
-
     return True
 
 def change_handle(handle):
@@ -90,6 +77,5 @@ def change_handle(handle):
 
     while check_unique_handle(handle) is False or len(handle) < 3:
         handle = ''.join(random.choice(letters) for i in range(20))
-
     return handle
         
