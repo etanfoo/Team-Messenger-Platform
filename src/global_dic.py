@@ -2,6 +2,7 @@
 data = {
     "users": [],
     "channels": [],
+    "standup": [],
     "message_count": 0,
 }
 
@@ -103,5 +104,5 @@ data = {
 #     ],
 #     "message_count":
 #     0,
-#     
+#
 # }

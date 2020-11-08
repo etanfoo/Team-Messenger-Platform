@@ -10,23 +10,24 @@ from auth import auth_login, auth_register
 from channel import channel_invite, channel_messages
 from channels import channels_create
 from message import message_send
-
 '''
 standup_start tests
 '''
+
+
 def test_start_invalid_channel():
     '''
-    inputerror if standup function recieves an invalid channel_id (-1)
+    inputerror if standup function receives an invalid channel_id (-1)
     '''
     clear()
 
     # creating user
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
-    auth_login("validEmail@gmail.com", "valid_password")
-
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
     # checking for inputerror
     with pytest.raises(InputError):
         standup_start(authorised_user['token'], -1, 10)
+
 
 def test_start_invalid_inactive():
     '''
@@ -35,37 +36,37 @@ def test_start_invalid_inactive():
     clear()
 
     # creating user and channel
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
-    auth_login("validEmail@gmail.com", "valid_password")
-
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
     # activate standup and raise error when called again
-    standup_start(authorised_user['token'], channel['channel_id'], 50)
+    standup_start(authorised_user['token'], channel['channel_id'], 5000)
 
     with pytest.raises(InputError):
         standup_start(authorised_user['token'], channel['channel_id'], 50)
 
+
 def test_start_expected():
     '''
-    test if standup start returns an exepected output
+    test if standup start returns an expected output
     '''
     clear()
-
     # creating user and channel
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
 
     channel = channels_create(authorised_user['token'], "new_channel", True)
-
-    standup_result = standup_start(authorised_user['token'], channel['channel_id'], 50)
-
+    standup_result = standup_start(authorised_user['token'],
+                                   channel['channel_id'], 50)
     type_check = isinstance(standup_result, dict)
     assert type_check == True
 
     assert 'time_finish' in standup_result.keys()
-    key_check = isinstance(standup_result, int)
+    key_check = isinstance(standup_result['time_finish'], int)
     assert key_check == True
+
 
 def test_standup_empty():
     '''
@@ -75,7 +76,8 @@ def test_standup_empty():
     clear()
 
     # creating user and channel
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
 
     channel = channels_create(authorised_user['token'], "new_channel", True)
@@ -84,8 +86,10 @@ def test_standup_empty():
 
     sleep(2)
 
-    check_messages = channel_messages(authorised_user['token'], channel['channel_id'], 0)
+    check_messages = channel_messages(authorised_user['token'],
+                                      channel['channel_id'], 0)
     assert len(check_messages['messages']) == 0
+
 
 def test_standup_negative():
     '''
@@ -94,20 +98,22 @@ def test_standup_negative():
     clear()
 
     # creating user and channel
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
 
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
-    standup_start(authorised_user['token'], channel['channel_id'], 1)
-    
     # error as standup length is too short
     with pytest.raises(InputError):
         standup_start(authorised_user['token'], channel['channel_id'], -1)
 
-'''
-standup_active
-'''
+
+# '''
+# standup_active
+# '''
+
+
 def test_active_invalid_channel():
     '''
     inputerror if standup function recieves an invalid channel_id (-1)
@@ -115,12 +121,14 @@ def test_active_invalid_channel():
     clear()
 
     # creating user
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
 
     # checking for inputerror
     with pytest.raises(InputError):
         standup_active(authorised_user['token'], -1)
+
 
 def test_active_expected():
     '''
@@ -129,12 +137,14 @@ def test_active_expected():
     clear()
 
     # creating user and channel
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
 
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
-    standup_result = standup_active(authorised_user['token'], channel['channel_id'])
+    standup_result = standup_active(authorised_user['token'],
+                                    channel['channel_id'])
 
     type_check = isinstance(standup_result, dict)
     assert type_check == True
@@ -149,9 +159,11 @@ def test_active_expected():
     assert time_finish_check == True
 
 
-'''
-standup_send
-'''
+# '''
+# standup_send
+# '''
+
+
 def test_send_invalid_channel():
     '''
     inputerror if standup function recieves an invalid channel_id (-1)
@@ -159,12 +171,14 @@ def test_send_invalid_channel():
     clear()
 
     # creating user
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
 
     # checking for inputerror
     with pytest.raises(InputError):
         standup_send(authorised_user['token'], -1, "inputerror")
+
 
 def test_send_invalid_message():
     '''
@@ -172,13 +186,16 @@ def test_send_invalid_message():
     '''
     clear()
     # creating user and channel
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
 
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
     with pytest.raises(InputError):
-        standup_send(authorised_user['token'], channel['channel_id'], "x" * 1001)
+        standup_send(authorised_user['token'], channel['channel_id'],
+                     "x" * 1001)
+
 
 def test_send_invalid_inactive():
     '''
@@ -187,18 +204,23 @@ def test_send_invalid_inactive():
     clear()
 
     # creating user and channel
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
 
     channel = channels_create(authorised_user['token'], "new_channel", True)
-
+    standup_start(authorised_user['token'], channel['channel_id'], 1)
+    sleep(5)
     # check standup is not active
-    active_test = standup_active(authorised_user['token'], channel['channel_id'])
-    assert active_test['is_active'] == 'is_active' 
+    active_test = standup_active(authorised_user['token'],
+                                 channel['channel_id'])
+    assert active_test['is_active'] == False
 
     # error as standup is inactive
     with pytest.raises(InputError):
-        standup_send(authorised_user['token'], channel['channel_id'], 'invalid message')
+        standup_send(authorised_user['token'], channel['channel_id'],
+                     'invalid message')
+
 
 def test_send_invalid_user():
     '''
@@ -207,13 +229,15 @@ def test_send_invalid_user():
     clear()
 
     # creating user and channel
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
 
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
     with pytest.raises(AccessError):
         standup_send(1, channel['channel_id'], "invalid user")
+
 
 def test_send_expected():
     '''
@@ -222,15 +246,18 @@ def test_send_expected():
     clear()
 
     # creating user and channel
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
 
     channel = channels_create(authorised_user['token'], "new_channel", True)
-
-    standup_result = standup_send(authorised_user['token'], channel['channel_id'], "hello!!")
+    standup_start(authorised_user['token'], channel['channel_id'], 50)
+    standup_result = standup_send(authorised_user['token'],
+                                  channel['channel_id'], "hello!!")
 
     type_check = isinstance(standup_result, dict)
     assert type_check == True
+
 
 def test_send_message_expected():
     '''
@@ -239,17 +266,20 @@ def test_send_message_expected():
     clear()
 
     # creating user and channel
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password", "Philgee", "Vlad")
+    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
+                                    "Philgee", "Vlad")
     auth_login("validEmail@gmail.com", "valid_password")
 
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
-    standup_start(authorised_user['token'], channel['channel_id'], 10)
+    standup_start(authorised_user['token'], channel['channel_id'], 1)
 
-    standup_send(authorised_user['token'], channel['channel_id'], "testing standup")
+    standup_send(authorised_user['token'], channel['channel_id'],
+                 "testing standup")
 
-    sleep(1.5)
+    sleep(5)
 
-    check_messages = channel_messages(authorised_user['token'], channel['channel_id'], 0)
+    check_messages = channel_messages(authorised_user['token'],
+                                      channel['channel_id'], 0)
 
     assert len(check_messages['messages']) == 1
