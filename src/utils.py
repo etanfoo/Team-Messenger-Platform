@@ -43,12 +43,14 @@ def check_token(token):
     :return: User id corresponding to the the valid token
     :rtype: int
     '''
-    for i in range(len(data["users"])):
-        #Find token
-        if (data["users"][i]["token"] == token):
+
+    for user in data["users"]:
+        if user["token"] == token:
             return True
     #Token does not exist
     raise AccessError("Token does not exist")
+
+        
 
 def check_user_in_channel(u_id):
     for user in data['users']:
@@ -157,6 +159,44 @@ def edit_message(url, token, message_id, message):
     }
     return requests.put(f"{url}/message/edit", json = message)
 
+def message_sendlater(url, token, channel_id, message, time_sent):
+    message = {
+        "token": token,
+        "channel_id": channel_id,
+        "message": message,
+        "time_sent": time_sent
+    }
+    return requests.post(f"{url}/message/sendlater", json = message)
+
+def message_react(url, token, message_id, react_id):
+    message = {
+        "token": token, 
+        "message_id": message_id,
+        "react_id": react_id
+    }
+    return requests.post(f"{url}/message/react", json = message)
+
+def message_unreact(url, token, message_id, react_id):
+    message = {
+        "token": token, 
+        "message_id": message_id,
+        "react_id": react_id
+    }
+    return requests.post(f"{url}/message/unreact", json = message)
+
+def pin_message(url, token, message_id):
+    message = {
+        "token": token, 
+        "message_id": message_id
+    }
+    return requests.put(f"{url}/message/pin", json = message)
+
+def unpin_message(url, token, message_id):
+    message = {
+        "token": token, 
+        "message_id": message_id
+    }
+    return requests.put(f"{url}/message/unpin", json = message)
 
 ###################
 # Global variables

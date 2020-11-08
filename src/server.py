@@ -11,7 +11,7 @@ from channel import channel_invite, channel_details, channel_messages, channel_l
 from auth import auth_login, auth_logout, auth_register
 from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle
 from other import users_all, admin_userpermission_change, search
-from message import message_send, message_remove, message_edit
+from message import message_send, message_remove, message_edit, message_sendlater,  message_react,  message_unreact, message_pin, message_unpin
 from other import clear
 
 
@@ -294,7 +294,6 @@ def http_message_send():
     ''' 
     Send a message from authorised_user to the channel specified by channel_id
     '''
-
     data = request.get_json()
     return jsonify(
         message_send(data['token'], int(data['channel_id']), data['message']))
@@ -305,28 +304,81 @@ def http_message_remove():
     ''' 
     Given a message_id for a message, this message is removed from the channel
     '''
-
     data = request.get_json()
     return jsonify(message_remove(data['token'], data['message_id']))
-
 
 @APP.route('/message/edit', methods=['PUT'])
 def http_message_edit():
     ''' 
-    Given a message, update it's text with new text. If the new message is an empty string, the message is deleted.
+    Given a message, update it's text with new text. If the 
+    new message is an empty string, the message is deleted.
     '''
-
     data = request.get_json()
     return jsonify(
         message_edit(data['token'], data['message_id'], data['message']))
 
+
+@APP.route('/message/sendlater', methods=['POST'])
+def http_message_sendlater():
+    '''
+    sends a message at a given time_sent, where time_sent is a unix timestamp
+    greater than the current time.
+    '''
+    data = request.get_json()
+    return jsonify(
+        message_sendlater(data['token'],int(data['channel_id']), data['message'], data['time_sent']))
+
+@APP.route('/message/react', methods=['POST'])
+def http_message_react():
+    '''
+    adds a reaction to a messages list of reactions
+    expects parameter types:
+        token: str
+        message_id: int
+        react_id: int
+    returns empty dictionary
+    '''
+    data = request.get_json()
+    return jsonify(
+        message_react(data['token'], data['message_id'], data['react_id']))
+
+@APP.route('/message/unreact', methods=['POST'])
+def http_message_unreact():
+    '''
+    removes a reaction from a messages list of reactions
+    expects parameter types:
+        token: str
+        message_id: int
+        react_id: int
+    returns empty dictionary
+    '''
+    data = request.get_json()
+    return jsonify(
+        message_unreact(data['token'], data['message_id'], data['react_id']))
+
+@APP.route('/message/pin', methods=['POST'])
+def http_message_pin():
+    '''
+    Pins a message in a channel
+    '''
+    data = request.get_json()
+    return jsonify(
+        message_pin(data['token'], data['message_id']))
+
+@APP.route('/message/unpin', methods=['POST'])
+def http_message_unpin():
+    '''
+    Unpins a message in a channel
+    '''
+    data = request.get_json()
+    return jsonify(
+        message_unpin(data['token'], data['message_id']))
 
 @APP.route('/clear', methods=['DELETE'])
 def http_clear():
     ''' 
     Resets the internal data of the application to it's initial state
     '''
-
     return jsonify(clear())
 
 
