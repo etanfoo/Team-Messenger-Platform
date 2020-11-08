@@ -8,7 +8,6 @@ from flask_cors import CORS
 from error import InputError, AccessError
 from channels import channels_list, channels_listall, channels_create
 from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
-<<<<<<< src/server.py
 from auth import auth_login, auth_logout, auth_register, auth_passwordreset_request, auth_passwordreset_reset
 from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle, user_profile_uploadphoto
 from other import users_all, admin_userpermission_change, search
