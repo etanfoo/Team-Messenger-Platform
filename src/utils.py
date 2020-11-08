@@ -189,14 +189,23 @@ def pin_message(url, token, message_id):
         "token": token, 
         "message_id": message_id
     }
-    return requests.put(f"{url}/message/pin", json = message)
+    return requests.post(f"{url}/message/pin", json = message)
 
 def unpin_message(url, token, message_id):
     message = {
         "token": token, 
         "message_id": message_id
     }
-    return requests.put(f"{url}/message/unpin", json = message)
+    return requests.post(f"{url}/message/unpin", json = message)
+
+def channel_message(url, token, channel_id, start):
+    message = {
+        "token": token, 
+        "channel_id": channel_id, 
+        "start": start
+    }
+    payload = requests.get(f"{url}/channel/messages", params = message)
+    return payload.json()
 
 ###################
 # Global variables
