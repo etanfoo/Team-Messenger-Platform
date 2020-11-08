@@ -32,7 +32,8 @@ def test_users_all_expected():
         "email": "validEmail@gmail.com",
         "name_first": 'Philgee',
         "name_last": "Vlad",
-        'handle_str' : 'philgeevlad'
+        'handle_str' : 'philgeevlad',
+        'profile_img_url': ''
     }]
 
 
@@ -61,19 +62,22 @@ def test_users_all_multiple():
         "email": "validEmail@gmail.com",
         "name_first": 'Chicken',
         "name_last": "Vlad",
-        'handle_str' : 'chickenvlad'
+        'handle_str' : 'chickenvlad',
+        'profile_img_url': ''
     }, {
         "u_id": authorised_user2["u_id"],
         "email": "validEmail2@gmail.com",
         "name_first": 'Philip',
         "name_last": "Denver",
-        'handle_str' : 'philipdenver'
+        'handle_str' : 'philipdenver',
+        'profile_img_url': ''
     }, {
         "u_id": authorised_user3["u_id"],
         "email": "validEmail3@gmail.com",
         "name_first": 'Zac',
         "name_last": "Philip",
-        'handle_str' : 'zacphilip'
+        'handle_str' : 'zacphilip',
+        'profile_img_url': ''
     }]
 
 

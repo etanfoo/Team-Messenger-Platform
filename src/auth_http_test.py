@@ -7,8 +7,19 @@ import signal
 from time import sleep
 import pytest
 import requests
-from utils import register_user_auth, login_user, user_details
-
+from utils import (
+    register_user, 
+    login_user, 
+    create_channel,
+    authorised_user,
+    second_user, 
+    unauthorised_user, 
+    prepare_user, 
+    passwordreset_request, 
+    test_email,
+    user_details,
+    register_user_auth
+)
 
 @pytest.fixture
 def url():
@@ -423,4 +434,62 @@ def test_register_name_last_symbol(url):
 
     user["name_last"] = "K=night"
     payload = register_user_auth(url, user)
+    assert payload.status_code == 400
+
+def test_request_invalid_emails(url):
+    '''
+    The emails are invalid or not in the database
+    '''    
+    test_email["email"] = "INVALID_EMAIL@gmail.com"
+    payload = passwordreset_request(url, test_email)
+    assert payload.status_code == 400
+ 
+    test_email["email"] = "ThisIsNotAEmail"
+    payload = passwordreset_request(url, test_email)
+    assert payload.status_code == 400
+
+def test_request_integers(url):
+    '''
+    The email is invalid as it is integers
+    '''
+    test_email["email"] = 2118
+    payload = passwordreset_request(url, test_email)
+    assert payload.status_code == 400
+
+def test_request_empty(url):
+    '''
+    No email provided
+    '''
+    test_email["email"] = ""
+    payload = passwordreset_request(url, test_email)
+    assert payload.status_code == 400
+
+def test_request_white_spaces(url):
+    '''
+    Email provided are white spaces
+    '''
+    test_email["email"] = "      "
+    payload = passwordreset_request(url, test_email)
+    assert payload.status_code == 400
+
+def test_reset_invalid_code(url):
+    '''
+    invalid token passed
+    '''
+    # Create user_1 and their channel   
+    prepare_user(url, authorised_user)
+    # request for password change    
+    requests.post(f"{url}/auth/passwordreset/request", json = {'email' : authorised_user['email']})
+    # test whether the reset code is wrong
+    payload = requests.post(f"{url}/auth/passwordreset/reset", json = {'reset_code' : 'ILoveTrains', 'new_password' : authorised_user['password']})
+    assert payload.status_code == 400
+
+def test_reset_invalid_password(url):
+    '''
+    invalid password
+    '''
+    # Create user_1 and their channel   
+    prepare_user(url, authorised_user)
+    # tests whether the reset password is invalid
+    payload = requests.post(f"{url}/auth/passwordreset/reset", json = {'reset_code' : 0, 'new_password' : 'Cow'})
     assert payload.status_code == 400

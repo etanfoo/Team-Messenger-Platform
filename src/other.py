@@ -34,7 +34,8 @@ def users_all(token):
             "email": user["email"],
             "name_first": user["first_name"],
             "name_last": user["last_name"],
-            'handle_str': user['handle']
+            'handle_str': user['handle'],
+            'profile_img_url': user['profile_img_url']
         })
 
     # Return list as dictionary
