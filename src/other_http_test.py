@@ -62,7 +62,8 @@ def test_users_all_expected(url):
         "email": "validEmail@gmail.com",
         "name_first": 'Phil',
         "name_last": "Knight",
-        'handle_str' : 'philknight'
+        'handle_str' : 'philknight',
+        'profile_img_url': ''
     }]
 
 
@@ -89,14 +90,16 @@ def test_users_all_multiple(url):
             "email": "validEmail@gmail.com",
             "name_first": 'Phil',
             "name_last": "Knight",
-            'handle_str' : 'philknight'
+            'handle_str' : 'philknight',
+            'profile_img_url': ''
         },
         {
             "u_id": user_2["u_id"],
             "email": "validEmail2@gmail.com",
             "name_first": 'Donald',
             "name_last": "Trump",
-            'handle_str' : 'donaldtrump'
+            'handle_str' : 'donaldtrump',
+            'profile_img_url': ''
         },
     ]
 

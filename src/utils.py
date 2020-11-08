@@ -160,6 +160,17 @@ def edit_message(url, token, message_id, message):
     }
     return requests.put(f"{url}/message/edit", json = message)
 
+def random_string(length):
+    letters = string.ascii_lowercase
+    random_string = ''.join(random.choice(letters) for i in range(length))
+
+    return random_string
+
+def get_user_from_token(token):
+    for user in data['users']:
+        if user['token'] == token:
+            return user
+=======
 # Generate a code consisting of a mitxture upper/lower/integers
 def generate_secret_code(size=12, chars = string.ascii_uppercase + string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))

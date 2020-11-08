@@ -3,7 +3,10 @@ from auth import auth_login, auth_register, auth_register
 from error import InputError
 import uuid
 import re
-from utils import check_token
+from utils import check_token, random_string, get_user_from_token
+import urllib.request
+from PIL import Image
+from flask import request as Flask_request
 
 def valid_u_id_check(u_id):
     '''
@@ -39,6 +42,7 @@ def user_profile(token, u_id):
                     'name_first': user['first_name'],
                     'name_last': user['last_name'],
                     'handle_str': user['handle'],
+                    'profile_img_url': user['profile_img_url']
                  },
             }
 
@@ -84,6 +88,7 @@ def user_profile_setemail(token, email):
     Update the authorised user's email address
     '''
 
+    check_token(token)
 
     # using the same email pattern as auth_login
     emailPattern = "^(?!.*[.]{2})[a-zA-Z0-9][a-zA-Z0-9.]+@(?!localhost)[a-zA-Z0-9]+[.]+[a-zA-Z0-9]+$"
@@ -113,6 +118,7 @@ def user_profile_sethandle(token, handle_str):
     Update the authorised user's handle (i.e. display name)
     '''
 
+    check_token(token)
 
     if len(handle_str) < 3 or len(handle_str) > 20:
         raise InputError
@@ -130,3 +136,47 @@ def user_profile_sethandle(token, handle_str):
 
     return {
     }
+
+def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
+    '''
+    Given a URL of an image on the internet, crops the image within bounds 
+    (x_start, y_start) and (x_end, y_end). Position (0,0) is the top left.
+    '''
+
+    check_token(token)
+
+    # grabbing file type by spliting and checking if it is valid
+    try:
+        file_type = img_url.rsplit('.', 1)[1].lower()
+    except:
+        raise InputError("Wrong file type, must be .jpg or .jpeg")
+
+    if not file_type in ['jpg', 'jpeg']:
+        raise InputError("Wrong file type, must be .jpg or .jpeg")
+
+    if x_end < x_start or y_end < y_start:
+        raise InputError("Wrong dimensions")
+
+    # storing image in file
+    file_name = f'{random_string(10)}.{file_type}'
+    urllib.request.urlretrieve(img_url, file_name)
+
+    image = Image.open(file_name)
+
+    # cropping image and saving it back to file
+    try:
+        cropped_image = image.crop((x_start, y_start, x_end, y_end))
+    except:
+        raise InputError("Dimensions not within range")
+
+    cropped_image.save(file_name) 
+
+    # storing cropped image in global data variable as accesible url
+    user = get_user_from_token(token)
+    print(f'THIS IS THE URL {Flask_request.url_root}images/{file_name}')
+
+    user['profile_img_url'] = f'{Flask_request.url_root}images/{file_name}'
+    print(F'THIS IS THE GLOBAL DATA{data}')
+    return {}
+
+  

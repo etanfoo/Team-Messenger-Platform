@@ -92,7 +92,7 @@ def auth_register(email, password, name_first, name_last):
         "state": "inactive",
         "password": password,
         'handle': handle,
-        "secret_code": 0
+        'profile_img_url': ''
     })
     return {
         'u_id': user_id,

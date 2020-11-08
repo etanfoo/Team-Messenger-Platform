@@ -3,13 +3,14 @@ Importing required modules and functions to run the server
 '''
 import sys
 from json import dumps
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from error import InputError, AccessError
 from channels import channels_list, channels_listall, channels_create
 from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
+<<<<<<< src/server.py
 from auth import auth_login, auth_logout, auth_register, auth_passwordreset_request, auth_passwordreset_reset
-from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle
+from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle, user_profile_uploadphoto
 from other import users_all, admin_userpermission_change, search
 from message import message_send, message_remove, message_edit
 from other import clear
@@ -265,6 +266,22 @@ def http_user_profile_sethandle():
 
     data = request.get_json()
     return jsonify(user_profile_sethandle(data['token'], data['handle_str']))
+
+@APP.route("/images/<filename>", methods=["GET"])
+def send_js(filename):
+	return send_from_directory('../', filename)
+
+@APP.route('/user/profile/uploadphoto', methods=['POST'])
+def http_user_profile_uploadphoto():
+    '''
+    Given a URL of an image on the internet, crops the image within bounds 
+    (x_start, y_start) and (x_end, y_end). Position (0,0) is the top left.
+    '''
+    # print(f'this is the url {request.url_root}')
+
+    data = request.get_json()
+    return jsonify(user_profile_uploadphoto(data['token'], data['img_url'], 
+        int(data['x_start']), int(data['y_start']), int(data['x_end']), int(data['y_end'])))
 
 
 ####################
