@@ -4,6 +4,9 @@ from appsecret import JWT_SECRET
 from error import AccessError
 from global_dic import data
 import requests
+import string
+import random
+import smtplib 
 
 INVALID_TOKEN = -1000
 
@@ -206,6 +209,38 @@ def channel_message(url, token, channel_id, start):
     }
     payload = requests.get(f"{url}/channel/messages", params = message)
     return payload.json()
+
+def random_string(length):
+    letters = string.ascii_lowercase
+    random_string = ''.join(random.choice(letters) for i in range(length))
+
+    return random_string
+
+def get_user_from_token(token):
+    for user in data['users']:
+        if user['token'] == token:
+            return user
+
+# Generate a code consisting of a mitxture upper/lower/integers
+def generate_secret_code(size=12, chars = string.ascii_uppercase + string.ascii_lowercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
+def passwordreset_request(url, email):
+    requests.post(f"{url}/auth/passwordreset/request", json = email)
+
+def send_email(email, code):
+    with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
+        smtp.ehlo()
+        smtp.starttls()
+        smtp.ehlo()
+        smtp.login('thu15grapegroup5@gmail.com', 'yomyslime12')
+        
+        subject = 'Secret Code'
+        body = str(code)
+
+        msg = f'Subject: {subject}\n\n{body}'
+
+        smtp.sendmail('thu15grapegroup5@gmail.com', email, msg)
 
 ###################
 # Global variables

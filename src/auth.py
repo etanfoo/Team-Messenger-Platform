@@ -4,9 +4,15 @@ AUTH
 import uuid
 from error import InputError
 from global_dic import data
-from utils import generate_token, check_token, remove_token
-from auth_helper import validate_email, validate_password, hash_password, validate_name, check_email, logout_state, change_handle
-
+from utils import generate_token, check_token, remove_token, generate_secret_code, send_email
+from auth_helper import (
+    validate_email, 
+    validate_password, 
+    hash_password, 
+    validate_name, 
+    check_email,  
+    change_handle
+)
 
 def auth_login(email, password):
     '''
@@ -52,7 +58,6 @@ def auth_logout(token):
 
     if not success:
         return {'is_success': False }
-    # logout_state(token)
     remove_token(token)
     return {
         'is_success': True,
@@ -86,9 +91,45 @@ def auth_register(email, password, name_first, name_last):
         "last_name": name_last,
         "state": "inactive",
         "password": password,
-        'handle': handle
+        'handle': handle,
+        'profile_img_url': '',
+        "secret_code": 0
     })
     return {
         'u_id': user_id,
         'token': user_token,
     }
+
+def auth_passwordreset_request(email):
+    if check_email(email) == False:
+        raise InputError("Unknown or invalid email")
+    global data
+    # create the screte code 
+    code = generate_secret_code()
+    for user in data["users"]:
+        # Adds the secret code to corresponding user
+        if email == user["email"]:
+            user["secret_code"] = code
+            break
+    # Sends the email 
+    send_email(email, code)
+
+def auth_passwordreset_reset(reset_code, new_password):
+    # input error
+    # reset_code is not a valid reset code 
+    valid_code = False
+    # loop through data users and find a user to match reset code
+    for user in data['users']:
+        if user['secret_code'] == reset_code:
+            valid_code = True
+            break
+    # checks if the code is valid
+    if valid_code == False:
+        raise InputError("Invalid Reset Code")
+
+    # input error
+    # Password entered is not a valid password
+    validate_password(new_password)
+
+    # by this point all input error has passed and time to set the password for the user
+    user['password'] = new_password
