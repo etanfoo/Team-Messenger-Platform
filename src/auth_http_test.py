@@ -7,9 +7,19 @@ import signal
 from time import sleep
 import pytest
 import requests
-from utils import register_user_auth, login_user, user_details, passwordreset_request
-from utils import (register_user, login_user, create_channel, authorised_user,
-                   second_user, unauthorised_user, prepare_user)
+from utils import (
+    register_user, 
+    login_user, 
+    create_channel,
+    authorised_user,
+    second_user, 
+    unauthorised_user, 
+    prepare_user, 
+    passwordreset_request, 
+    test_email,
+    user_details,
+    register_user_auth
+)
 
 @pytest.fixture
 def url():
@@ -430,39 +440,42 @@ def test_request_invalid_emails(url):
     '''
     The emails are invalid or not in the database
     '''    
-    payload = passwordreset_request(url, "INVALID_EMAIL@gmail.com")
+    test_email["email"] = "INVALID_EMAIL@gmail.com"
+    payload = passwordreset_request(url, test_email)
     assert payload.status_code == 400
-
-    payload = passwordreset_request(url, "ThisIsNotAEmail")
+ 
+    test_email["email"] = "ThisIsNotAEmail"
+    payload = passwordreset_request(url, test_email)
     assert payload.status_code == 400
 
 def test_request_integers(url):
     '''
     The email is invalid as it is integers
     '''
-    payload = passwordreset_request(url, 2118)
+    test_email["email"] = 2118
+    payload = passwordreset_request(url, test_email)
     assert payload.status_code == 400
 
 def test_request_empty(url):
     '''
     No email provided
     '''
-    payload = passwordreset_request(url, "")
+    test_email["email"] = ""
+    payload = passwordreset_request(url, test_email)
     assert payload.status_code == 400
 
 def test_request_white_spaces(url):
     '''
     Email provided are white spaces
     '''
-    payload = passwordreset_request(url, "      ")
+    test_email["email"] = "      "
+    payload = passwordreset_request(url, test_email)
     assert payload.status_code == 400
 
 def test_reset_invalid_code(url):
     '''
     invalid token passed
     '''
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
     # Create user_1 and their channel   
     user_1 = prepare_user(url, authorised_user)
     # request for password change    
@@ -475,8 +488,6 @@ def test_reset_invalid_password(url):
     '''
     invalid password
     '''
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
     # Create user_1 and their channel   
     user_1 = prepare_user(url, authorised_user)
     # tests whether the reset password is invalid
