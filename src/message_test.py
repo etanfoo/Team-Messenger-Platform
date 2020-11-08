@@ -445,8 +445,7 @@ def test_message_pin_invalid_message_id():
     clear()
     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
-    new_channel = channels_create(authorized_user['token'], "public_channel",
-                                  True)
+    channels_create(authorized_user['token'], "public_channel", True)
     with pytest.raises(InputError):
         message_pin(authorized_user['token'], -1)
 
@@ -518,8 +517,7 @@ def test_message_unpin_invalid_message_id():
     clear()
     authorized_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philgee", "Vlad")
-    new_channel = channels_create(authorized_user['token'], "public_channel",
-                                  True)
+    channels_create(authorized_user['token'], "public_channel", True)
     with pytest.raises(InputError):
         message_unpin(authorized_user['token'], -1)
 

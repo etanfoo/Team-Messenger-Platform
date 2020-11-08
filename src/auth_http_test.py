@@ -477,7 +477,7 @@ def test_reset_invalid_code(url):
     invalid token passed
     '''
     # Create user_1 and their channel   
-    user_1 = prepare_user(url, authorised_user)
+    prepare_user(url, authorised_user)
     # request for password change    
     requests.post(f"{url}/auth/passwordreset/request", json = {'email' : authorised_user['email']})
     # test whether the reset code is wrong
@@ -489,7 +489,7 @@ def test_reset_invalid_password(url):
     invalid password
     '''
     # Create user_1 and their channel   
-    user_1 = prepare_user(url, authorised_user)
+    prepare_user(url, authorised_user)
     # tests whether the reset password is invalid
     payload = requests.post(f"{url}/auth/passwordreset/reset", json = {'reset_code' : 0, 'new_password' : 'Cow'})
     assert payload.status_code == 400

@@ -311,7 +311,7 @@ def test_message_unreact_user_not_react(url):
 def test_message_pin_invalid_message_id(url):
     '''Test on invalid message id'''
     user_1 = register_user(url, authorised_user)
-    channel_1 = create_channel(url, user_1["token"], "TSM Legend", True) 
+    create_channel(url, user_1["token"], "TSM Legend", True) 
     data =  pin_message(url, user_1['token'], -1)
     assert data.status_code == 400
 
@@ -358,7 +358,7 @@ def test_message_pin_not_owner(url):
 def test_message_unpin_invalid_message_id(url):
     '''Test on invalid message id'''
     user_1 = register_user(url, authorised_user)
-    channel_1 = create_channel(url, user_1["token"], "TSM Legend", True)
+    create_channel(url, user_1["token"], "TSM Legend", True)
     data =  unpin_message(url, user_1['token'],  -1)
     assert data.status_code == 400
 
