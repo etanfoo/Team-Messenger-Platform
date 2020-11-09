@@ -43,6 +43,8 @@ def channel_details(token, channel_id):
     '''
     check_token(token)
 
+    print(f'=============\n{data}==============\n')
+
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
         raise InputError("Input error channel_id not listed")
@@ -55,24 +57,6 @@ def channel_details(token, channel_id):
             "You must be a member of the channel to view its details")
 
     return channel_details_helper(channel_id)
-
-    # return {
-    #     'name': 'Hayden',
-    #     'owner_members': [
-    #         {
-    #             'u_id': 1,
-    #             'name_first': 'Hayden',
-    #             'name_last': 'Jacobs',
-    #         }
-    #     ],
-    #     'all_members': [
-    #         {
-    #             'u_id': 1,
-    #             'name_first': 'Hayden',
-    #             'name_last': 'Jacobs',
-    #         }
-    #     ],
-    # }
 
 
 def channel_messages(token, channel_id, start):

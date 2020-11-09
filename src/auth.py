@@ -76,6 +76,10 @@ def auth_register(email, password, name_first, name_last):
     if check_email(email) == True:
         raise InputError("Input Error")
     user_id = len(data["users"])
+    
+    # making first user that registers the flockr owner
+    is_flockr_owner = user_id == 0
+
     user_token = generate_token(user_id)
     password = hash_password(password)
     # creating handle
@@ -93,7 +97,8 @@ def auth_register(email, password, name_first, name_last):
         "password": password,
         'handle': handle,
         'profile_img_url': '',
-        "secret_code": 0
+        "secret_code": 0,
+        "is_flockr_owner": is_flockr_owner
     })
     return {
         'u_id': user_id,

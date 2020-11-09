@@ -5,7 +5,7 @@ from global_dic import data
 from error import InputError, AccessError
 from utils import check_token, decode_token
 from channels import channels_list
-
+from channel_helper import check_uid
 
 def clear():
     '''
@@ -46,67 +46,32 @@ def admin_userpermission_change(token, u_id, permission_id):
     '''
     Function to alter a user's permission to an owner, or from an owner to a member
     '''
-
-    # Check for valid token
+    global data
+    # Error checks
     check_token(token)
-    token_id = decode_token(token)
+    if check_uid(u_id) is False:
+        raise InputError("Not valid user")
 
-    # Check for self demotion/promotion
-    if token_id == u_id:
-        raise AccessError
+    if permission_id not in [1, 2]:
+        raise InputError("Not a valid permission value")
 
-    # Check for empty u_id
-    if u_id is None:
-        raise InputError
+    for user in data['users']:
+        if user['token'] == token:
+            if user['is_flockr_owner'] == False:
+                raise InputError("You are not an owner of Flockr")
+            break
 
-    # Check for invalid permission_id type
-    if type(permission_id) == str:
-        raise InputError
+    # changing permissions to new permissions
+    new_permission = permission_id == 1
 
-    # Check if permission_id's are valid inputs
-    if permission_id != 1:
-        if permission_id != 2:
-            raise InputError
+    for user in data['users']:
+        if user['u_id'] == u_id:
+            user['is_flockr_owner'] = new_permission
 
-    # Check if permission_id is not empty
-    if permission_id is None:
-        raise InputError
+    return {}
 
-    # Check if u_id exists in the channel
-    user_check = False
-    for channels in data["channels"]:
-        for users in channels["all_members"]:
-            if u_id == users["u_id"]:
-                user_check = True
-    if user_check == False:
-        raise InputError
 
-    # Check if person is a owner with perms
-    owner_check = False
-    for channels in data["channels"]:
-        for owners in channels["owner_members"]:
-            if token_id == owners["u_id"]:
-                owner_check = True
-    if owner_check == False:
-        raise AccessError
-
-    # Depending on permission_id, either promote or demote user
-    if permission_id == 1:
-        # 1, Promote user to admin
-        completed = False
-        for promotion in data["channels"]:
-            if completed == False:
-                promotion["owner_members"].append({"u_id": u_id})
-                completed = True
-
-    elif permission_id == 2:
-        # 2, Demote user to member
-        for demotion in data["channels"]:
-            for demotion_id in demotion["owner_members"]:
-                if demotion_id["u_id"] == u_id:
-                    demotion["owner_members"].remove({"u_id": u_id})
-
-    return 0
+    
 
 
 def search(token, query_str):
