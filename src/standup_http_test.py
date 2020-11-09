@@ -132,7 +132,7 @@ def test_active_invalid_channel(url):
     user_1 = register_user(url, authorised_user)
     login_user(url, authorised_user)
 
-    channel = create_channel(url, user_1['token'], "TSM Wins Worlds", True)
+    create_channel(url, user_1['token'], "TSM Wins Worlds", True)
 
     data = requests.get(f"{url}/standup/active",
                          json={
