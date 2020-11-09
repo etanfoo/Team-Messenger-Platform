@@ -5,9 +5,12 @@ import re
 import signal
 from subprocess import Popen, PIPE
 from time import sleep
+import requests
 import pytest
+from datetime import datetime
 from utils import (register_user, create_channel, authorised_user, second_user,
-                   send_message, send_message_id, remove_message, edit_message)
+                   send_message, send_message_id, remove_message, edit_message,
+                   unauthorised_user, get_current_timestamp)
 
 
 @pytest.fixture
@@ -34,7 +37,7 @@ def url():
         raise Exception("Couldn't get URL from local server")
 
 
-def test_message_send_size(url):
+"""def test_message_send_size(url):
     '''
     Message above 1000
     '''
