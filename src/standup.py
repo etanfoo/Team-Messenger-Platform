@@ -46,13 +46,25 @@ def standup_end(channel_id):
     if there no messages were sent during the standup, the standup is not added to the list of
     messages, but is still removed from the list of active standups
     '''
+    # message = data["standup"][channel_id]['messages']
+    # if len(message) > 0:
+    #     for channel in data["channels"]:
+    #         if channel["channel_id"] == channel_id:
+    #             channel['messages'].insert(0, data["standup"].pop(channel_id))
+    # else:
+    #     data["standup"].pop(channel_id)
+
+    # message = ""
     message = data["standup"][channel_id]['messages']
+    if channel_id in data["standup"]:
+        message = data["standup"][channel_id]['messages']
     if len(message) > 0:
         for channel in data["channels"]:
             if channel["channel_id"] == channel_id:
-                channel['messages'].insert(0, data["standup"].pop(channel_id))
+                channel['messages'].insert(0, message)
     else:
-        data["standup"].pop(channel_id)
+        if channel_id in data["standup"]:
+            data["standup"].pop(channel_id)
 
 
 def standup_start(token, channel_id, length):
