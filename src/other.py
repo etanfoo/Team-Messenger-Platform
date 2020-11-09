@@ -6,12 +6,15 @@ from error import InputError, AccessError
 from utils import check_token, decode_token
 from channels import channels_list
 
+
 def clear():
     '''
     Function to reset user and channel entries in the data dictionary
     '''
     data["users"].clear()
     data["channels"].clear()
+    data["standup"].clear()
+    data["message_count"] = 0
 
 
 def users_all(token):
@@ -20,28 +23,29 @@ def users_all(token):
     '''
     # Check if user's token is valid
     check_token(token)
-    
+
     # List of authorised users
     authorised_users = []
-    
+
     # Gather user details and append list
     for user in data["users"]:
         authorised_users.append({
-            "u_id": user["u_id"], 
-            "email": user["email"], 
-            "name_first": user["first_name"], 
+            "u_id": user["u_id"],
+            "email": user["email"],
+            "name_first": user["first_name"],
             "name_last": user["last_name"],
-            'handle_str' : user['handle'],
-            'profile_img_url' : user['profile_img_url']
+            'handle_str': user['handle'],
+            'profile_img_url': user['profile_img_url']
         })
 
     # Return list as dictionary
     return {"users": authorised_users}
 
-def admin_userpermission_change(token, u_id, permission_id): 
+
+def admin_userpermission_change(token, u_id, permission_id):
     '''
     Function to alter a user's permission to an owner, or from an owner to a member
-    '''   
+    '''
 
     # Check for valid token
     check_token(token)
@@ -101,8 +105,9 @@ def admin_userpermission_change(token, u_id, permission_id):
             for demotion_id in demotion["owner_members"]:
                 if demotion_id["u_id"] == u_id:
                     demotion["owner_members"].remove({"u_id": u_id})
-                  
-    return 0 
+
+    return 0
+
 
 def search(token, query_str):
     '''
@@ -110,7 +115,7 @@ def search(token, query_str):
     '''
 
     user_channels = []
-    
+
     user_u_id = decode_token(token)
 
     for channel in data['channels']:
@@ -125,7 +130,6 @@ def search(token, query_str):
         for message in channel["messages"]:
             if query_str in message['message']:
                 result.append(message)
-    
 
     # Sort list based on time_created
     sorted(result, key=lambda message: message["time_created"], reverse=True)

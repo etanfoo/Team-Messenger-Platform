@@ -2,6 +2,7 @@
 data = {
     "users": [],
     "channels": [],
+    "standup": [],
     "message_count": 0,
 }
 
@@ -52,6 +53,7 @@ data = {
 #                     "time_created": 1582426789,
 #                 },
 #             ],
+# !!!!!!!!!!!! ADD STADNUP HERE !!!!!!!!!!!!!!!!!!!!!!
 #             "start":
 #             0,
 #             "end":
@@ -82,6 +84,18 @@ data = {
 #                     "time_created": 1582426789,
 #                 },
 #             ],
+#             "standup": [
+#                 {
+##                      "time_finish":
+#                        1582426789,
+#                       "messages": [
+#                           {
+#                               "message_id": 1,
+#                               "message": "Hello world",
+#                               "handle_str": "hauntering_j",
+#                           },
+#                 }
+#             ]
 #             "start":
 #             0,
 #             "end":
@@ -90,4 +104,5 @@ data = {
 #     ],
 #     "message_count":
 #     0,
+#
 # }

@@ -64,8 +64,10 @@ def channels_listall(token):
                 if members["u_id"] == u_id:
                     # Add details to the authorised_channels list
                     authorized_channels.append({
-                        "channel_id": channels["channel_id"],
-                        "name": channels["name"]
+                        "channel_id":
+                        channels["channel_id"],
+                        "name":
+                        channels["name"]
                     })
                     # Prevent duplicates by breaking out of the loop once details have been added
                     break
@@ -78,7 +80,7 @@ def channels_create(token, name, is_public):
     Return: the channel_id
     '''
     check_token(token)
-    
+
     u_id = decode_token(token)
     # Name is over 20 characters long or empty or space => input error
     valid_channel_name(name)
@@ -91,12 +93,14 @@ def channels_create(token, name, is_public):
             person = user
             break
 
-    
     # Form the data structure
     data["channels"].append({
-        "name": name,
-        "channel_id": available_id,
-        "is_public": is_public,
+        "name":
+        name,
+        "channel_id":
+        available_id,
+        "is_public":
+        is_public,
         "owner_members": [{
             "u_id": u_id,
             "name_first": person["first_name"],
@@ -108,5 +112,6 @@ def channels_create(token, name, is_public):
             "name_last": person["last_name"]
         }],
         "messages": [],
+        "standup": [],
     })
     return {'channel_id': available_id}
