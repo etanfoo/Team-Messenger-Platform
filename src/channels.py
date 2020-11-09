@@ -131,8 +131,9 @@ def channels_create(token, name, is_public):
     # adding all flockr owners as members to channel
     for owner in list_of_owners:
         user_info = {'u_id': owner['u_id'], 'name_first': owner['first_name'], 'name_last': owner['last_name']}
-        new_channel['owner_members'].append(user_info)
-        new_channel['all_members'].append(user_info)
+        if owner['token'] != token:
+            new_channel['owner_members'].append(user_info)
+            new_channel['all_members'].append(user_info)
 
 
     return {'channel_id': available_id}
