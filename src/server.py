@@ -414,5 +414,42 @@ def http_clear():
     return jsonify(clear())
 
 
+###################
+# standup
+###################
+
+@APP.route('/standup/start', methods=['POST'])
+def http_standup_start():
+    '''
+    Given a User by their user ID, set their permissions to new permissions described by permission_id
+    '''
+
+    data = request.get_json()
+
+    return jsonify(
+        standup_start(data['token'], data['channel_id'], data['length']))
+
+@APP.route('/standup/active', methods=['GET'])
+def http_standup_active():
+    '''
+    Given a query string, return a collection of messages in all of the channels that the user has joined that match the query
+    '''
+
+    data = request.args
+    return jsonify(search(data['is_active'], data['time_finish']))
+
+@APP.route('/standup/send', methods=['POST'])
+def http_standup_send():
+    '''
+    Given a User by their user ID, set their permissions to new permissions described by permission_id
+    '''
+
+    data = request.get_json()
+
+    return jsonify(
+        standup_send(data['token'], data['channel_id'], data['message']))
+
+
+
 if __name__ == "__main__":
     APP.run(port=0)  # Do not edit this port
