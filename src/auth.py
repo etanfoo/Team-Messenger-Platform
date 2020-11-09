@@ -78,10 +78,7 @@ def auth_register(email, password, name_first, name_last):
     user_id = len(data["users"])
     
     # making first user that registers the flockr owner
-    if user_id == 0:
-        is_flockr_owner = True
-    else:
-        is_flockr_owner = False
+    is_flockr_owner = user_id == 0
 
     user_token = generate_token(user_id)
     password = hash_password(password)

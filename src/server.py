@@ -305,7 +305,7 @@ def http_admin_userpermission_change():
     data = request.get_json()
     return jsonify(
         admin_userpermission_change(data['token'], int(data['u_id']),
-                                    data['permission_id']))
+                                    int(data['permission_id'])))
 
 
 @APP.route('/search', methods=['GET'])

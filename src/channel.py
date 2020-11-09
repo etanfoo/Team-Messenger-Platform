@@ -43,7 +43,7 @@ def channel_details(token, channel_id):
     '''
     check_token(token)
 
-    print(data)
+    print(f'=============\n{data}==============\n')
 
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
