@@ -46,7 +46,7 @@ def message_send(token, channel_id, message):
                 'reacts': [{
                     'react_id': 1,
                     'u_ids': [],
-                    'is_this_user_reacted': True
+                    'is_this_user_reacted': False
                 }],
                 'is_pinned':
                 False
@@ -108,16 +108,21 @@ def create_message(user_id, message_id, time_created, message):
     returns a default message with is_pinned = False
     '''
     return {
-        'u_id': user_id,
-        'message_id': message_id,
-        'time_created': time_created,
-        'message': message,
+        'u_id':
+        user_id,
+        'message_id':
+        message_id,
+        'time_created':
+        time_created,
+        'message':
+        message,
         'reacts': [{
             'react_id': 1,
-            'u_ids': [],
-            'is_this_user_reacted': True
+            'u_ids': [user_id],
+            'is_this_user_reacted': False
         }],
-        'is_pinned': False
+        'is_pinned':
+        False
     }
 
 
@@ -143,6 +148,7 @@ def message_react(token, message_id, react_id):
             if u_id in react['u_ids']:
                 raise InputError(description='Already reacted')
             react['u_ids'].append(u_id)
+            react['is_this_user_reacted'] = True
     return {}
 
 
@@ -167,6 +173,7 @@ def message_unreact(token, message_id, react_id):
         if react['react_id'] == react_id:
             if u_id in react['u_ids']:
                 react['u_ids'].remove(u_id)
+                react['is_this_user_reacted'] = False
             else:
                 raise InputError(description='You have not made this reaction')
     return {}
