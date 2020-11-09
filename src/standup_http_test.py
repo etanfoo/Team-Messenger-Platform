@@ -52,7 +52,7 @@ def test_start_invalid_channel(url):
     login_user(url, authorised_user)
 
     data = requests.post(f"{url}/standup/start",
-                         params={
+                         json={
                              "token": user_1['token'],
                              "channel_id": -1,
                              "length": 10,
@@ -74,7 +74,7 @@ def test_start_expected(url):
     channel = create_channel(url, user_1['token'], "TSM Wins Worlds", True)
 
     requests.post(f"{url}/standup/start",
-                         params={
+                         json={
                              "token": user_1['token'],
                              "channel_id": channel['channel_id'],
                              "length": 10,
@@ -83,7 +83,7 @@ def test_start_expected(url):
 
     # activate standup and raise error when called again
     data = requests.post(f"{url}/standup/start",
-                         params={
+                         json={
                              "token": user_1['token'],
                              "channel_id": channel['channel_id'],
                              "length": 10,
@@ -109,7 +109,7 @@ def test_standup_negative(url):
     channel = create_channel(url, user_1['token'], "TSM Wins Worlds", True)
 
     data = requests.post(f"{url}/standup/start",
-                         params={
+                         json={
                              "token": user_1['token'],
                              "channel_id": channel['channel_id'],
                              "length": -10,
@@ -135,7 +135,7 @@ def test_active_invalid_channel(url):
     channel = create_channel(url, user_1['token'], "TSM Wins Worlds", True)
 
     data = requests.get(f"{url}/standup/active",
-                         params={
+                         json={
                              "token": user_1['token'],
                              "channel_id": -1,
                          })
@@ -156,7 +156,7 @@ def test_active_expected(url):
     channel = create_channel(url, user_1['token'], "TSM Wins Worlds", True)
 
     data = requests.get(f"{url}/standup/active",
-                         params={
+                         json={
                              "token": user_1['token'],
                              "channel_id": channel["channel_id"],
                          })
@@ -181,7 +181,7 @@ def test_send_invalid_channel(url):
     login_user(url, authorised_user)
 
     data = requests.post(f"{url}/standup/send",
-                         params={
+                         json={
                              "token": user_1['token'],
                              "channel_id": -1,
                              "message": "hello hello",
@@ -203,7 +203,7 @@ def test_send_invalid_message(url):
     channel = create_channel(url, user_1['token'], "TSM Wins Worlds", True)
 
     data = requests.post(f"{url}/standup/send",
-                         params={
+                         json={
                              "token": user_1['token'],
                              "channel_id": channel["channel_id"],
                              "message": "x" * 1001,
@@ -225,7 +225,7 @@ def test_send_invalid_user(url):
     channel = create_channel(url, user_1['token'], "TSM Wins Worlds", True)
 
     data = requests.post(f"{url}/standup/send",
-                         params={
+                         json={
                              "token": 1,
                              "channel_id": channel["channel_id"],
                              "message": "hello hello",
@@ -247,7 +247,7 @@ def test_send_expected(url):
     channel = create_channel(url, user_1['token'], "TSM Wins Worlds", True)
 
     data = requests.post(f"{url}/standup/send",
-                         params={
+                         json={
                              "token": user_1['token'],
                              "channel_id": channel["channel_id"],
                              "message": "hello hello"                           
