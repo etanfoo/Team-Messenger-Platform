@@ -206,7 +206,7 @@ def test_get_channel():
                               "message")["message_id"]
     get_channel(message_id)
     with pytest.raises(InputError):
-        get_channel(1)
+        get_channel(10)
 
 
 def test_get_message_owner():
