@@ -10,9 +10,9 @@ from channels import channels_list, channels_listall, channels_create
 from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
 from auth import auth_login, auth_logout, auth_register, auth_passwordreset_request, auth_passwordreset_reset
 from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle, user_profile_uploadphoto
-from other import users_all, admin_userpermission_change, search
+from other import clear, users_all, admin_userpermission_change, search
 from message import message_send, message_remove, message_edit, message_sendlater,  message_react,  message_unreact, message_pin, message_unpin
-from other import clear
+from standup import standup_start, standup_active, standup_send
 
 
 def defaultHandler(err):
@@ -412,6 +412,43 @@ def http_clear():
     Resets the internal data of the application to it's initial state
     '''
     return jsonify(clear())
+
+
+###################
+# standup
+###################
+
+@APP.route('/standup/start', methods=['POST'])
+def http_standup_start():
+    '''
+    Given a User by their user ID, set their permissions to new permissions described by permission_id
+    '''
+
+    data = request.get_json()
+
+    return jsonify(
+        standup_start(data['token'], data['channel_id'], data['length']))
+
+@APP.route('/standup/active', methods=['GET'])
+def http_standup_active():
+    '''
+    Given a query string, return a collection of messages in all of the channels that the user has joined that match the query
+    '''
+
+    data = request.args
+    return jsonify(search(data['is_active'], data['time_finish']))
+
+@APP.route('/standup/send', methods=['POST'])
+def http_standup_send():
+    '''
+    Given a User by their user ID, set their permissions to new permissions described by permission_id
+    '''
+
+    data = request.get_json()
+
+    return jsonify(
+        standup_send(data['token'], data['channel_id'], data['message']))
+
 
 
 if __name__ == "__main__":
