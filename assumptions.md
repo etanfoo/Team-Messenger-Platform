@@ -117,3 +117,9 @@ OTHER TEST
 
 - user calling function must have a valid token
 - seach query must be filled and cannot be None or NULL
+
+
+
+# OWNER OF FLOCKR
+- first user to register is an owner of flockr 
+- more owners can be added via admin/userpermission/change

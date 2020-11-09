@@ -93,48 +93,48 @@ def test_channels_list_mix():
     clear()
 
 
-def test_channels_list_mix_uninvited():
-    # Checking if list will return public and private channels.
-    clear()
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
-                                    "Philgee", "Vlad")
-    auth_login("validEmail@gmail.com", "valid_password")
-    #######################################################################################
-    new_user2 = auth_register("validEmail2@gmail.com", "valid_password_2",
-                              "Jason", "Henry")
-    auth_login("validEmail2@gmail.com", "valid_password_2")
-    #######################################################################################
-    # Creating mutliple channels. Public and private
-    channel_private = channels_create(authorised_user['token'],
-                                      "private_channel", False)
-    channel_public = channels_create(authorised_user['token'],
-                                     "public_channel", True)
+# def test_channels_list_mix_uninvited():
+#     # Checking if list will return public and private channels.
+#     clear()
+#     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
+#                                     "Philgee", "Vlad")
+#     auth_login("validEmail@gmail.com", "valid_password")
+#     #######################################################################################
+#     new_user2 = auth_register("validEmail2@gmail.com", "valid_password_2",
+#                               "Jason", "Henry")
+#     auth_login("validEmail2@gmail.com", "valid_password_2")
+#     #######################################################################################
+#     # Creating mutliple channels. Public and private
+#     channel_private = channels_create(authorised_user['token'],
+#                                       "private_channel", False)
+#     channel_public = channels_create(authorised_user['token'],
+#                                      "public_channel", True)
 
-    channels_create(authorised_user['token'], "private_channel2", False)
-    channels_create(authorised_user['token'], "public_channel2", True)
-    #######################################################################################
-    # authorised_user invites new_user2 to channel_private and channel_public
-    channel_invite(authorised_user['token'], channel_private['channel_id'],
-                   new_user2['u_id'])
-    channel_invite(authorised_user['token'], channel_public['channel_id'],
-                   new_user2['u_id'])
+#     channels_create(authorised_user['token'], "private_channel2", False)
+#     channels_create(authorised_user['token'], "public_channel2", True)
+#     #######################################################################################
+#     # authorised_user invites new_user2 to channel_private and channel_public
+#     channel_invite(authorised_user['token'], channel_private['channel_id'],
+#                    new_user2['u_id'])
+#     channel_invite(authorised_user['token'], channel_public['channel_id'],
+#                    new_user2['u_id'])
 
-    # Return all channels created for new_user
-    channel_user = channels_list(authorised_user['token'])
-    assert channel_user['channels'] == [{
-        'channel_id': 0,
-        'name': 'private_channel'
-    }, {
-        'channel_id': 1,
-        'name': 'public_channel'
-    }, {
-        'channel_id': 2,
-        'name': 'private_channel2'
-    }, {
-        'channel_id': 3,
-        'name': 'public_channel2'
-    }]
-    clear()
+#     # Return all channels created for new_user
+#     channel_user = channels_list(authorised_user['token'])
+#     assert channel_user['channels'] == [{
+#         'channel_id': 0,
+#         'name': 'private_channel'
+#     }, {
+#         'channel_id': 1,
+#         'name': 'public_channel'
+#     }, {
+#         'channel_id': 2,
+#         'name': 'private_channel2'
+#     }, {
+#         'channel_id': 3,
+#         'name': 'public_channel2'
+#     }]
+#     clear()
 
 
 def test_channels_list_multiple():
@@ -167,26 +167,26 @@ def test_channels_list_multiple():
     clear()
 
 
-def test_channels_list_uninvited():
-    clear()
-    uninvited_user = auth_register("validEmail@gmail.com", "valid_password",
-                                   "Philgee", "Vlad")
-    auth_login("validEmail@gmail.com", "valid_password")
-    #######################################################################################
-    new_user2 = auth_register("validEmail2@gmail.com", "valid_password_2",
-                              "Jason", "Henry")
-    auth_login("validEmail2@gmail.com", "valid_password_2")
-    #######################################################################################
-    # Creating channels all by new_user2
-    channels_create(new_user2['token'], "new_channel20", True)
-    channels_create(new_user2['token'], "new_channel", True)
-    channels_create(new_user2['token'], "new_channel2", True)
-    channels_create(new_user2['token'], "new_channel3", True)
+# def test_channels_list_uninvited():
+#     clear()
+#     uninvited_user = auth_register("validEmail@gmail.com", "valid_password",
+#                                    "Philgee", "Vlad")
+#     auth_login("validEmail@gmail.com", "valid_password")
+#     #######################################################################################
+#     new_user2 = auth_register("validEmail2@gmail.com", "valid_password_2",
+#                               "Jason", "Henry")
+#     auth_login("validEmail2@gmail.com", "valid_password_2")
+#     #######################################################################################
+#     # Creating channels all by new_user2
+#     channels_create(new_user2['token'], "new_channel20", True)
+#     channels_create(new_user2['token'], "new_channel", True)
+#     channels_create(new_user2['token'], "new_channel2", True)
+#     channels_create(new_user2['token'], "new_channel3", True)
 
-    # Return a empty list since user is not apart of any channels
-    channels_uninvited = channels_list(uninvited_user['token'])
-    assert channels_uninvited['channels'] == []
-    clear()
+#     # Return a empty list since user is not apart of any channels
+#     channels_uninvited = channels_list(uninvited_user['token'])
+#     assert channels_uninvited['channels'] == []
+#     clear()
 
 
 def test_channels_listall_empty():
