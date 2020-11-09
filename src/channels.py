@@ -93,6 +93,14 @@ def channels_create(token, name, is_public):
             person = user
             break
 
+    # creating a list of owners that will have global permissions across all channels
+    list_of_owners = []
+
+    for user in data['users']:
+        if user['is_flockr_owner']:
+            list_of_owners.append(user)
+
+
     # Form the data structure
     data["channels"].append({
         "name":
@@ -114,4 +122,17 @@ def channels_create(token, name, is_public):
         "messages": [],
         "standup": [],
     })
+
+    # grabbing channel we just created
+    for channel in data['channels']:
+        if channel['channel_id'] == available_id:
+            new_channel = channel
+
+    # adding all flockr owners as members to channel
+    for owner in list_of_owners:
+        user_info = {'u_id': owner['u_id'], 'name_first': owner['first_name'], 'name_last': owner['last_name']}
+        new_channel['owner_members'].append(user_info)
+        new_channel['all_members'].append(user_info)
+
+
     return {'channel_id': available_id}

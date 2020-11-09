@@ -43,6 +43,8 @@ def channel_details(token, channel_id):
     '''
     check_token(token)
 
+    print(data)
+
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
         raise InputError("Input error channel_id not listed")
