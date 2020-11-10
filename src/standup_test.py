@@ -26,7 +26,7 @@ def test_start_invalid_channel():
                                     "Philgee", "Vlad")
     # checking for inputerror
     with pytest.raises(InputError):
-        standup_start(authorised_user['token'], -1, 10)
+        standup_start(authorised_user['token'], -1, 1)
 
 
 def test_start_invalid_inactive():
@@ -41,10 +41,10 @@ def test_start_invalid_inactive():
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
     # activate standup and raise error when called again
-    standup_start(authorised_user['token'], channel['channel_id'], 5000)
+    standup_start(authorised_user['token'], channel['channel_id'], 2)
 
     with pytest.raises(InputError):
-        standup_start(authorised_user['token'], channel['channel_id'], 50)
+        standup_start(authorised_user['token'], channel['channel_id'], 1)
 
 
 def test_start_expected():
@@ -59,7 +59,7 @@ def test_start_expected():
 
     channel = channels_create(authorised_user['token'], "new_channel", True)
     standup_result = standup_start(authorised_user['token'],
-                                   channel['channel_id'], 50)
+                                   channel['channel_id'], 1)
     type_check = isinstance(standup_result, dict)
     assert type_check == True
 
@@ -251,7 +251,7 @@ def test_send_expected():
     auth_login("validEmail@gmail.com", "valid_password")
 
     channel = channels_create(authorised_user['token'], "new_channel", True)
-    standup_start(authorised_user['token'], channel['channel_id'], 50)
+    standup_start(authorised_user['token'], channel['channel_id'], 1)
     standup_result = standup_send(authorised_user['token'],
                                   channel['channel_id'], "hello!!")
 
@@ -272,12 +272,12 @@ def test_send_message_expected():
 
     channel = channels_create(authorised_user['token'], "new_channel", True)
 
-    standup_start(authorised_user['token'], channel['channel_id'], 1)
+    standup_start(authorised_user['token'], channel['channel_id'], 2)
 
     standup_send(authorised_user['token'], channel['channel_id'],
                  "testing standup")
 
-    sleep(5)
+    sleep(1)
 
     check_messages = channel_messages(authorised_user['token'],
                                       channel['channel_id'], 0)
