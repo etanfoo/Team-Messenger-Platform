@@ -359,7 +359,7 @@ def test_message_unreact_norm():
     message_unreact(authorized_user['token'], message['message_id'], 1)
     message_specific = get_message(message['message_id'])
     assert message_specific['reacts'] == [{
-        'is_this_user_reacted': True,
+        'is_this_user_reacted': False,
         'react_id': 1,
         'u_ids': []
     }]
