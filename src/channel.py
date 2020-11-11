@@ -101,7 +101,7 @@ def channel_messages(token, channel_id, start):
             data['channels'][channel_id]['messages'][maximum_index - i])
 
     # print(len(messages))
-    # print((messages))
+    print(messages)
     return {
         'messages': messages,
         'start': start,

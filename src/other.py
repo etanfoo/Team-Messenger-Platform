@@ -67,6 +67,25 @@ def admin_userpermission_change(token, u_id, permission_id):
     for user in data['users']:
         if user['u_id'] == u_id:
             user['is_flockr_owner'] = new_permission
+            user_details = {
+                'u_id': u_id, 
+                'name_first': user['first_name'], 
+                'name_last': user['last_name']
+            }
+
+    for channel in data['channels']:
+        is_member = False
+        for member in channel["owner_members"]:
+            if member['u_id'] == u_id:
+                is_member = True
+        if is_member == False:
+            channel["owner_members"].append(user_details)
+        is_member = False
+        for member in channel["all_members"]:
+            if member['u_id'] == u_id:
+                is_member = True
+        if is_member == False:
+            channel["all_members"].append(user_details)
 
     return {}
 

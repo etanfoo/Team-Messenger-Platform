@@ -163,20 +163,32 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
 
     image = Image.open(file_name)
 
-    # cropping image and saving it back to file
-    try:
-        cropped_image = image.crop((x_start, y_start, x_end, y_end))
-    except:
+    # error checking dimensions of image
+    width, height = image.size
+
+    if x_start > width or x_end > width or y_start > height or y_end > height:
         raise InputError("Dimensions not within range")
 
+
+    cropped_image = image.crop((x_start, y_start, x_end, y_end))
     cropped_image.save(file_name) 
 
     # storing cropped image in global data variable as accesible url
     user = get_user_from_token(token)
-    print(f'THIS IS THE URL {Flask_request.url_root}images/{file_name}')
 
+    # changing global variable user image
     user['profile_img_url'] = f'{Flask_request.url_root}images/{file_name}'
-    print(F'THIS IS THE GLOBAL DATA{data}')
+
+    # changing user profile image in the channels they are part of
+    for channel in data['channels']:
+        for member in channel['all_members']:
+            if user['u_id'] == member['u_id']:
+                member['profile_img_url'] = f'{Flask_request.url_root}images/{file_name}'
+        for member in channel['owner_members']:
+            if user['u_id'] == member['u_id']:
+                member['profile_img_url'] = f'{Flask_request.url_root}images/{file_name}'
+    
     return {}
+
 
   

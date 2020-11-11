@@ -123,3 +123,7 @@ OTHER TEST
 # OWNER OF FLOCKR
 - first user to register is an owner of flockr 
 - more owners can be added via admin/userpermission/change
+- When a Flockr owner is demoted, their permission of current channels remain, but channels created in the future will not have 
+them as a owner automatically
+- When a Flockr owner is promoted, they become an owner of all future and existing channels
+
