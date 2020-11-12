@@ -50,6 +50,7 @@ def check_token(token):
     for user in data["users"]:
         if user["token"] == token:
             return True
+
     #Token does not exist
     raise AccessError("Token does not exist")
 

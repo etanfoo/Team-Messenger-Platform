@@ -43,7 +43,7 @@ def channel_details(token, channel_id):
     '''
     check_token(token)
 
-    print(f'=============\n{data}==============\n')
+    # print(f'=============\n{data}==============\n')
 
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
@@ -101,7 +101,7 @@ def channel_messages(token, channel_id, start):
             data['channels'][channel_id]['messages'][maximum_index - i])
 
     # print(len(messages))
-    print(messages)
+    # print(messages)
     return {
         'messages': messages,
         'start': start,

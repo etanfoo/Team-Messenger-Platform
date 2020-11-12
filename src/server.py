@@ -427,7 +427,7 @@ def http_standup_start():
     data = request.get_json()
 
     return jsonify(
-        standup_start(data['token'], data['channel_id'], data['length']))
+        standup_start(data['token'], int(data['channel_id']), int(data['length'])))
 
 @APP.route('/standup/active', methods=['GET'])
 def http_standup_active():
@@ -436,7 +436,7 @@ def http_standup_active():
     '''
 
     data = request.args
-    return jsonify(search(data['is_active'], data['time_finish']))
+    return jsonify(standup_active(data['token'], int(data['channel_id'])))
 
 @APP.route('/standup/send', methods=['POST'])
 def http_standup_send():
@@ -447,7 +447,7 @@ def http_standup_send():
     data = request.get_json()
 
     return jsonify(
-        standup_send(data['token'], data['channel_id'], data['message']))
+        standup_send(data['token'], int(data['channel_id']), data['message']))
 
 
 

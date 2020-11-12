@@ -34,43 +34,41 @@ def standup_active(token, channel_id):
     if time_finish - get_current_timestamp() > 0:
         is_active = True
 
-    return {'is_active': is_active, 'time_finish': time_finish}
-
-
-def standup_end(channel_id):
-    '''
-    replaces placeholder message_id with the next available message id,
-    uses str.join() to turn the message list into a string separated by newlines
-    appends this new message to the list of messages in the given channel, and removes that
-    channel id from the list of active standups
-    if there no messages were sent during the standup, the standup is not added to the list of
-    messages, but is still removed from the list of active standups
-    '''
-    # message = data["standup"][channel_id]['messages']
-    # if len(message) > 0:
-    #     for channel in data["channels"]:
-    #         if channel["channel_id"] == channel_id:
-    #             channel['messages'].insert(0, data["standup"].pop(channel_id))
-    # else:
-    #     data["standup"].pop(channel_id)
-
-    # message = ""
-    message = data["standup"][channel_id]['messages']
-    print(f'THIS IS THE MESSAGE 22: {message}')
-    if channel_id in data["standup"]:
-        message = data["standup"][channel_id]['messages']
-        print(f'THIS IS THE MESSAGE: {message}')
-    if len(message) > 0:
-        for channel in data["channels"]:
-            if channel["channel_id"] == channel_id:
-                channel['messages'].insert(0, message)
-                # print(f'MESsAGE: channel['messages']')
+    if is_active:
+        return {'is_active': is_active, 'time_finish': time_finish}
     else:
-        print("Test 4")
-        if channel_id in data["standup"]:
-            data["standup"].pop(channel_id)
-            print("Test 3")
+        return {'is_active': is_active, 'time_finish': None}
 
+def standup_end(token, channel_id):
+    '''
+    sends the messages that have been accumulated
+    '''
+
+    new_message = ''
+    for i in range(0, len(data['standup'][0]['messages'])):
+        new_message += data['standup'][channel_id]['messages'][i]['handle'] + ': ' + data['standup'][channel_id]['messages'][i]['message'] + '\n' 
+ 
+    data["message_count"] += 1
+
+    u_id = decode_token(token)
+
+    #Append message to dictionary
+    for channel in data["channels"]:
+        if channel["channel_id"] == channel_id:
+            channel["messages"].append({
+                'u_id': u_id,
+                'message_id': data["message_count"],
+                'time_created': get_current_timestamp(),
+                'message': new_message,
+                'reacts': [{
+                    'react_id': 1,
+                    'u_ids': [],
+                    'is_this_user_reacted': False
+                }],
+                'is_pinned': False
+            })
+    
+    print(f'THIS IS GLOBAL DATA {data}')
 
 def standup_start(token, channel_id, length):
     '''
@@ -96,7 +94,7 @@ def standup_start(token, channel_id, length):
         "messages": [],
         "time_finish": time_finish,
     })
-    standup = Timer(length, standup_end, args=[channel_id])
+    standup = Timer(length, standup_end, args=[token, channel_id])
     standup.start()
 
     return {'time_finish': time_finish}
@@ -127,8 +125,12 @@ def standup_send(token, channel_id, message):
     if check_standup['is_active'] == False:
         raise InputError("Input error as standup is not active")
 
+    for user in data['users']:
+        if user['token'] == token:
+            handle = user['handle']
+
     for channel in data["standup"]:
         if channel["channel_id"] == channel_id:
-            channel["messages"].append({'message': message})
+            channel["messages"].append({'message': message, 'handle': handle})
 
     return {}

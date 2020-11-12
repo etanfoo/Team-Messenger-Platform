@@ -19,7 +19,7 @@ def valid_u_id_check(u_id):
             found = True
             break
     if found == False:
-        raise InputError
+        raise InputError("Invalid u_id")
 
 
 def user_profile(token, u_id):
@@ -45,6 +45,8 @@ def user_profile(token, u_id):
                     'profile_img_url': user['profile_img_url']
                  },
             }
+
+    
 
 
 def user_profile_setname(token, name_first, name_last):
