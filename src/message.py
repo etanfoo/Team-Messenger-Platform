@@ -33,12 +33,15 @@ def message_send(token, channel_id, message):
 
     check_standup = standup_active(token, channel_id)
     if check_standup['is_active'] == True:
+        print("standup send")
         standup_send(token, channel_id, message)
+        
         return {}
 
     if message.startswith('/standup'):
         try:
             length = int(message[9:])
+            print("stand up start")
             standup_start(token, channel_id, length)
             return {}
         except:

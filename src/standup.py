@@ -56,15 +56,20 @@ def standup_end(channel_id):
 
     # message = ""
     message = data["standup"][channel_id]['messages']
+    print(f'THIS IS THE MESSAGE 22: {message}')
     if channel_id in data["standup"]:
         message = data["standup"][channel_id]['messages']
+        print(f'THIS IS THE MESSAGE: {message}')
     if len(message) > 0:
         for channel in data["channels"]:
             if channel["channel_id"] == channel_id:
                 channel['messages'].insert(0, message)
+                # print(f'MESsAGE: channel['messages']')
     else:
+        print("Test 4")
         if channel_id in data["standup"]:
             data["standup"].pop(channel_id)
+            print("Test 3")
 
 
 def standup_start(token, channel_id, length):
