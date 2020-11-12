@@ -110,7 +110,7 @@ def standup_send(token, channel_id, message):
     if check_channel(channel_id) is False:
         raise InputError("Input error as channel_id is not valid")
     if check_member_channel(channel_id, u_id) is False:
-        raise AccessError
+        raise AccessError("Not a member")
     # check if message is over 1000 characters long
     if len(message) > 1000:
         raise InputError("Input error message too long")
@@ -124,6 +124,6 @@ def standup_send(token, channel_id, message):
 
     for channel in data["standup"]:
         if channel["channel_id"] == channel_id:
-            channel["messages"].append({f'{u_id}: {message}'})
+            channel["messages"].append({'message': message})
 
     return {}
