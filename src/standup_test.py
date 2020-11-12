@@ -88,7 +88,7 @@ def test_standup_empty():
 
     check_messages = channel_messages(authorised_user['token'],
                                       channel['channel_id'], 0)
-    assert len(check_messages['messages']) == 0
+    assert len(check_messages['messages'][channel['channel_id']]['message']) == 0
 
 
 def test_standup_negative():

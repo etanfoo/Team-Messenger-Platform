@@ -68,7 +68,7 @@ def standup_end(token, channel_id):
                 'is_pinned': False
             })
     
-    print(f'THIS IS GLOBAL DATA {data}')
+    # print(f'THIS IS GLOBAL DATA {data}')
 
 def standup_start(token, channel_id, length):
     '''
