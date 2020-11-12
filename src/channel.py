@@ -14,24 +14,24 @@ def channel_invite(token, channel_id, u_id):
 
     check_token(token)
 
-    # print(f"{u_id} + Test")
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
-        raise InputError("Input error 1")
+        raise InputError("User is not in channel")
 
     # looping to see if u_id is a valid user, if not, input error
     if check_uid(u_id) is False:
-        # print(f"{u_id} + Test")
-        # print(data)
-        raise InputError("Input error 2")
+        raise InputError("Invalid u_id")
 
     matching_u_id = decode_token(token)
 
     # if user is not a member of channel with channel_id, access error
     # channel is already selected on channel with channel_id (from first for loop)
     if check_member_channel(channel_id, matching_u_id) is False:
-        raise AccessError(
-            "You must be a member of the channel to view its details")
+        raise AccessError("You must be a member of the channel to view its details")
+    
+    # Invited user is already a member of the channel 
+    if check_member_channel(channel_id, u_id) is True:
+        raise InputError("User already a member of this channel")
 
     # no errors raised, add the user to channels all members
     add_user(channel_id, u_id)
@@ -67,18 +67,18 @@ def channel_messages(token, channel_id, start):
 
     # looping to see if channel_id is listed, if not, input error
     if check_channel(channel_id) is False:
-        raise InputError
+        raise InputError("Invalid channel")
 
     # if user is not a member of channel with channel_id, access error
     # channel is already selected on channel with channel_id (from first for loop)
     # comparing token with u_id right now for iteration 1
     u_id = decode_token(token)
     if check_member_channel(channel_id, u_id) is False:
-        raise AccessError
+        raise AccessError("User is not a member of the channel")
 
     # seeing if start is greater than total number of messages in the channel
     if check_start(channel_id, start) is True:
-        raise InputError
+        raise InputError("Start is greater than total number of messages")
 
     messages = []
     # channel_id is the index based on order created so it will be corresponding list index in data
@@ -124,7 +124,7 @@ def channel_leave(token, channel_id):
     # if user is not a member of channel with channel_id, access error
     # channel is already selected on channel with channel_id (from first for loop)
     if check_member_channel(channel_id, matching_u_id) is False:
-        raise AccessError
+        raise AccessError("User is not a member of the channel")
 
     # deleting member from channels all_members
     delete_member(matching_u_id, channel_id)
@@ -194,14 +194,14 @@ def channel_removeowner(token, channel_id, u_id):
 
     matching_u_id = decode_token(token)
     if check_channel(channel_id) is False:
-        raise InputError
+        raise InputError("Invalid Channel")
     # check if that owner is already an owner
     if check_owner(channel_id, u_id) is False:
-        raise InputError
+        raise InputError("User is not a owner")
 
     # check if the requester is an owner of the channel
     if check_owner(channel_id, matching_u_id) is False:
-        raise AccessError
+        raise AccessError("Requsted user is not an owner")
 
     # find the dictionary in the owner list, and delete
     delete_user(channel_id, u_id)
