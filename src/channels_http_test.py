@@ -149,28 +149,28 @@ def test_list_mix(url):
     }]
 
 
-def test_list_uninvited(url):
-    '''
-    Create a user that is not invited to any public/private channels
-    '''
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    # Create uuninvited_user
-    uninvited_user = register_user(url, authorised_user)
-    login_user(url, authorised_user)
-    # Create user_2 and their channels
-    user_2 = register_user(url, second_user)
-    login_user(url, second_user)
-    create_channel(url, user_2['token'], "Donald", True)
-    create_channel(url, user_2['token'], "Timmy", True)
-    create_channel(url, user_2['token'], "TSM Wins Worlds", False)
-    create_channel(url, user_2['token'], "L9", False)
+# def test_list_uninvited(url):
+#     '''
+#     Create a user that is not invited to any public/private channels
+#     '''
+#     # Reset/clear data
+#     requests.delete(f"{url}/clear")
+#     # Create uuninvited_user
+#     uninvited_user = register_user(url, authorised_user)
+#     login_user(url, authorised_user)
+#     # Create user_2 and their channels
+#     user_2 = register_user(url, second_user)
+#     login_user(url, second_user)
+#     create_channel(url, user_2['token'], "Donald", True)
+#     create_channel(url, user_2['token'], "Timmy", True)
+#     create_channel(url, user_2['token'], "TSM Wins Worlds", False)
+#     create_channel(url, user_2['token'], "L9", False)
 
-    # Check the list of channels for uninvited_user
-    data = requests.get(f"{url}/channels/list",
-                        params={"token": uninvited_user['token']})
-    payload = data.json()
-    assert payload['channels'] == []
+#     # Check the list of channels for uninvited_user
+#     data = requests.get(f"{url}/channels/list",
+#                         params={"token": uninvited_user['token']})
+#     payload = data.json()
+#     assert payload['channels'] == []
 
 
 # ###################
@@ -261,60 +261,60 @@ def test_listall_public(url):
     }]
 
 
-def test_listall_mix(url):
-    '''
-    Both users creates public/private channels but have not invited each other
-    '''
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    # Create user_1 and create a private and public channel
-    user_1 = register_user(url, authorised_user)
-    login_user(url, authorised_user)
-    public_channel_1 = create_channel(url, user_1['token'], "TSM 0-6", True)
-    private_channel_1 = create_channel(url, user_1['token'], "L9", False)
-    # Create user_2 and create a private and public channel
-    user_2 = register_user(url, second_user)
-    login_user(url, second_user)
-    public_channel_2 = create_channel(url, user_2['token'], "Donald", True)
-    create_channel(url, user_2['token'], "TSM Wins Worlds", False)
-    # Check the list of channels for user_1
-    data = requests.get(f"{url}/channels/listall",
-                        params={"token": user_1['token']})
-    payload = data.json()
-    assert payload['channels'] == [{
-        "channel_id": 0,
-        "name": public_channel_1["name"]
-    }, {
-        "channel_id": 1,
-        "name": private_channel_1["name"]
-    }, {
-        "channel_id": 2,
-        "name": public_channel_2["name"]
-    }]
+# def test_listall_mix(url):
+#     '''
+#     Both users creates public/private channels but have not invited each other
+#     '''
+#     # Reset/clear data
+#     requests.delete(f"{url}/clear")
+#     # Create user_1 and create a private and public channel
+#     user_1 = register_user(url, authorised_user)
+#     login_user(url, authorised_user)
+#     public_channel_1 = create_channel(url, user_1['token'], "TSM 0-6", True)
+#     private_channel_1 = create_channel(url, user_1['token'], "L9", False)
+#     # Create user_2 and create a private and public channel
+#     user_2 = register_user(url, second_user)
+#     login_user(url, second_user)
+#     public_channel_2 = create_channel(url, user_2['token'], "Donald", True)
+#     create_channel(url, user_2['token'], "TSM Wins Worlds", False)
+#     # Check the list of channels for user_1
+#     data = requests.get(f"{url}/channels/listall",
+#                         params={"token": user_1['token']})
+#     payload = data.json()
+#     assert payload['channels'] == [{
+#         "channel_id": 0,
+#         "name": public_channel_1["name"]
+#     }, {
+#         "channel_id": 1,
+#         "name": private_channel_1["name"]
+#     }, {
+#         "channel_id": 2,
+#         "name": public_channel_2["name"]
+#     }]
 
 
-def test_listall_uninvited(url):
-    '''
-    Create two different users with one user creating a private channel
-    '''
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-    # Create user_1 and their channel
-    user_1 = register_user(url, authorised_user)
-    login_user(url, authorised_user)
-    channel_1 = create_channel(url, user_1['token'], "TSM 0-6", True)
-    # Create user_2 and their channel
-    user_2 = register_user(url, second_user)
-    login_user(url, second_user)
-    create_channel(url, user_2['token'], "TSM Wins Worlds", False)
-    # Check the list of channels for user_1
-    data = requests.get(f"{url}/channels/listall",
-                        params={"token": user_1['token']})
-    payload = data.json()
-    assert payload['channels'] == [{
-        "channel_id": 0,
-        "name": channel_1["name"]
-    }]
+# def test_listall_uninvited(url):
+#     '''
+#     Create two different users with one user creating a private channel
+#     '''
+#     # Reset/clear data
+#     requests.delete(f"{url}/clear")
+#     # Create user_1 and their channel
+#     user_1 = register_user(url, authorised_user)
+#     login_user(url, authorised_user)
+#     channel_1 = create_channel(url, user_1['token'], "TSM 0-6", True)
+#     # Create user_2 and their channel
+#     user_2 = register_user(url, second_user)
+#     login_user(url, second_user)
+#     create_channel(url, user_2['token'], "TSM Wins Worlds", False)
+#     # Check the list of channels for user_1
+#     data = requests.get(f"{url}/channels/listall",
+#                         params={"token": user_1['token']})
+#     payload = data.json()
+#     assert payload['channels'] == [{
+#         "channel_id": 0,
+#         "name": channel_1["name"]
+#     }]
 
 
 ###################

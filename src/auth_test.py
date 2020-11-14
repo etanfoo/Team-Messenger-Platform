@@ -2,9 +2,11 @@
 AUTH_TEST
 '''
 import pytest
+from global_dic import data
 from error import InputError, AccessError
-from auth import auth_register, auth_login, auth_logout
+from auth import auth_register, auth_login, auth_logout, auth_passwordreset_request, auth_passwordreset_reset
 from other import clear
+
 
 ########################
 ######Test Login#######
@@ -532,84 +534,42 @@ def test_register_name_last_50():
             "ThisisaverylonglastnameThisisaverylonglastnameThisisaverylonglastname"
         )
 
-
-def test_register_name_first_symbol():
-    '''
-    First name does not contain symbol
-    '''
+def test_request_invalid_emails():
     clear()
     with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy@", "Test")
+        auth_passwordreset_request("INVALID_EMAIL@gmail.com")
     with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dum!my", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dum#my", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dumm$y", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dum^my", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dum&my", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Du*mmy", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dum(my", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dumm)y", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dum-my", "Test")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dumm=y", "Test")
+        auth_passwordreset_request("ThisIsNotAEmail")    
 
-
-def test_register_name_last_symbol():
-    '''
-    Last name does not contain symbols
-    '''
+def test_request_integers():
     clear()
     with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes!t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes@t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes#t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes$t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Test%")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes^t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes&t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes*t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes(t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes)t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Tes-t")
-    with pytest.raises(InputError):
-        auth_register("DummyTest@gmail.com", "Test@12345", "Dummy", "Test=")
+        auth_passwordreset_request(2118)
 
-
-def test_logout_state():
-    '''
-    State after logging out
-    '''
+def test_request_empty():
     clear()
-    account = auth_register('validemail@gmail.com', '123abc!@#', 'Hayden',
-                            'Everest')
-    with pytest.raises(AccessError):
-        auth_logout(account['token'])
+    with pytest.raises(InputError):
+        auth_passwordreset_request("")
 
-
-def test_logout_s():
-    '''
-    Check logout state
-    '''
+def test_request_white_spaces():
     clear()
-    account = auth_register('validemail@gmail.com', '123abc!@#', 'Hayden',
-                            'Everest')
-    auth_login('validemail@gmail.com', '123abc!@#')
-    assert auth_logout(account['token'])["is_success"] == True
+    with pytest.raises(InputError):
+        auth_passwordreset_request("     ")
+
+# test cases for auth_passwordreset_reset
+
+# test function with invalid reset_code
+def test_reset_invalid_reset_code():
+    clear()    
+    # must register user into 'data' in global_dic.py
+    auth_register('smiles@gmail.com', 'ILoveCars', 'Head', 'Huncho')
+    # submit request for reset
+    auth_passwordreset_request('smiles@gmail.com')
+    with pytest.raises(InputError):
+        auth_passwordreset_reset("Invalid_Reset_Code", "ILoveCars")
+
+def test_reset_invalid_password_long():
+    clear()    
+    auth_register('smiles@gmail.com', 'ILoveCars', 'Head', 'Huncho')
+    with pytest.raises(InputError):
+        auth_passwordreset_reset(0, "Cow")

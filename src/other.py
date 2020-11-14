@@ -4,6 +4,8 @@ other.py contains the clear, users_all, admin_permission_change, and search func
 from global_dic import data
 from error import InputError, AccessError
 from utils import check_token, decode_token
+from channels import channels_list
+from channel_helper import check_uid
 
 def clear():
     '''
@@ -11,6 +13,8 @@ def clear():
     '''
     data["users"].clear()
     data["channels"].clear()
+    data["standup"].clear()
+    data["message_count"] = 0
 
 
 def users_all(token):
@@ -19,103 +23,94 @@ def users_all(token):
     '''
     # Check if user's token is valid
     check_token(token)
-    
+
     # List of authorised users
     authorised_users = []
-    
+
     # Gather user details and append list
     for user in data["users"]:
         authorised_users.append({
-            "u_id": user["u_id"], 
-            "email": user["email"], 
-            "name_first": user["first_name"], 
+            "u_id": user["u_id"],
+            "email": user["email"],
+            "name_first": user["first_name"],
             "name_last": user["last_name"],
-            'handle_str' : user['handle']
+            'handle_str': user['handle'],
+            'profile_img_url': user['profile_img_url']
         })
 
     # Return list as dictionary
     return {"users": authorised_users}
 
-def admin_userpermission_change(token, u_id, permission_id): 
+
+def admin_userpermission_change(token, u_id, permission_id):
     '''
     Function to alter a user's permission to an owner, or from an owner to a member
-    '''   
-
-    # Check for valid token
+    '''
+    global data
+    # Error checks
     check_token(token)
-    token_id = decode_token(token)
+    if check_uid(u_id) is False:
+        raise InputError("Not valid user")
 
-    # Check for self demotion/promotion
-    if token_id == u_id:
-        raise AccessError
+    if permission_id not in [1, 2]:
+        raise InputError("Not a valid permission value")
 
-    # Check for empty u_id
-    if u_id is None:
-        raise InputError
+    for user in data['users']:
+        if user['token'] == token:
+            if user['is_flockr_owner'] == False:
+                raise InputError("You are not an owner of Flockr")
+            break
 
-    # Check for invalid permission_id type
-    if type(permission_id) == str:
-        raise InputError
+    # changing permissions to new permissions
+    new_permission = permission_id == 1
 
-    # Check if permission_id's are valid inputs
-    if permission_id != 1:
-        if permission_id != 2:
-            raise InputError
+    for user in data['users']:
+        if user['u_id'] == u_id:
+            user['is_flockr_owner'] = new_permission
+            user_details = {
+                'u_id': u_id, 
+                'name_first': user['first_name'], 
+                'name_last': user['last_name']
+            }
 
-    # Check if permission_id is not empty
-    if permission_id is None:
-        raise InputError
+    for channel in data['channels']:
+        is_member = False
+        for member in channel["owner_members"]:
+            if member['u_id'] == u_id:
+                is_member = True
+        if is_member == False:
+            channel["owner_members"].append(user_details)
+        is_member = False
+        for member in channel["all_members"]:
+            if member['u_id'] == u_id:
+                is_member = True
+        if is_member == False:
+            channel["all_members"].append(user_details)
 
-    # Check if u_id exists in the channel
-    user_check = False
-    for channels in data["channels"]:
-        for users in channels["all_members"]:
-            if u_id == users["u_id"]:
-                user_check = True
-    if user_check == False:
-        raise InputError
+    return {}
 
-    # Check if person is a owner with perms
-    owner_check = False
-    for channels in data["channels"]:
-        for owners in channels["owner_members"]:
-            if token_id == owners["u_id"]:
-                owner_check = True
-    if owner_check == False:
-        raise AccessError
 
-    # Depending on permission_id, either promote or demote user
-    if permission_id == 1:
-        # 1, Promote user to admin
-        completed = False
-        for promotion in data["channels"]:
-            if completed == False:
-                promotion["owner_members"].append({"u_id": u_id})
-                completed = True
+    
 
-    elif permission_id == 2:
-        # 2, Demote user to member
-        for demotion in data["channels"]:
-            for demotion_id in demotion["owner_members"]:
-                if demotion_id["u_id"] == u_id:
-                    demotion["owner_members"].remove({"u_id": u_id})
-                  
-    return 0 
 
 def search(token, query_str):
     '''
     Function to search for previous messages
     '''
-    # Check for valid token
-    check_token(token)
 
-    # Check if query_str is not empty
-    if query_str is None:
-        raise InputError
+    user_channels = []
+
+    user_u_id = decode_token(token)
+
+    for channel in data['channels']:
+        for member in channel['all_members']:
+            if member['u_id'] == user_u_id:
+                user_channels.append(channel)
 
     result = []
+
     # Search for query in the channel's message history
-    for channel in data["channels"]:
+    for channel in user_channels:
         for message in channel["messages"]:
             if query_str in message['message']:
                 result.append(message)

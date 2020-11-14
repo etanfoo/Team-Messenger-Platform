@@ -3,7 +3,7 @@ Tests for other.py. Testing functions users_all, admin_userpermission_change, an
 '''
 import pytest
 from auth import auth_login, auth_register
-from channel import channel_invite, channel_details
+from channel import channel_invite, channel_details, channel_join
 from channels import channels_create
 from message import message_send
 from other import clear, users_all, admin_userpermission_change, search
@@ -32,7 +32,8 @@ def test_users_all_expected():
         "email": "validEmail@gmail.com",
         "name_first": 'Philgee',
         "name_last": "Vlad",
-        'handle_str' : 'philgeevlad'
+        'handle_str' : 'philgeevlad',
+        'profile_img_url': ''
     }]
 
 
@@ -61,19 +62,22 @@ def test_users_all_multiple():
         "email": "validEmail@gmail.com",
         "name_first": 'Chicken',
         "name_last": "Vlad",
-        'handle_str' : 'chickenvlad'
+        'handle_str' : 'chickenvlad',
+        'profile_img_url': ''
     }, {
         "u_id": authorised_user2["u_id"],
         "email": "validEmail2@gmail.com",
         "name_first": 'Philip',
         "name_last": "Denver",
-        'handle_str' : 'philipdenver'
+        'handle_str' : 'philipdenver',
+        'profile_img_url': ''
     }, {
         "u_id": authorised_user3["u_id"],
         "email": "validEmail3@gmail.com",
         "name_first": 'Zac',
         "name_last": "Philip",
-        'handle_str' : 'zacphilip'
+        'handle_str' : 'zacphilip',
+        'profile_img_url': ''
     }]
 
 
@@ -82,197 +86,27 @@ admin_userpermission_change function tests
 '''
 
 
-def test_admin_permission_change_new():
-    '''
-    Test if admin+permission_change works as expected when adding a new owner
-    '''
+def test_admin_permission_change_normal():
     clear()
-    # Creating channel with admin user
     authorised_user = auth_register("validEmail@gmail.com", "valid_password",
                                     "Philip", "Dickens")
-    auth_login("validEmail@gmail.com", "valid_password")
-    channel = channels_create(authorised_user['token'], "new_channel", True)
-    # 2nd User, new admin
     authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password",
                                      "Tara", "Simons")
-    auth_login("validEmail2@gmail.com", "valid_password")
-    channel_invite(authorised_user['token'], channel['channel_id'],
-                   authorised_user2['u_id'])
 
-    #######################################################################################
+    auth_login("validEmail@gmail.com", "valid_password")
 
-    # Making the 2nd user a new admin. auth_user[token] is granting auth_user2[u_id] permission owner
-    admin_userpermission_change(authorised_user['token'],
-                                authorised_user2['u_id'], 1)
+    # changing user 2 to owner, should now be an owner of new channel created
+    admin_userpermission_change(authorised_user['token'], authorised_user2['u_id'], 1)
+    channel = channels_create(authorised_user['token'], "new_channel", False)
 
-    # Check added new owner by calling channel_details
     details = channel_details(authorised_user['token'], channel['channel_id'])
 
-    # Checking both authorised_user and authorised_user2 are owners
-    found = 0
-    for dictionary in details['owner_members']:
-        if authorised_user['u_id'] == dictionary['u_id']:
-            found += 1
-        elif authorised_user2['u_id'] == dictionary['u_id']:
-            found += 1
-        elif found == 2:
-            break
-    # After finding both owners, check only 2 were found
-    assert found == 2
+    found = False
+    for member in details['owner_members']:
+        if member['u_id'] == authorised_user2['u_id']:
+            found = True
 
-
-def test_admin_permission_change_remove():
-    '''
-    Test if admin+permission_change works as expected when removing an owner
-    '''
-    clear()
-    # Creating channel with admin user
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
-                                    "Philip", "Dickens")
-    auth_login("validEmail@gmail.com", "valid_password")
-    channel = channels_create(authorised_user['token'], "new_channel", True)
-    # 2nd User, removing their owner status
-    authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password",
-                                     "Tara", "Simons")
-    auth_login("validEmail2@gmail.com", "valid_password")
-    channel_invite(authorised_user['token'], channel['channel_id'],
-                   authorised_user2['u_id'])
-
-    # Making the 2nd user a new admin. auth_user[token] is granting auth_user2[u_id] permission owner
-    admin_userpermission_change(authorised_user['token'],
-                                authorised_user2['u_id'], 1)
-
-    # Check added new owner by calling channel_details
-    details = channel_details(authorised_user['token'], channel['channel_id'])
-
-    # Checking both authorised_user and authorised_user2 are owners
-    found = 0
-    for dictionary in details['owner_members']:
-        if authorised_user['u_id'] == dictionary['u_id']:
-            found += 1
-        elif authorised_user2['u_id'] == dictionary['u_id']:
-            found += 1
-        elif found == 2:
-            break
-    # After finding both owners, check only 2 were found
-    assert found == 2
-
-    #######################################################################################
-
-    # After confirming there are 2 owners, remove authorised_user2's permissions
-    admin_userpermission_change(authorised_user['token'],
-                                authorised_user2['u_id'], 2)
-
-    # Check added new owner by calling channel_details
-    details = channel_details(authorised_user['token'], channel['channel_id'])
-
-    # Checking both authorised_user and authorised_user2 are owners. 0: False, 1: True
-    found = 0
-    for dictionary in details['owner_members']:
-        if authorised_user2['u_id'] == dictionary['u_id']:
-            found = 1
-    # After finding both owners, check only 2 were found
-    assert found == 0
-
-
-def test_admin_permission_change_remove_single_self():
-    '''
-    If owner is the only admin, they cannot remove themself
-    '''
-    clear()
-    # Creating channel with admin user
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
-                                    "Philip", "Dickens")
-    auth_login("validEmail@gmail.com", "valid_password")
-
-    #######################################################################################
-
-    # Attempting to remove owner status from themself
-    # Raise AccessError as Admin cannot remove their own role
-    with pytest.raises(AccessError):
-        admin_userpermission_change(authorised_user['token'],
-                                    authorised_user['u_id'], 2)
-
-
-def test_admin_permission_change_remove_multiple_self():
-    '''
-    Test if admin_ermission_change works as expected when there are mulitple owners
-    If owner is the only admin, they cannot remove themself
-    '''
-    clear()
-    # Creating channel with admin user
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
-                                    "Philip", "Dickens")
-    auth_login("validEmail@gmail.com", "valid_password")
-    channel = channels_create(authorised_user['token'], "new_channel", True)
-
-    # 2nd User, new admin. Inviting them to the channel
-    authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password",
-                                     "Tara", "Simons")
-    auth_login("validEmail2@gmail.com", "valid_password")
-    channel_invite(authorised_user['token'], channel['channel_id'],
-                   authorised_user2['u_id'])
-
-    #######################################################################################
-
-    # Making the 2nd user a new admin. auth_user[token] is granting auth_user2[u_id] permission owner
-    admin_userpermission_change(authorised_user['token'],
-                                authorised_user2['u_id'], 1)
-
-    # Attempting to remove owner status from themself
-    # Raise AccessError as Admin cannot remove their own role
-    with pytest.raises(AccessError):
-        admin_userpermission_change(authorised_user2['token'],
-                                    authorised_user2['u_id'], 2)
-
-
-def test_admin_permission_change_invalid_self_promotion():
-    '''
-    AccessError if a member attempts to change owners
-    '''
-    clear()
-    # Creating channel with admin user
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
-                                    "Philip", "Dickens")
-    auth_login("validEmail@gmail.com", "valid_password")
-    channel = channels_create(authorised_user['token'], "new_channel", True)
-    # 2nd User, new admin. 2nd user's u_id is 'u_id: 2'
-    authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password",
-                                     "Tara", "Simons")
-    auth_login("validEmail2@gmail.com", "valid_password")
-    channel_invite(authorised_user['token'], channel['channel_id'],
-                   authorised_user2['u_id'])
-
-    #######################################################################################
-
-    # AccessError when member attempts to promote self to owner
-    with pytest.raises(AccessError):
-        admin_userpermission_change(authorised_user2['token'],
-                                    authorised_user2['u_id'], 1)
-
-
-def test_admin_permission_change_invalid_other_deomotion():
-    '''
-    AccessError if a member attempts to demote and owner to member
-    '''
-    clear()
-    # Creating channel with admin user
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
-                                    "Philip", "Dickens")
-    auth_login("validEmail@gmail.com", "valid_password")
-    channel = channels_create(authorised_user['token'], "new_channel", True)
-    # 2nd User, new admin.'
-    authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password",
-                                     "Tara", "Simons")
-    auth_login("validEmail2@gmail.com", "valid_password")
-    channel_invite(authorised_user['token'], channel['channel_id'],
-                   authorised_user2['u_id'])
-
-    # AccessError when member attempts to deomote another owner to member
-    with pytest.raises(AccessError):
-        admin_userpermission_change(authorised_user2['token'],
-                                    authorised_user['u_id'], 2)
-
+    assert found == True
 
 def test_admin_permission_change_invalid_user_id():
     ''' 
@@ -477,8 +311,10 @@ def test_search_different_user():
 
     authorised_user2 = auth_register("validEmail2@gmail.com", "valid_password",
                                      "Tara", "Simons")
+    
     auth_login("validEmail2@gmail.com", "valid_password")
 
+    channel_join(authorised_user2['token'], channel['channel_id'])
     #######################################################################################
     # Send messages in channel
     message_send(authorised_user['token'], channel['channel_id'], 'Old')
@@ -496,39 +332,4 @@ def test_search_different_user():
     assert found == 1
 
 
-def test_search_invalid_user():
-    '''
-    InputError if user's u_id refers to an invalid user
-    '''
-    clear()
-    # Creating channel with admin user
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
-                                    "Philip", "Dickens")
-    channels_create(authorised_user['token'], "new_channel", True)
 
-    #######################################################################################
-
-    unauthorised_user = auth_register("invalidEmail2@gmail.com",
-                                      "invalid_password", "In", "Valid")
-
-    with pytest.raises(AccessError):
-        search(unauthorised_user['u_id'], 'Hello')
-
-
-def test_search_null():
-    '''
-    InputError if search query_str is empty
-    '''
-    clear()
-    # InputError if search query_str is empty
-    # Creating user, channel, and posting message
-    authorised_user = auth_register("validEmail@gmail.com", "valid_password",
-                                    "Philip", "Dickens")
-    auth_login("validEmail@gmail.com", "valid_password")
-
-    channels_create(authorised_user['token'], "new_channel", True)
-
-    #######################################################################################
-
-    with pytest.raises(InputError):
-        search(authorised_user['token'], None)

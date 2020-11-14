@@ -62,7 +62,8 @@ def test_users_all_expected(url):
         "email": "validEmail@gmail.com",
         "name_first": 'Phil',
         "name_last": "Knight",
-        'handle_str' : 'philknight'
+        'handle_str' : 'philknight',
+        'profile_img_url': ''
     }]
 
 
@@ -89,14 +90,16 @@ def test_users_all_multiple(url):
             "email": "validEmail@gmail.com",
             "name_first": 'Phil',
             "name_last": "Knight",
-            'handle_str' : 'philknight'
+            'handle_str' : 'philknight',
+            'profile_img_url': ''
         },
         {
             "u_id": user_2["u_id"],
             "email": "validEmail2@gmail.com",
             "name_first": 'Donald',
             "name_last": "Trump",
-            'handle_str' : 'donaldtrump'
+            'handle_str' : 'donaldtrump',
+            'profile_img_url': ''
         },
     ]
 
@@ -104,27 +107,6 @@ def test_users_all_multiple(url):
 '''
 admin_userpermission_change function tests
 '''
-
-
-def test_admin_permission_change_remove_single_self(url):
-    '''
-    Error when user attempts to remove own owner permissions
-    '''
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-
-    # Create users 1
-    user_1 = register_user(url, authorised_user)
-    login_user(url, authorised_user)
-
-    data = requests.post(f"{url}/admin/userpermission/change",
-                           json={
-                               "token": user_1['token'],
-                               "u_id": user_1['u_id'],
-                               "permission_id": 2
-                           })
-
-    assert data.status_code == 400
 
 
 def test_admin_permission_change_invalid_other_deomotion(url):
@@ -152,7 +134,7 @@ def test_admin_permission_change_invalid_other_deomotion(url):
     assert data.status_code == 400
 
 
-def test_admin_permission_change_empty_user_id(url):
+def test_admin_permission_change_invalid_user_id(url):
     '''
     Error when u_id is empty
     '''
@@ -169,33 +151,11 @@ def test_admin_permission_change_empty_user_id(url):
     data = requests.post(f"{url}/admin/userpermission/change",
                            json={
                                "token": user_1['token'],
-                               "u_id": '',
+                               "u_id": '999999',
                                "permission_id": 2
                            })
     assert data.status_code == 400
 
-
-def test_admin_permission_change_invalid_string(url):
-    '''
-    Error if permission_id is a string
-    '''
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-
-    # string permission
-    # Create users 1 and 2.
-    user_1 = register_user(url, authorised_user)
-    login_user(url, authorised_user)
-
-    create_channel(url, user_1['token'], "TSM Wins Worlds", True)
-
-    data = requests.post(f"{url}/admin/userpermission/change",
-                         json={
-                             "token": user_1['token'],
-                             "u_id": user_1['u_id'],
-                             "permission_id": 'string_input'
-                         })
-    assert data.status_code == 400
 
 
 def test_admin_permission_change_invalid_integer(url):
@@ -228,39 +188,6 @@ def test_admin_permission_change_invalid_integer(url):
                            })
     assert data.status_code == 400
 
-    data = requests.post(f"{url}/admin/userpermission/change",
-                           json={
-                               "token": user_1['token'],
-                               "u_id": user_1['u_id'],
-                               "permission_id": 1
-                           })
-    assert data.status_code == 400
-
-
-def test_admin_permission_change_empty_permission(url):
-    '''
-    Error if permission_id is empty
-    '''
-    # Reset/clear data
-    requests.delete(f"{url}/clear")
-
-    # string permission
-    # Create users 1 and 2.
-    user_1 = register_user(url, authorised_user)
-    login_user(url, authorised_user)
-
-    user_2 = register_user(url, second_user)
-    login_user(url, second_user)
-
-    create_channel(url, user_1['token'], "TSM Wins Worlds", True)
-
-    data = requests.post(f"{url}/admin/userpermission/change",
-                         json={
-                             "token": user_1['token'],
-                             "u_id": user_2['u_id'],
-                             "permission_id": None
-                         })
-    assert data.status_code == 400
 
 
 '''
