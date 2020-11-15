@@ -37,6 +37,7 @@ def standup_active(token, channel_id):
     if is_active:
         return {'is_active': is_active, 'time_finish': time_finish}
     else:
+        data['standup'] = []
         return {'is_active': is_active, 'time_finish': None}
 
 def standup_end(token, channel_id):
@@ -88,6 +89,8 @@ def standup_start(token, channel_id, length):
     if standup_active(token, channel_id)['is_active'] == True:
         raise InputError("Input error as standup is already active")
 
+    print(f'TIME START: {get_current_timestamp()}')
+
     time_finish = int(get_current_timestamp() + length)
     data["standup"].append({
         "channel_id": channel_id,
@@ -97,6 +100,8 @@ def standup_start(token, channel_id, length):
     standup = Timer(length, standup_end, args=[token, channel_id])
     standup.start()
 
+    
+    print(f'TIME FINISH: {time_finish}')
     return {'time_finish': time_finish}
 
 
