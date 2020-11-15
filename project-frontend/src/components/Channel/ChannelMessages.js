@@ -39,7 +39,7 @@ function ChannelMessages({ channel_id = '' }) {
         .get('/channel/messages', {
           params: {
             token,
-            channel_id,
+            channel_id: Number.parseInt(channel_id),
             start: p.isPaginating ? p.currentStart : 0,
           },
         })
